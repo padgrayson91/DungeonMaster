@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/padding_small">
+    <TextView
+        android:id="@+id/instructions"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="@dimen/text_size_xlarge"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_small"
+        tools:text="@string/proficiency_selection"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/proficiency_chips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_small"
+        />
+
+    <TextView
+        android:id="@+id/native_proficiency_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:text="@string/native_proficiencies"/>
+
+</LinearLayout>

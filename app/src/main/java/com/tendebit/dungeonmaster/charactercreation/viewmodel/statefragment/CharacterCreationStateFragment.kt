@@ -1,0 +1,71 @@
+package com.tendebit.dungeonmaster.charactercreation.viewmodel.statefragment
+
+import android.os.Bundle
+import android.util.Log
+import androidx.fragment.app.Fragment
+import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfo
+import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory
+import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationPageDescriptor
+import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.BehaviorSubject
+
+const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
+
+class CharacterCreationStateFragment : Fragment(), CharacterCreationStateProvider {
+    private val stateSubject = BehaviorSubject.create<CharacterCreationState>()
+    override val stateChanges = stateSubject as Observable<CharacterCreationState>
+
+    private val creationState = CharacterCreationState()
+    private val disposables = CompositeDisposable()
+    private val classSelectionSubject = BehaviorSubject.create<CharacterClassInfo>()
+    val classSelectionObserver = classSelectionSubject as Observer<CharacterClassInfo>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        retainInstance = true
+        disposables.add(classSelectionSubject.subscribe(
+                {
+                    onCharacterClassSelected(it)
+                }
+        ))
+        // TODO: more disposables for each page
+        creationState.addPage(
+                CharacterCreationPageDescriptor(
+                        CharacterCreationPageDescriptor.PageType.CLASS_SELECTION))
+        notifyStateChanged()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        disposables.dispose()
+    }
+
+
+    override fun onProficiencySelected(selection: CharacterProficiencyDirectory) {
+        creationState.selectedProficiencies.add(selection)
+    }
+
+    override fun onPageSelected(selection: Int) {
+        creationState.currentPage = selection
+    }
+
+    private fun onCharacterClassSelected(selection: CharacterClassInfo) {
+        // Only clear pages if the selection actually changed
+        if (creationState.selectedClass != selection) {
+            creationState.selectedClass = selection
+            creationState.clearPages(1) // TODO: const value for page indices
+            creationState.addPage(
+                    CharacterCreationPageDescriptor(
+                            CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION))
+        }
+        creationState.currentPage = 1
+        notifyStateChanged()
+    }
+
+    private fun notifyStateChanged() {
+        stateSubject.onNext(creationState)
+    }
+}
