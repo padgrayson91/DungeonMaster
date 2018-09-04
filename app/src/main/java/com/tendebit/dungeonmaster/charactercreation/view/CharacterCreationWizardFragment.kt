@@ -12,8 +12,8 @@ import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.view.Pr
 import com.tendebit.dungeonmaster.charactercreation.view.adapter.CharacterCreationPagerAdapter
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationPageDescriptor
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.statefragment.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.statefragment.STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.BackNavigationHandler
 import io.reactivex.disposables.Disposable
 

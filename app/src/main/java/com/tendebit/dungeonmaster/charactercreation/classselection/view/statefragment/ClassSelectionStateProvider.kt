@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel.statefragment
+package com.tendebit.dungeonmaster.charactercreation.classselection.view.statefragment
 
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel.CharacterClassSelectionState

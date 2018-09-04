@@ -1,12 +1,12 @@
-package com.tendebit.dungeonmaster.charactercreation.proficiencyselection.viewmodel.statefragment
+package com.tendebit.dungeonmaster.charactercreation.proficiencyselection.view.statefragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfoService
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.viewmodel.CharacterProficiencySelectionState
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.statefragment.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.statefragment.STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject

@@ -9,14 +9,9 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel.statefragment.CLASS_SELECTION_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel.statefragment.ClassSelectionStateFragment
-import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory
-import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.viewmodel.CharacterProficiencySelectionState
-import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.viewmodel.statefragment.PROFICIENCY_SELECTION_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.viewmodel.statefragment.ProficiencySelectionStateFragment
-import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.viewmodel.statefragment.ProficiencySelectionStateProvider
+import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.view.statefragment.PROFICIENCY_SELECTION_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.view.statefragment.ProficiencySelectionStateFragment
 import io.reactivex.disposables.CompositeDisposable
 
 class ProficiencySelectionFragment : Fragment() {

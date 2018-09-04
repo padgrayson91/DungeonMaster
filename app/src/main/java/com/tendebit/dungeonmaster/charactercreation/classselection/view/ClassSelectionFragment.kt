@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.classselection.view.adapter.CharacterClassAdapter
 import com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel.CharacterClassSelectionState
-import com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel.statefragment.CLASS_SELECTION_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel.statefragment.ClassSelectionStateFragment
+import com.tendebit.dungeonmaster.charactercreation.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.classselection.view.statefragment.ClassSelectionStateFragment
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 

@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel.statefragment
+package com.tendebit.dungeonmaster.charactercreation.classselection.view.statefragment
 
 import android.os.Bundle
 import android.util.Log
@@ -6,8 +6,8 @@ import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfoService
 import com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel.CharacterClassSelectionState
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.statefragment.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.statefragment.STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.experimental.Job

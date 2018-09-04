@@ -1,7 +1,6 @@
-package com.tendebit.dungeonmaster.charactercreation.viewmodel.statefragment
+package com.tendebit.dungeonmaster.charactercreation.view.statefragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory

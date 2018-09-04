@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.viewmodel.statefragment
+package com.tendebit.dungeonmaster.charactercreation.view.statefragment
 
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
