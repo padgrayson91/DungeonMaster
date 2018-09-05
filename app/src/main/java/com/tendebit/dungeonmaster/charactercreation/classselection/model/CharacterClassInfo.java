@@ -3,7 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation.classselection.model;
 import com.google.gson.annotations.SerializedName;
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory;
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyGroup;
-import com.tendebit.dungeonmaster.core.SelectionElement;
+import com.tendebit.dungeonmaster.core.model.SelectionElement;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -12,6 +12,7 @@ import java.util.List;
 @SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection"})
 public class CharacterClassInfo implements SelectionElement {
     public String name;
+    public String url;
     @SerializedName("hit_die")
     private int hitDie;
     @SerializedName("proficiency_choices")
@@ -40,6 +41,6 @@ public class CharacterClassInfo implements SelectionElement {
     @NotNull
     @Override
     public String primaryId() {
-        return name;
+        return url;
     }
 }

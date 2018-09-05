@@ -2,19 +2,19 @@ package com.tendebit.dungeonmaster.charactercreation.classselection.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfo
-import io.reactivex.subjects.BehaviorSubject
+import com.tendebit.dungeonmaster.core.model.SelectionState
 
-class CharacterClassSelectionState {
-    val characterClassOptions = ArrayList<CharacterClassDirectory>()
-    var selectedClass: CharacterClassInfo? = null
+class CharacterClassSelectionState : SelectionState<CharacterClassDirectory, CharacterClassInfo> {
+    override val options = ArrayList<CharacterClassDirectory>()
+    override var selection: CharacterClassInfo? = null
 
-    fun updateOptions(options: List<CharacterClassDirectory>) {
-        characterClassOptions.clear()
-        characterClassOptions.addAll(options)
+    override fun updateOptions(options: List<CharacterClassDirectory>) {
+        this.options.clear()
+        this.options.addAll(options)
     }
 
-    fun selectClass(selection: CharacterClassInfo) {
-        selectedClass = selection
+    override fun select(option: CharacterClassInfo) {
+        this.selection = option
     }
 
 

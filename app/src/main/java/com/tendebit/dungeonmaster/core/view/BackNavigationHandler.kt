@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.core
+package com.tendebit.dungeonmaster.core.view
 
 interface BackNavigationHandler {
     fun onBackPressed() : Boolean

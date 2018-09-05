@@ -10,13 +10,18 @@ import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.classselection.view.ClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.view.ProficiencySelectionFragment
+import com.tendebit.dungeonmaster.charactercreation.raceselection.view.RaceSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.view.adapter.CharacterCreationPagerAdapter
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationPageDescriptor
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.core.BackNavigationHandler
+import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import io.reactivex.disposables.Disposable
+import kotlinx.coroutines.experimental.DefaultDispatcher
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     private lateinit var adapter: CharacterCreationPagerAdapter
@@ -25,6 +30,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     private lateinit var forwardButton: Button
     private lateinit var stateFragment: CharacterCreationStateFragment
     private lateinit var subscription: Disposable
+    private var configured = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_viewpager, container, false)
@@ -83,12 +89,18 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         }
         // ... etc ...
         if (viewPager.currentItem != creationState.currentPage) {
-            viewPager.setCurrentItem(creationState.currentPage, true)
+            val previouslyConfigured = configured
+            launch(UI) {
+                if (previouslyConfigured) withContext(DefaultDispatcher) { Thread.sleep(500) }
+                viewPager.setCurrentItem(creationState.currentPage, true)
+            }
         }
+        configured = true
     }
 
     private fun getPageForDescriptor(pageDescriptor: CharacterCreationPageDescriptor) : Fragment {
         return when(pageDescriptor.type) {
+            CharacterCreationPageDescriptor.PageType.RACE_SELECTION -> RaceSelectionFragment()
             CharacterCreationPageDescriptor.PageType.CLASS_SELECTION -> ClassSelectionFragment()
             CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION -> ProficiencySelectionFragment.newInstance(pageDescriptor.indexInGroup)
         }

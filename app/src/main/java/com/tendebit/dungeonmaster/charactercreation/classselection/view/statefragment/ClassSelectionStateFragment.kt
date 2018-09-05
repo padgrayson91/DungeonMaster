@@ -36,14 +36,14 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
             stateFragment = addedFragment
             stateFragment?.let {
                 stateChanges
-                        .filter {it.selectedClass != null}
-                        .map { it.selectedClass!! }
+                        .filter {it.selection != null}
+                        .map { it.selection!! }
                         .subscribe(it.classSelectionObserver)
             }
         }
 
         retainInstance = true
-        if (classSelectionState.characterClassOptions.isEmpty()) {
+        if (classSelectionState.options.isEmpty()) {
             loadClassOptions()
         }
     }
@@ -62,14 +62,14 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
     }
 
     override fun onClassSelected(selection: CharacterClassDirectory) {
-        if (selection.name != classSelectionState.selectedClass?.name) {
+        if (selection.primaryId() != classSelectionState.selection?.primaryId()) {
             job = launch(UI) {
                 try {
                     val result = async(parent = job) {
                         service.getClassInfo(selection)
                     }.await()
                     Log.d("CHARACTER_CREATION", result.toString())
-                    classSelectionState.selectClass(result)
+                    classSelectionState.select(result)
                     notifyDataChanged()
                 } catch (e: Exception) {
                     Log.e("CHARACTER_CREATION", "Got an error", e)

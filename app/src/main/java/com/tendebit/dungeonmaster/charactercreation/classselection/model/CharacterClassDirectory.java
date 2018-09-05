@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation.classselection.model;
 
 import com.google.gson.annotations.SerializedName;
-import com.tendebit.dungeonmaster.core.SelectionElement;
+import com.tendebit.dungeonmaster.core.model.SelectionElement;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +25,6 @@ public class CharacterClassDirectory implements SelectionElement {
     @NotNull
     @Override
     public String primaryId() {
-        return name;
+        return url;
     }
 }

@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory
+import com.tendebit.dungeonmaster.charactercreation.raceselection.model.CharacterRaceDirectory
 import java.util.*
 
 
@@ -9,9 +10,10 @@ class CharacterCreationState {
     var currentPage = 0
     val availablePages = LinkedList<CharacterCreationPageDescriptor>()
     var selectedClass: CharacterClassInfo? = null
+    var selectedRace: CharacterRaceDirectory? = null
     val selectedProficiencies = HashSet<CharacterProficiencyDirectory>()
 
-    fun clearPages(index: Int) {
+    fun clearPagesStartingAt(index: Int) {
         if (index >= availablePages.size) return
         availablePages.subList(index, availablePages.size).clear()
         if (currentPage >= availablePages.size) {

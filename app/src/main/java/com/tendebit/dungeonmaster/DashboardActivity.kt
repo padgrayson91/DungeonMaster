@@ -3,7 +3,7 @@ package com.tendebit.dungeonmaster
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.tendebit.dungeonmaster.charactercreation.view.CharacterCreationWizardFragment
-import com.tendebit.dungeonmaster.core.BackNavigationHandler
+import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import io.reactivex.Observable
 
 class DashboardActivity : AppCompatActivity() {
