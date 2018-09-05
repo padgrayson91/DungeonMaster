@@ -53,9 +53,9 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
 
     override fun onResume() {
         super.onResume()
-        subscription = stateFragment.stateChanges.subscribe({
+        subscription = stateFragment.stateChanges.subscribe{
             updatePages(it)
-        })
+        }
     }
 
     override fun onBackPressed() : Boolean {
@@ -80,7 +80,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     private fun getPageForDescriptor(pageDescriptor: CharacterCreationPageDescriptor) : Fragment {
         return when(pageDescriptor.type) {
             CharacterCreationPageDescriptor.PageType.CLASS_SELECTION -> ClassSelectionFragment()
-            CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION -> ProficiencySelectionFragment()
+            CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION -> ProficiencySelectionFragment.newInstance(pageDescriptor.indexInGroup)
         }
     }
 

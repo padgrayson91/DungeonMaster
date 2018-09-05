@@ -25,15 +25,15 @@ class CharacterCreationStateFragment : Fragment(), CharacterCreationStateProvide
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        disposables.add(classSelectionSubject.subscribe(
+        disposables.add(classSelectionSubject.subscribe
                 {
                     onCharacterClassSelected(it)
                 }
-        ))
+        )
         // TODO: more disposables for each page
         creationState.addPage(
                 CharacterCreationPageDescriptor(
-                        CharacterCreationPageDescriptor.PageType.CLASS_SELECTION))
+                        CharacterCreationPageDescriptor.PageType.CLASS_SELECTION, 0))
         notifyStateChanged()
     }
 
@@ -56,9 +56,11 @@ class CharacterCreationStateFragment : Fragment(), CharacterCreationStateProvide
         if (creationState.selectedClass != selection) {
             creationState.selectedClass = selection
             creationState.clearPages(1) // TODO: const value for page indices
-            creationState.addPage(
-                    CharacterCreationPageDescriptor(
-                            CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION))
+            for (i in 0 until selection.proficiencyChoices.size) {
+                creationState.addPage(
+                        CharacterCreationPageDescriptor(
+                                CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION, i))
+            }
         }
         creationState.currentPage = 1
         notifyStateChanged()

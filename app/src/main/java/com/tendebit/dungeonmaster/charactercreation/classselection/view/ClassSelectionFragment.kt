@@ -53,7 +53,7 @@ class ClassSelectionFragment : Fragment() {
                     ?.add(stateProvider, CLASS_SELECTION_FRAGMENT_TAG)
                     ?.commit()
         }
-        subscriptions?.add(stateProvider.stateChanges.subscribe({updateViewFromState(it)}))
+        subscriptions?.add(stateProvider.stateChanges.subscribe{updateViewFromState(it)})
     }
 
     fun pageExit() {
@@ -64,8 +64,8 @@ class ClassSelectionFragment : Fragment() {
     private fun updateViewFromState(state: CharacterClassSelectionState) {
         if (state.characterClassOptions.size > 0) {
             adapterSubscription?.dispose()
-            val adapter = CharacterClassAdapter(state.characterClassOptions)
-            adapterSubscription = adapter.itemClicks.subscribe({stateProvider.onClassSelected(it)})
+            val adapter = CharacterClassAdapter(state)
+            adapterSubscription = adapter.itemClicks.subscribe{stateProvider.onClassSelected(it)}
             recycler.adapter = adapter
         }
     }

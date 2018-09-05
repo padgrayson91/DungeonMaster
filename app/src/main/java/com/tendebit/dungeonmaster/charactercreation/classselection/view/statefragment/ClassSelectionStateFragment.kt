@@ -20,7 +20,7 @@ const val CLASS_SELECTION_FRAGMENT_TAG = "class_selection_state_fragment"
 
 
 class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
-    private val service = CharacterClassInfoService.Impl()
+    private lateinit var service: CharacterClassInfoService.Impl
     private val stateSubject = BehaviorSubject.create<CharacterClassSelectionState>()
     private var job: Job? = null
     private var stateFragment: CharacterCreationStateFragment? = null
@@ -30,12 +30,13 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        service = CharacterClassInfoService.Impl(activity!!)
         val addedFragment = fragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG) as? CharacterCreationStateFragment
         if (addedFragment != null) {
             stateFragment = addedFragment
             stateFragment?.let {
                 stateChanges
-                        .filter({it.selectedClass != null})
+                        .filter {it.selectedClass != null}
                         .map { it.selectedClass!! }
                         .subscribe(it.classSelectionObserver)
             }
@@ -61,16 +62,18 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
     }
 
     override fun onClassSelected(selection: CharacterClassDirectory) {
-        job = launch(UI) {
-            try {
-                val result = async(parent = job) {
-                    service.getClassInfo(selection)
-                }.await()
-                Log.d("CHARACTER_CREATION", result.toString())
-                classSelectionState.selectClass(result)
-                notifyDataChanged()
-            } catch (e: Exception) {
-                Log.e("CHARACTER_CREATION", "Got an error", e)
+        if (selection.name != classSelectionState.selectedClass?.name) {
+            job = launch(UI) {
+                try {
+                    val result = async(parent = job) {
+                        service.getClassInfo(selection)
+                    }.await()
+                    Log.d("CHARACTER_CREATION", result.toString())
+                    classSelectionState.selectClass(result)
+                    notifyDataChanged()
+                } catch (e: Exception) {
+                    Log.e("CHARACTER_CREATION", "Got an error", e)
+                }
             }
         }
     }

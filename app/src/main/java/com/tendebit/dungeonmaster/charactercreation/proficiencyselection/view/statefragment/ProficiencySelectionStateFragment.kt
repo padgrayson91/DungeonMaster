@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfoService
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory
+import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.viewmodel.CharacterProficiencyGroupSelectionState
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.viewmodel.CharacterProficiencySelectionState
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
@@ -16,10 +17,8 @@ const val PROFICIENCY_SELECTION_FRAGMENT_TAG = "proficiency_selection_state_frag
 
 
 class ProficiencySelectionStateFragment: Fragment(), ProficiencySelectionStateProvider {
-    private val service = CharacterClassInfoService.Impl()
     private val stateSubject = BehaviorSubject.create<CharacterProficiencySelectionState>()
     private val disposables = CompositeDisposable()
-    private var job: Job? = null
     private lateinit var stateFragment: CharacterCreationStateFragment
     override val stateChanges = stateSubject as Observable<CharacterProficiencySelectionState>
 
@@ -34,11 +33,15 @@ class ProficiencySelectionStateFragment: Fragment(), ProficiencySelectionStatePr
             disposables.add(stateFragment.stateChanges
                     .map { it.selectedClass }
                     .distinct()
-                    .subscribe({
-                        state.proficiencyGroup = it?.proficiencyChoices?.get(0)
+                    .subscribe{
+                        state.proficiencyGroups.clear()
                         state.selectedProficiencies.clear()
+                        state.proficiencyGroups.addAll(Observable.fromIterable(it!!.proficiencyChoices)
+                                .map { CharacterProficiencyGroupSelectionState(it) }
+                                .toList()
+                                .blockingGet())
                         notifyStateChange()
-                    }))
+                    })
         }
     }
 
@@ -47,18 +50,16 @@ class ProficiencySelectionStateFragment: Fragment(), ProficiencySelectionStatePr
         disposables.dispose()
     }
 
-    override fun onProficiencySelected(proficiency: CharacterProficiencyDirectory) {
+    override fun onProficiencySelected(proficiency: CharacterProficiencyDirectory, id: Int) {
         state.selectedProficiencies.add(proficiency)
-        if (state.proficiencyGroup!!.choiceCount == state.selectedProficiencies.size) {
-            notifyStateChange()
-        }
+        state.proficiencyGroups[id].selectedProficiencies.add(proficiency)
+        notifyStateChange()
     }
 
-    override fun onProficiencyUnselected(proficiency: CharacterProficiencyDirectory) {
+    override fun onProficiencyUnselected(proficiency: CharacterProficiencyDirectory, id: Int) {
         state.selectedProficiencies.remove(proficiency)
-        if (state.proficiencyGroup!!.choiceCount == state.selectedProficiencies.size + 1) {
-            notifyStateChange()
-        }
+        state.proficiencyGroups[id].selectedProficiencies.remove(proficiency)
+        notifyStateChange()
     }
 
     override fun onProficienciesConfirmed() {
