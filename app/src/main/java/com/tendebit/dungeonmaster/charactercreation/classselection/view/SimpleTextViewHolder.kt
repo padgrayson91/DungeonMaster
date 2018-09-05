@@ -10,18 +10,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfo
+import com.tendebit.dungeonmaster.core.SelectionElement
 import io.reactivex.subjects.PublishSubject
 
-class CharacterClassViewHolder(inflater: LayoutInflater, parent: ViewGroup, private val view: View = inflater.inflate(R.layout.list_item_character_class, parent, false)) : RecyclerView.ViewHolder(view) {
+class SimpleTextViewHolder<T : SelectionElement>(inflater: LayoutInflater, parent: ViewGroup, private val view: View = inflater.inflate(R.layout.list_item_character_class, parent, false)) : RecyclerView.ViewHolder(view) {
     private val classNameText = view.findViewById<TextView>(R.id.class_name)
-    val itemSelection = PublishSubject.create<CharacterClassDirectory>()
+    val itemSelection = PublishSubject.create<T>()
 
-    fun populate(characterClass: CharacterClassDirectory, currentlySelected: CharacterClassInfo?) {
+    fun populate(element: T, currentlySelected: SelectionElement?) {
         view.setOnClickListener {
-            itemSelection.onNext(characterClass)
+            itemSelection.onNext(element)
         }
-        classNameText.text = characterClass.primaryText()
-        if (characterClass.name == currentlySelected?.name) {
+        classNameText.text = element.primaryText()
+        if (element.primaryId() == currentlySelected?.primaryId()) {
             classNameText.setTextColor(ContextCompat.getColor(view.context, R.color.colorAccent))
         } else {
             classNameText.setTextColor(Color.LTGRAY)

@@ -21,4 +21,10 @@ public class CharacterClassDirectory implements SelectionElement {
     public String primaryText() {
         return name;
     }
+
+    @NotNull
+    @Override
+    public String primaryId() {
+        return name;
+    }
 }

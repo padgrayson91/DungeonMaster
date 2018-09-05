@@ -3,11 +3,14 @@ package com.tendebit.dungeonmaster.charactercreation.classselection.model;
 import com.google.gson.annotations.SerializedName;
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory;
 import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyGroup;
+import com.tendebit.dungeonmaster.core.SelectionElement;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 @SuppressWarnings({"unused", "MismatchedQueryAndUpdateOfCollection"})
-public class CharacterClassInfo {
+public class CharacterClassInfo implements SelectionElement {
     public String name;
     @SerializedName("hit_die")
     private int hitDie;
@@ -26,5 +29,17 @@ public class CharacterClassInfo {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof CharacterClassInfo && ((CharacterClassInfo) obj).name.equals(name);
+    }
+
+    @NotNull
+    @Override
+    public String primaryText() {
+        return name;
+    }
+
+    @NotNull
+    @Override
+    public String primaryId() {
+        return name;
     }
 }

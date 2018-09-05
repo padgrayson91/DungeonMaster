@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
@@ -20,6 +21,8 @@ import io.reactivex.disposables.Disposable
 class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     private lateinit var adapter: CharacterCreationPagerAdapter
     private lateinit var viewPager: ViewPager
+    private lateinit var backButton: Button
+    private lateinit var forwardButton: Button
     private lateinit var stateFragment: CharacterCreationStateFragment
     private lateinit var subscription: Disposable
 
@@ -36,10 +39,17 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         }
 
         viewPager = root.findViewById(R.id.view_pager)
+        backButton = root.findViewById(R.id.button_back)
+        forwardButton = root.findViewById(R.id.button_forward)
+        backButton.setOnClickListener { viewPager.setCurrentItem(viewPager.currentItem - 1, true) }
+        forwardButton.setOnClickListener { viewPager.setCurrentItem(viewPager.currentItem + 1, true) }
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 stateFragment.onPageSelected(position)
+                backButton.visibility = if (position == 0) View.GONE else View.VISIBLE
+                forwardButton.visibility = if (position < adapter.count -1 ) View.VISIBLE else View.GONE
+
             }
         })
         fragmentManager?.let {
@@ -54,7 +64,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     override fun onResume() {
         super.onResume()
         subscription = stateFragment.stateChanges.subscribe{
-            updatePages(it)
+            updateViewFromState(it)
         }
     }
 
@@ -66,7 +76,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         return false
     }
 
-    private fun updatePages(creationState: CharacterCreationState) {
+    private fun updateViewFromState(creationState: CharacterCreationState) {
         adapter.removePage(creationState.availablePages.size)
         for (i in adapter.count until creationState.availablePages.size) {
             adapter.addPage(getPageForDescriptor(creationState.availablePages[i]))
