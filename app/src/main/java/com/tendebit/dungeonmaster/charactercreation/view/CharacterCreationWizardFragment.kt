@@ -8,9 +8,9 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation.classselection.view.ClassSelectionFragment
-import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.view.ProficiencySelectionFragment
-import com.tendebit.dungeonmaster.charactercreation.raceselection.view.RaceSelectionFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.ClassSelectionFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.ProficiencySelectionFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.RaceSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.view.adapter.CharacterCreationPagerAdapter
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationPageDescriptor
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState

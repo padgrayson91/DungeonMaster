@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.sandbox.model
 
 import com.google.gson.Gson
-import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassManifest
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassManifest
 import okhttp3.OkHttpClient
 import okhttp3.Request
 

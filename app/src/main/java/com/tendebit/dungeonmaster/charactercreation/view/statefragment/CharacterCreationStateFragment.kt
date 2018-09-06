@@ -2,9 +2,9 @@ package com.tendebit.dungeonmaster.charactercreation.view.statefragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfo
-import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory
-import com.tendebit.dungeonmaster.charactercreation.raceselection.model.CharacterRaceDirectory
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
+import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationPageDescriptor
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
 import io.reactivex.Observable

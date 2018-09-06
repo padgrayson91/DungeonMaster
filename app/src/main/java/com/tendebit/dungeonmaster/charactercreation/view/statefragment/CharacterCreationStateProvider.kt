@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.view.statefragment
 
-import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
 import io.reactivex.Observable
 

@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation.viewmodel
 
-import com.tendebit.dungeonmaster.charactercreation.classselection.model.CharacterClassInfo
-import com.tendebit.dungeonmaster.charactercreation.proficiencyselection.model.CharacterProficiencyDirectory
-import com.tendebit.dungeonmaster.charactercreation.raceselection.model.CharacterRaceDirectory
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
+import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import java.util.*
 
 
