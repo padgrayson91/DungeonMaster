@@ -83,7 +83,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     }
 
     private fun updateViewFromState(creationState: CharacterCreationState) {
-        adapter.removePage(creationState.availablePages.size)
+        adapter.removePagesAfter(creationState.availablePages.size)
         for (i in adapter.count until creationState.availablePages.size) {
             adapter.addPage(getPageForDescriptor(creationState.availablePages[i]))
         }
@@ -91,7 +91,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         if (viewPager.currentItem != creationState.currentPage) {
             val previouslyConfigured = configured
             launch(UI) {
-                if (previouslyConfigured) withContext(DefaultDispatcher) { Thread.sleep(500) }
+                if (previouslyConfigured) withContext(DefaultDispatcher) { Thread.sleep(200) }
                 viewPager.setCurrentItem(creationState.currentPage, true)
             }
         }

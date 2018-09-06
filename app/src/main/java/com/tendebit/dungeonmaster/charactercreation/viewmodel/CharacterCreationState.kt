@@ -12,6 +12,7 @@ class CharacterCreationState {
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
     val selectedProficiencies = HashSet<CharacterProficiencyDirectory>()
+    var isLoading = false
 
     fun clearPagesStartingAt(index: Int) {
         if (index >= availablePages.size) return

@@ -21,7 +21,7 @@ class CharacterCreationPagerAdapter(fragmentManager: FragmentManager) : Fragment
         notifyDataSetChanged()
     }
 
-    fun removePage(position: Int) {
+    fun removePagesAfter(position: Int) {
         if (position >= pages.size) return
         pages.subList(position, pages.size).clear()
         notifyDataSetChanged()

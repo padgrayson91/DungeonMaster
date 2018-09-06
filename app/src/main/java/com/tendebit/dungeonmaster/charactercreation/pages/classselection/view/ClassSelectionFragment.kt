@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.CharacterClassSelectionState
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
@@ -18,16 +20,16 @@ import io.reactivex.disposables.Disposable
 
 class ClassSelectionFragment : Fragment() {
 
-    private var subscriptions: CompositeDisposable? = null
-    private var adapterSubscription: Disposable? = null
+    private lateinit var subscriptions: CompositeDisposable
     private lateinit var recycler: RecyclerView
     private lateinit var stateProvider: ClassSelectionStateFragment
+    private val adapter = SelectionElementAdapter<CharacterClassDirectory, CharacterClassInfo>(null)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_list, container, false)
         recycler = root.findViewById(R.id.class_list)
         recycler.layoutManager = LinearLayoutManager(activity)
-
+        recycler.adapter = adapter
         return root
     }
 
@@ -53,20 +55,20 @@ class ClassSelectionFragment : Fragment() {
                     ?.add(stateProvider, CLASS_SELECTION_FRAGMENT_TAG)
                     ?.commit()
         }
-        subscriptions?.add(stateProvider.stateChanges.subscribe{updateViewFromState(it)})
+        subscriptions.addAll(
+                stateProvider.stateChanges.subscribe{updateViewFromState(it)},
+                adapter.itemClicks.distinct().subscribe{stateProvider.onClassSelected(it)}
+        )
     }
 
     private fun pageExit() {
-        subscriptions?.dispose()
+        subscriptions.dispose()
     }
 
 
     private fun updateViewFromState(state: CharacterClassSelectionState) {
         if (state.options.size > 0) {
-            adapterSubscription?.dispose()
-            val adapter = SelectionElementAdapter(state)
-            adapterSubscription = adapter.itemClicks.subscribe{stateProvider.onClassSelected(it)}
-            recycler.adapter = adapter
+            adapter.update(state)
         }
     }
 }

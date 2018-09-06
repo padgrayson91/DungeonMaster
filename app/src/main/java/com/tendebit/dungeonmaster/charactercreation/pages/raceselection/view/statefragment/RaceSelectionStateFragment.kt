@@ -25,7 +25,7 @@ class RaceSelectionStateFragment : Fragment(){
     private var stateFragment: CharacterCreationStateFragment? = null
     val stateChanges = stateSubject as Observable<CharacterRaceSelectionState>
 
-    private val classSelectionState = CharacterRaceSelectionState()
+    private val raceSelectionState = CharacterRaceSelectionState()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +42,7 @@ class RaceSelectionStateFragment : Fragment(){
         }
 
         retainInstance = true
-        if (classSelectionState.options.isEmpty()) {
+        if (raceSelectionState.options.isEmpty()) {
             loadClassOptions()
         }
     }
@@ -52,7 +52,7 @@ class RaceSelectionStateFragment : Fragment(){
             try {
                 val result = async(parent = job) {  service.getCharacterRaces() }.await()
                 Log.d("CHARACTER_CREATION", "Got " + result.characterRaceDirectories.size + " character races. The first one is " + result.characterRaceDirectories[0].name)
-                classSelectionState.updateOptions(result.characterRaceDirectories)
+                raceSelectionState.updateOptions(result.characterRaceDirectories)
                 notifyDataChanged()
             } catch (e: Exception) {
                 Log.e("CHARACTER_CREATION", "Got an error", e)
@@ -61,8 +61,8 @@ class RaceSelectionStateFragment : Fragment(){
     }
 
     fun onRaceSelected(selection: CharacterRaceDirectory) {
-        if (selection.primaryId() != classSelectionState.selection?.primaryId()) {
-            classSelectionState.select(selection)
+        if (selection.primaryId() != raceSelectionState.selection?.primaryId()) {
+            raceSelectionState.select(selection)
             notifyDataChanged()
         }
     }
@@ -75,6 +75,6 @@ class RaceSelectionStateFragment : Fragment(){
     }
 
     private fun notifyDataChanged() {
-        stateSubject.onNext(classSelectionState)
+        stateSubject.onNext(raceSelectionState)
     }
 }

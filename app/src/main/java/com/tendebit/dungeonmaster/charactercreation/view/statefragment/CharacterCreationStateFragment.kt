@@ -74,9 +74,11 @@ class CharacterCreationStateFragment : Fragment(), CharacterCreationStateProvide
     private fun onCharacterRaceSelected(selection: CharacterRaceDirectory) {
         if (creationState.selectedRace != selection) {
             creationState.selectedRace = selection
-            creationState.addPage(
-                    CharacterCreationPageDescriptor(
-                            CharacterCreationPageDescriptor.PageType.CLASS_SELECTION, 0))
+            if (creationState.availablePages.size - 1 < classSelectionPage) {
+                creationState.addPage(
+                        CharacterCreationPageDescriptor(
+                                CharacterCreationPageDescriptor.PageType.CLASS_SELECTION, 0))
+            }
         }
         creationState.currentPage = classSelectionPage
         notifyStateChanged()
