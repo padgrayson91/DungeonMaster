@@ -17,6 +17,7 @@ import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationS
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
+import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import io.reactivex.disposables.Disposable
 import kotlinx.coroutines.experimental.DefaultDispatcher
 import kotlinx.coroutines.experimental.android.UI
@@ -28,6 +29,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     private lateinit var viewPager: ViewPager
     private lateinit var backButton: Button
     private lateinit var forwardButton: Button
+    private lateinit var loadingDialog: LoadingDialog
     private lateinit var stateFragment: CharacterCreationStateFragment
     private lateinit var subscription: Disposable
     private var configured = false
@@ -47,6 +49,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         viewPager = root.findViewById(R.id.view_pager)
         backButton = root.findViewById(R.id.button_back)
         forwardButton = root.findViewById(R.id.button_forward)
+        loadingDialog = root.findViewById(R.id.loading_dialog)
         backButton.setOnClickListener { viewPager.setCurrentItem(viewPager.currentItem - 1, true) }
         forwardButton.setOnClickListener { viewPager.setCurrentItem(viewPager.currentItem + 1, true) }
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
@@ -95,6 +98,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
                 viewPager.setCurrentItem(creationState.currentPage, true)
             }
         }
+        loadingDialog.visibility = if(creationState.isLoading) View.VISIBLE else View.GONE
         configured = true
     }
 

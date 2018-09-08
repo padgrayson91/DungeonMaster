@@ -35,8 +35,6 @@ class RaceSelectionStateFragment : Fragment(){
             stateFragment = addedFragment
             stateFragment?.let {
                 stateChanges
-                        .filter {it.selection != null}
-                        .map { it.selection!! }
                         .subscribe(it.raceSelectionObserver)
             }
         }

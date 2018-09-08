@@ -30,7 +30,7 @@ class ProficiencySelectionStateFragment: Fragment(), ProficiencySelectionStatePr
             stateFragment = addedFragment
             disposables.add(stateFragment.stateChanges
                     .map { it.selectedClass }
-                    .distinct()
+                    .distinctUntilChanged()
                     .subscribe{
                         state.proficiencyGroups.clear()
                         state.selectedProficiencies.clear()

@@ -3,8 +3,10 @@ package com.tendebit.dungeonmaster.charactercreation.view.statefragment
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.CharacterClassSelectionState
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
+import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.viewmodel.CharacterRaceSelectionState
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationPageDescriptor
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
 import io.reactivex.Observable
@@ -23,17 +25,22 @@ class CharacterCreationStateFragment : Fragment(), CharacterCreationStateProvide
 
     private val creationState = CharacterCreationState()
     private val disposables = CompositeDisposable()
-    private val classSelectionSubject = BehaviorSubject.create<CharacterClassInfo>()
-    private val raceSelectionSubject = BehaviorSubject.create<CharacterRaceDirectory>()
-    val classSelectionObserver = classSelectionSubject as Observer<CharacterClassInfo>
-    val raceSelectionObserver = raceSelectionSubject as Observer<CharacterRaceDirectory>
+    private val classSelectionSubject = BehaviorSubject.create<CharacterClassSelectionState>()
+    private val raceSelectionSubject = BehaviorSubject.create<CharacterRaceSelectionState>()
+    val classSelectionObserver = classSelectionSubject as Observer<CharacterClassSelectionState>
+    val raceSelectionObserver = raceSelectionSubject as Observer<CharacterRaceSelectionState>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
         disposables.addAll(
-                classSelectionSubject.subscribe { onCharacterClassSelected(it) },
-                raceSelectionSubject.subscribe {  onCharacterRaceSelected(it) }
+                stateSubject.map { it.isLoading }.distinctUntilChanged().subscribe { notifyStateChanged() },
+                classSelectionSubject.filter { it.selection != null }
+                        .map { it.selection!! }.subscribe { onCharacterClassSelected(it) },
+                raceSelectionSubject.filter { it.selection != null }
+                        .map { it.selection!! }.subscribe { onCharacterRaceSelected(it) },
+                classSelectionSubject.map { it.activeNetworkCalls }
+                        .subscribe { onNetworkCallCountChanged(it) }
                 // ... etc for other pages ...
         )
         creationState.addPage(
@@ -59,6 +66,7 @@ class CharacterCreationStateFragment : Fragment(), CharacterCreationStateProvide
     private fun onCharacterClassSelected(selection: CharacterClassInfo) {
         // Only clear pages if the selection actually changed
         if (creationState.selectedClass != selection) {
+
             creationState.selectedClass = selection
             creationState.clearPagesStartingAt(proficiencySelectionPageStart)
             for (i in 0 until selection.proficiencyChoices.size) {
@@ -86,5 +94,10 @@ class CharacterCreationStateFragment : Fragment(), CharacterCreationStateProvide
 
     private fun notifyStateChanged() {
         stateSubject.onNext(creationState)
+    }
+
+    private fun onNetworkCallCountChanged(count: Int) {
+        creationState.isLoading = count > 0
+        notifyStateChanged()
     }
 }

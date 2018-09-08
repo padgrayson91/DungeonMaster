@@ -15,7 +15,6 @@ import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmod
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 
 
 class ClassSelectionFragment : Fragment() {
@@ -57,7 +56,7 @@ class ClassSelectionFragment : Fragment() {
         }
         subscriptions.addAll(
                 stateProvider.stateChanges.subscribe{updateViewFromState(it)},
-                adapter.itemClicks.distinct().subscribe{stateProvider.onClassSelected(it)}
+                adapter.itemClicks.distinctUntilChanged().subscribe{stateProvider.onClassSelected(it)}
         )
     }
 

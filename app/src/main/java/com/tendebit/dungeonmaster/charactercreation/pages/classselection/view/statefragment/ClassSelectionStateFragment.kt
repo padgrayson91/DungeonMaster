@@ -36,8 +36,6 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
             stateFragment = addedFragment
             stateFragment?.let {
                 stateChanges
-                        .filter {it.selection != null}
-                        .map { it.selection!! }
                         .subscribe(it.classSelectionObserver)
             }
         }
@@ -49,11 +47,14 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
     }
 
     private fun loadClassOptions() {
+        classSelectionState.onNetworkCallStart()
+        notifyDataChanged()
         job = launch(UI) {
             try {
                 val result = async(parent = job) {  service.getCharacterClasses() }.await()
                 Log.d("CHARACTER_CREATION", "Got " + result.characterClassDirectories.size + " character classes. The first one is " + result.characterClassDirectories[0].name)
                 classSelectionState.updateOptions(result.characterClassDirectories)
+                classSelectionState.onNetworkCallFinish()
                 notifyDataChanged()
             } catch (e: Exception) {
                 Log.e("CHARACTER_CREATION", "Got an error", e)
@@ -63,6 +64,8 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
 
     override fun onClassSelected(selection: CharacterClassDirectory) {
         if (selection.primaryId() != classSelectionState.selection?.primaryId()) {
+            classSelectionState.onNetworkCallStart()
+            notifyDataChanged()
             job = launch(UI) {
                 try {
                     val result = async(parent = job) {
@@ -70,6 +73,7 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
                     }.await()
                     Log.d("CHARACTER_CREATION", result.toString())
                     classSelectionState.select(result)
+                    classSelectionState.onNetworkCallFinish()
                     notifyDataChanged()
                 } catch (e: Exception) {
                     Log.e("CHARACTER_CREATION", "Got an error", e)
