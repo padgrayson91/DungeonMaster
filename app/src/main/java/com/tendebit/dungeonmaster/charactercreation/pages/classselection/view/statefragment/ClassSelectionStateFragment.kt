@@ -54,10 +54,11 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
                 val result = async(parent = job) {  service.getCharacterClasses() }.await()
                 Log.d("CHARACTER_CREATION", "Got " + result.characterClassDirectories.size + " character classes. The first one is " + result.characterClassDirectories[0].name)
                 classSelectionState.updateOptions(result.characterClassDirectories)
-                classSelectionState.onNetworkCallFinish()
-                notifyDataChanged()
             } catch (e: Exception) {
                 Log.e("CHARACTER_CREATION", "Got an error", e)
+            } finally {
+                classSelectionState.onNetworkCallFinish()
+                notifyDataChanged()
             }
         }
     }
@@ -73,10 +74,11 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
                     }.await()
                     Log.d("CHARACTER_CREATION", result.toString())
                     classSelectionState.select(result)
-                    classSelectionState.onNetworkCallFinish()
-                    notifyDataChanged()
                 } catch (e: Exception) {
                     Log.e("CHARACTER_CREATION", "Got an error", e)
+                } finally {
+                    classSelectionState.onNetworkCallFinish()
+                    notifyDataChanged()
                 }
             }
         }

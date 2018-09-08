@@ -12,10 +12,10 @@ import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.Cl
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.ProficiencySelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.RaceSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.view.adapter.CharacterCreationPagerAdapter
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationPageDescriptor
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationPageDescriptor
+import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import io.reactivex.disposables.Disposable
@@ -61,6 +61,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
 
             }
         })
+        // TODO: should use child fragment manager because using the parent leads to bugs
         fragmentManager?.let {
             adapter = CharacterCreationPagerAdapter(it)
             viewPager.adapter = adapter

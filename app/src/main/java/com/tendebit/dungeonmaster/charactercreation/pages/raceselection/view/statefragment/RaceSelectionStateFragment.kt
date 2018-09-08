@@ -47,13 +47,17 @@ class RaceSelectionStateFragment : Fragment(){
 
     private fun loadClassOptions() {
         job = launch(UI) {
+            raceSelectionState.onNetworkCallStart()
+            notifyDataChanged()
             try {
                 val result = async(parent = job) {  service.getCharacterRaces() }.await()
                 Log.d("CHARACTER_CREATION", "Got " + result.characterRaceDirectories.size + " character races. The first one is " + result.characterRaceDirectories[0].name)
                 raceSelectionState.updateOptions(result.characterRaceDirectories)
-                notifyDataChanged()
             } catch (e: Exception) {
                 Log.e("CHARACTER_CREATION", "Got an error", e)
+            } finally {
+                raceSelectionState.onNetworkCallFinish()
+                notifyDataChanged()
             }
         }
     }

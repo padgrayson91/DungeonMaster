@@ -13,6 +13,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
+import java.util.*
 
 const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
 
@@ -33,14 +34,28 @@ class CharacterCreationStateFragment : Fragment(), CharacterCreationStateProvide
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
+        val networkCallObservables = Arrays.asList(
+                classSelectionSubject.map { it.activeNetworkCalls }.startWith(0),
+                raceSelectionSubject.map { it.activeNetworkCalls }.startWith(0)
+                // ... etc for other pages ...
+        )
+
+        val activeCallCountForChildren: Observable<Int> = Observable.combineLatest(
+                networkCallObservables) { vals: Array<out Any> -> vals.map {
+                    when(it) {
+                        is Int -> it
+                        else -> throw IllegalStateException()
+                    }
+            }.sum()
+        }
+
         disposables.addAll(
+                activeCallCountForChildren.subscribe { onNetworkCallCountChanged(it) },
                 stateSubject.map { it.isLoading }.distinctUntilChanged().subscribe { notifyStateChanged() },
                 classSelectionSubject.filter { it.selection != null }
                         .map { it.selection!! }.subscribe { onCharacterClassSelected(it) },
                 raceSelectionSubject.filter { it.selection != null }
-                        .map { it.selection!! }.subscribe { onCharacterRaceSelected(it) },
-                classSelectionSubject.map { it.activeNetworkCalls }
-                        .subscribe { onNetworkCallCountChanged(it) }
+                        .map { it.selection!! }.subscribe { onCharacterRaceSelected(it) }
                 // ... etc for other pages ...
         )
         creationState.addPage(
