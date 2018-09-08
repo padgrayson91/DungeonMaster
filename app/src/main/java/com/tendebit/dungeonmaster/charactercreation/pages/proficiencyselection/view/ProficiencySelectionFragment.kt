@@ -11,7 +11,7 @@ import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.PROFICIENCY_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.ProficiencySelectionStateFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.viewmodel.CharacterProficiencySelectionState
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.viewmodel.ProficiencySelectionState
 import io.reactivex.disposables.CompositeDisposable
 import java.text.MessageFormat
 
@@ -74,7 +74,7 @@ class ProficiencySelectionFragment : Fragment() {
     }
 
 
-    private fun updateViewFromState(state: CharacterProficiencySelectionState) {
+    private fun updateViewFromState(state: ProficiencySelectionState) {
         val localState = state.proficiencyGroups[groupId]
         val group = localState.proficiencyGroup
         chipGroup.removeAllViews()

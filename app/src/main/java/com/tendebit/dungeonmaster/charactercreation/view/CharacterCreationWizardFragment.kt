@@ -11,6 +11,7 @@ import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.ClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.confirmation.CharacterConfirmationFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.ProficiencySelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.PROFICIENCY_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.ProficiencySelectionStateFragment
@@ -67,8 +68,6 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 stateFragment.state.onPageSelected(position)
-                backButton.visibility = if (position == 0) View.GONE else View.VISIBLE
-                forwardButton.visibility = if (position < adapter.count -1 ) View.VISIBLE else View.GONE
 
             }
         })
@@ -115,6 +114,11 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
                 viewPager.setCurrentItem(creationState.currentPage, true)
             }
         }
+
+        backButton.isEnabled = creationState.currentPage != 0
+        forwardButton.isEnabled = creationState.currentPage < creationState.availablePages.size -1
+        // For now, block the whole UI while anything is loading, but in the future
+        // the user should still be allowed to interact
         loadingDialog.visibility = if(creationState.isLoading) View.VISIBLE else View.GONE
         configured = true
     }
@@ -124,6 +128,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
             CharacterCreationPageDescriptor.PageType.RACE_SELECTION -> RaceSelectionFragment()
             CharacterCreationPageDescriptor.PageType.CLASS_SELECTION -> ClassSelectionFragment()
             CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION -> ProficiencySelectionFragment.newInstance(pageDescriptor.indexInGroup)
+            CharacterCreationPageDescriptor.PageType.CONFIRMATION -> CharacterConfirmationFragment()
         }
     }
 

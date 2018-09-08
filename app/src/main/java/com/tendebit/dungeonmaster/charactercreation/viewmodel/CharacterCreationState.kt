@@ -3,6 +3,8 @@ package com.tendebit.dungeonmaster.charactercreation.viewmodel
 import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.ClassSelectionState
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.viewmodel.ProficiencySelectionState
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.viewmodel.RaceSelectionState
 import io.reactivex.Observable
@@ -20,8 +22,9 @@ class CharacterCreationState {
 
     var currentPage = 0
     val availablePages = LinkedList<CharacterCreationPageDescriptor>()
+    val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     var selectedClass: CharacterClassInfo? = null
-    private var selectedRace: CharacterRaceDirectory? = null
+    var selectedRace: CharacterRaceDirectory? = null
     var isLoading = false
 
     private val stateSubject = BehaviorSubject.create<CharacterCreationState>()
@@ -30,8 +33,10 @@ class CharacterCreationState {
     private val disposables = CompositeDisposable()
     private val classSelectionSubject = BehaviorSubject.create<ClassSelectionState>()
     private val raceSelectionSubject = BehaviorSubject.create<RaceSelectionState>()
+    private val proficiencySelectionSubject = BehaviorSubject.create<ProficiencySelectionState>()
     val classSelectionObserver = classSelectionSubject as Observer<ClassSelectionState>
     val raceSelectionObserver = raceSelectionSubject as Observer<RaceSelectionState>
+    val proficiencySelectionObserver = proficiencySelectionSubject as Observer<ProficiencySelectionState>
 
     init {
         val networkCallObservables = Arrays.asList(
@@ -54,7 +59,9 @@ class CharacterCreationState {
                 classSelectionSubject.filter { it.selection != null }
                         .map { it.selection!! }.subscribe { onCharacterClassSelected(it) },
                 raceSelectionSubject.filter { it.selection != null }
-                        .map { it.selection!! }.subscribe { onCharacterRaceSelected(it) }
+                        .map { it.selection!! }.subscribe { onCharacterRaceSelected(it) },
+                proficiencySelectionSubject.subscribe { onProficiencySelectionChanged(it) }
+
                 // ... etc for other pages ...
         )
         addPage(
@@ -77,6 +84,7 @@ class CharacterCreationState {
 
     fun onPageSelected(selection: Int) {
         currentPage = selection
+        notifyDataChanged()
     }
 
     fun cancelAllSubscriptions() {
@@ -109,6 +117,19 @@ class CharacterCreationState {
             }
         }
         currentPage = CLASS_SELECTION_PAGE_INDEX
+        notifyDataChanged()
+    }
+
+    private fun onProficiencySelectionChanged(state: ProficiencySelectionState) {
+        selectedProficiencies.clear()
+        selectedProficiencies.addAll(state.selectedProficiencies)
+        if (state.areAllProficienciesSelected()) {
+            addPage(
+                    CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION, 0)
+            )
+        } else {
+            clearPagesStartingAt(PROFICIENCY_SELECTION_PAGE_INDEX + state.proficiencyGroups.size)
+        }
         notifyDataChanged()
     }
 

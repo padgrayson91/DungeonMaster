@@ -6,13 +6,14 @@ import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationS
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
+import java.util.*
 
-class CharacterProficiencySelectionState(parentStateChanges: Observable<CharacterCreationState>) {
-    val proficiencyGroups = ArrayList<CharacterProficiencyGroupSelectionState>()
-    private val stateSubject = BehaviorSubject.create<CharacterProficiencySelectionState>()
-    private val selectedProficiencies = HashSet<CharacterProficiencyDirectory>()
+class ProficiencySelectionState(parentStateChanges: Observable<CharacterCreationState>) {
+    val proficiencyGroups = ArrayList<ProficiencyGroupSelectionState>()
+    private val stateSubject = BehaviorSubject.create<ProficiencySelectionState>()
+    val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     private val disposables = CompositeDisposable()
-    val changes = stateSubject as Observable<CharacterProficiencySelectionState>
+    val changes = stateSubject as Observable<ProficiencySelectionState>
 
     init {
         disposables.add(parentStateChanges
@@ -28,6 +29,10 @@ class CharacterProficiencySelectionState(parentStateChanges: Observable<Characte
         val groupState = proficiencyGroups[groupId]
         return !(!groupState.selectedProficiencies.contains(proficiency) && selectedProficiencies.contains(proficiency))
                 && (groupState.selectedProficiencies.contains(proficiency) || groupState.selectedProficiencies.size < groupState.proficiencyGroup.choiceCount)
+    }
+
+    fun areAllProficienciesSelected() : Boolean {
+        return proficiencyGroups.map { it.remainingChoices() }.sum() == 0
     }
 
     fun isProficiencySelected(proficiency: CharacterProficiencyDirectory) : Boolean {
@@ -54,7 +59,7 @@ class CharacterProficiencySelectionState(parentStateChanges: Observable<Characte
         proficiencyGroups.clear()
         selectedProficiencies.clear()
         proficiencyGroups.addAll(Observable.fromIterable(classInfo.proficiencyChoices)
-                .map { CharacterProficiencyGroupSelectionState(it) }
+                .map { ProficiencyGroupSelectionState(it) }
                 .toList()
                 .blockingGet())
         notifyDataChanged()

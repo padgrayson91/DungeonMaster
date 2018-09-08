@@ -11,7 +11,7 @@ import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.core.model.SelectionElement
 import io.reactivex.subjects.PublishSubject
 
-class SimpleTextViewHolder<T : SelectionElement>(inflater: LayoutInflater, parent: ViewGroup, private val view: View = inflater.inflate(R.layout.list_item_character_class, parent, false)) : RecyclerView.ViewHolder(view) {
+class SimpleTextViewHolder<T : SelectionElement>(inflater: LayoutInflater, parent: ViewGroup, private val view: View = inflater.inflate(R.layout.list_item_generic_selection, parent, false)) : RecyclerView.ViewHolder(view) {
     private val classNameText = view.findViewById<TextView>(R.id.class_name)
     val itemSelection = PublishSubject.create<T>()
 

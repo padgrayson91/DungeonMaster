@@ -1,6 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model
 
-class CharacterProficiencyDirectory {
+import com.tendebit.dungeonmaster.core.model.SelectionElement
+
+class CharacterProficiencyDirectory : SelectionElement, Comparable<CharacterProficiencyDirectory> {
     lateinit var name: String
     lateinit var url: String
 
@@ -14,5 +16,17 @@ class CharacterProficiencyDirectory {
 
     override fun equals(other: Any?): Boolean {
         return other is CharacterProficiencyDirectory && other.url == url
+    }
+
+    override fun primaryText(): String {
+        return name
+    }
+
+    override fun primaryId(): String {
+        return url
+    }
+
+    override fun compareTo(other: CharacterProficiencyDirectory): Int {
+        return other.url.compareTo(url)
     }
 }

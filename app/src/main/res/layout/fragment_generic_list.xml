@@ -8,6 +8,6 @@
         android:id="@+id/class_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/list_item_character_class"/>
+        tools:listitem="@layout/list_item_generic_selection"/>
 
 </RelativeLayout>
