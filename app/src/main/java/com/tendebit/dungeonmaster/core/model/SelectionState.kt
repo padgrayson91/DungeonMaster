@@ -6,5 +6,5 @@ interface SelectionState<T : SelectionElement, SelectedType: SelectionElement> {
     var selection: SelectedType?
 
     fun updateOptions(options: List<T>)
-    fun select(option: SelectedType)
+    fun select(option: T)
 }

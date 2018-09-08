@@ -24,7 +24,7 @@ import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationP
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
-import io.reactivex.disposables.Disposable
+import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.experimental.DefaultDispatcher
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
@@ -37,7 +37,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     private lateinit var forwardButton: Button
     private lateinit var loadingDialog: LoadingDialog
     private lateinit var stateFragment: CharacterCreationStateFragment
-    private lateinit var subscription: Disposable
+    private lateinit var subscription: CompositeDisposable
     private var configured = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -66,7 +66,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                stateFragment.onPageSelected(position)
+                stateFragment.state.onPageSelected(position)
                 backButton.visibility = if (position == 0) View.GONE else View.VISIBLE
                 forwardButton.visibility = if (position < adapter.count -1 ) View.VISIBLE else View.GONE
 
@@ -90,9 +90,8 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
 
     override fun onResume() {
         super.onResume()
-        subscription = stateFragment.stateChanges.subscribe{
-            updateViewFromState(it)
-        }
+        subscription = CompositeDisposable()
+        subscription.addAll(stateFragment.state.changes.subscribe{ updateViewFromState(it) })
     }
 
     override fun onBackPressed() : Boolean {

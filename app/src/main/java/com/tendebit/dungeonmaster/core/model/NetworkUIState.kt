@@ -14,4 +14,6 @@ interface NetworkUIState {
             activeNetworkCalls--
         }
     }
+
+    fun cancelAllCalls()
 }

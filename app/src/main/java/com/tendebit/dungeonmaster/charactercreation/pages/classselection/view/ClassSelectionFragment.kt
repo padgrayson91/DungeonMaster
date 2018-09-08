@@ -12,7 +12,7 @@ import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.C
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.CharacterClassSelectionState
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.ClassSelectionState
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
@@ -52,8 +52,8 @@ class ClassSelectionFragment : Fragment() {
             throw IllegalStateException(ClassSelectionFragment::class.java.simpleName + " expects a state manager to be provided")
         }
         subscriptions.addAll(
-                stateProvider.stateChanges.subscribe{updateViewFromState(it)},
-                adapter.itemClicks.distinctUntilChanged().subscribe{stateProvider.onClassSelected(it)}
+                stateProvider.state.changes.subscribe{updateViewFromState(it)},
+                adapter.itemClicks.distinctUntilChanged().subscribe{stateProvider.state.select(it)}
         )
     }
 
@@ -62,7 +62,7 @@ class ClassSelectionFragment : Fragment() {
     }
 
 
-    private fun updateViewFromState(state: CharacterClassSelectionState) {
+    private fun updateViewFromState(state: ClassSelectionState) {
         if (state.options.size > 0) {
             adapter.update(state)
         }

@@ -11,7 +11,7 @@ import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RACE_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RaceSelectionStateFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.viewmodel.CharacterRaceSelectionState
+import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.viewmodel.RaceSelectionState
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
@@ -51,8 +51,8 @@ class RaceSelectionFragment : Fragment() {
 
         }
         subscriptions.addAll(
-                stateProvider.stateChanges.subscribe{updateViewFromState(it)},
-                adapter.itemClicks.subscribe{stateProvider.onRaceSelected(it)}
+                stateProvider.state.stateChanges.subscribe{updateViewFromState(it)},
+                adapter.itemClicks.subscribe{stateProvider.state.onRaceSelected(it)}
         )
     }
 
@@ -61,7 +61,7 @@ class RaceSelectionFragment : Fragment() {
     }
 
 
-    private fun updateViewFromState(state: CharacterRaceSelectionState) {
+    private fun updateViewFromState(state: RaceSelectionState) {
         if (state.options.size > 0) {
             adapter.update(state)
         }

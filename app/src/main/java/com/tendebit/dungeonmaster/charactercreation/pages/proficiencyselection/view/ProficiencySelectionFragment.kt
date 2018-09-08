@@ -54,7 +54,7 @@ class ProficiencySelectionFragment : Fragment() {
         pageExit()
     }
 
-    fun pageEnter() {
+    private fun pageEnter() {
         groupId = arguments!!.getInt(KEY_PAGE_ID)
         subscriptions = CompositeDisposable()
         val addedFragment = activity?.
@@ -65,10 +65,10 @@ class ProficiencySelectionFragment : Fragment() {
             throw IllegalStateException(ProficiencySelectionFragment::class.java.simpleName + " expects a state manager to be provided")
 
         }
-        subscriptions?.add(stateProvider.stateChanges.filter { it.proficiencyGroups.size > groupId }.subscribe{updateViewFromState(it)})
+        subscriptions?.add(stateProvider.state.changes.filter { it.proficiencyGroups.size > groupId }.subscribe{updateViewFromState(it)})
     }
 
-    fun pageExit() {
+    private fun pageExit() {
         subscriptions?.dispose()
 
     }
@@ -84,8 +84,8 @@ class ProficiencySelectionFragment : Fragment() {
             chip.isChecked = state.isProficiencySelected(proficiency)
             chip.isEnabled = state.isProficiencySelectableForGroup(proficiency, groupId)
             chip.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) stateProvider.onProficiencySelected(proficiency, groupId)
-                else stateProvider.onProficiencyUnselected(proficiency, groupId)
+                if (isChecked) stateProvider.state.onProficiencySelected(proficiency, groupId)
+                else stateProvider.state.onProficiencyUnselected(proficiency, groupId)
             }
             chip.text = proficiency.name
             chipGroup.addView(chip)
