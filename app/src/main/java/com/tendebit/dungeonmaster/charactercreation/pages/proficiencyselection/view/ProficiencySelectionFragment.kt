@@ -57,14 +57,13 @@ class ProficiencySelectionFragment : Fragment() {
     fun pageEnter() {
         groupId = arguments!!.getInt(KEY_PAGE_ID)
         subscriptions = CompositeDisposable()
-        val addedFragment = fragmentManager?.findFragmentByTag(PROFICIENCY_SELECTION_FRAGMENT_TAG)
+        val addedFragment = activity?.
+                supportFragmentManager?.findFragmentByTag(PROFICIENCY_SELECTION_FRAGMENT_TAG)
         if (addedFragment is ProficiencySelectionStateFragment) {
             stateProvider = addedFragment
         } else {
-            stateProvider = ProficiencySelectionStateFragment()
-            fragmentManager?.beginTransaction()
-                    ?.add(stateProvider, PROFICIENCY_SELECTION_FRAGMENT_TAG)
-                    ?.commitNow()
+            throw IllegalStateException(ProficiencySelectionFragment::class.java.simpleName + " expects a state manager to be provided")
+
         }
         subscriptions?.add(stateProvider.stateChanges.filter { it.proficiencyGroups.size > groupId }.subscribe{updateViewFromState(it)})
     }

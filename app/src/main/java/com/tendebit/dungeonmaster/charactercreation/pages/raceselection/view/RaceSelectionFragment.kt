@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
-import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RACE_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RaceSelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.viewmodel.CharacterRaceSelectionState
+import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
 class RaceSelectionFragment : Fragment() {
@@ -43,14 +43,12 @@ class RaceSelectionFragment : Fragment() {
 
     private fun pageEnter() {
         subscriptions = CompositeDisposable()
-        val addedFragment = fragmentManager?.findFragmentByTag(RACE_SELECTION_FRAGMENT_TAG)
+        val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(RACE_SELECTION_FRAGMENT_TAG)
         if (addedFragment is RaceSelectionStateFragment) {
             stateProvider = addedFragment
         } else {
-            stateProvider = RaceSelectionStateFragment()
-            fragmentManager?.beginTransaction()
-                    ?.add(stateProvider, RACE_SELECTION_FRAGMENT_TAG)
-                    ?.commit()
+            throw IllegalStateException(RaceSelectionFragment::class.java.simpleName + " expects a state manager to be provided")
+
         }
         subscriptions.addAll(
                 stateProvider.stateChanges.subscribe{updateViewFromState(it)},

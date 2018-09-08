@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
-import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.CharacterClassSelectionState
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.CharacterClassSelectionState
+import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
 
@@ -45,14 +45,11 @@ class ClassSelectionFragment : Fragment() {
 
     private fun pageEnter() {
         subscriptions = CompositeDisposable()
-        val addedFragment = fragmentManager?.findFragmentByTag(CLASS_SELECTION_FRAGMENT_TAG)
+        val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(CLASS_SELECTION_FRAGMENT_TAG)
         if (addedFragment is ClassSelectionStateFragment) {
             stateProvider = addedFragment
         } else {
-            stateProvider = ClassSelectionStateFragment()
-            fragmentManager?.beginTransaction()
-                    ?.add(stateProvider, CLASS_SELECTION_FRAGMENT_TAG)
-                    ?.commit()
+            throw IllegalStateException(ClassSelectionFragment::class.java.simpleName + " expects a state manager to be provided")
         }
         subscriptions.addAll(
                 stateProvider.stateChanges.subscribe{updateViewFromState(it)},

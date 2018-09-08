@@ -29,6 +29,7 @@ class ProficiencySelectionStateFragment: Fragment(), ProficiencySelectionStatePr
         if (addedFragment != null) {
             stateFragment = addedFragment
             disposables.add(stateFragment.stateChanges
+                    .filter { it.selectedClass != null }
                     .map { it.selectedClass }
                     .distinctUntilChanged()
                     .subscribe{

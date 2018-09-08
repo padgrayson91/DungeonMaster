@@ -9,8 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.ClassSelectionFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.ProficiencySelectionFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.PROFICIENCY_SELECTION_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.ProficiencySelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.RaceSelectionFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RACE_SELECTION_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RaceSelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.adapter.CharacterCreationPagerAdapter
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
@@ -36,16 +42,21 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_viewpager, container, false)
-        val addedFragment = fragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG) as? CharacterCreationStateFragment
-        if (addedFragment == null) {
-            stateFragment = CharacterCreationStateFragment()
-            fragmentManager?.beginTransaction()
-                    ?.add(stateFragment, STATE_FRAGMENT_TAG)
-                    ?.commit()
-        } else {
-            stateFragment = addedFragment
-        }
+        addStateManagers()
+        initializeViews(root)
 
+
+        return root
+    }
+
+    private fun addStateManagers() {
+        stateFragment = addFragmentIfMissing(CharacterCreationStateFragment(), STATE_FRAGMENT_TAG)
+        addFragmentIfMissing(RaceSelectionStateFragment(), RACE_SELECTION_FRAGMENT_TAG)
+        addFragmentIfMissing(ClassSelectionStateFragment(), CLASS_SELECTION_FRAGMENT_TAG)
+        addFragmentIfMissing(ProficiencySelectionStateFragment(), PROFICIENCY_SELECTION_FRAGMENT_TAG)
+    }
+
+    private fun initializeViews(root: View) {
         viewPager = root.findViewById(R.id.view_pager)
         backButton = root.findViewById(R.id.button_back)
         forwardButton = root.findViewById(R.id.button_forward)
@@ -61,14 +72,20 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
 
             }
         })
-        // TODO: should use child fragment manager because using the parent leads to bugs
-        fragmentManager?.let {
-            adapter = CharacterCreationPagerAdapter(it)
-            viewPager.adapter = adapter
+        adapter = CharacterCreationPagerAdapter(childFragmentManager)
+        viewPager.adapter = adapter
+    }
+
+    private fun <T:Fragment> addFragmentIfMissing(fragment: T, tag: String) : T {
+        @Suppress("UNCHECKED_CAST")
+        val addedFragment = fragmentManager?.findFragmentByTag(tag) as? T
+        if (addedFragment == null) {
+            fragmentManager?.beginTransaction()
+                    ?.add(fragment, tag)
+                    ?.commit()
+            return fragment
         }
-
-
-        return root
+        return addedFragment
     }
 
     override fun onResume() {
