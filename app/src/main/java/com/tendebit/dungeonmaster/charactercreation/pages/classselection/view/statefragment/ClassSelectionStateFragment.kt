@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoService
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoSupplier
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.CharacterClassSelectionState
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
@@ -20,7 +20,7 @@ const val CLASS_SELECTION_FRAGMENT_TAG = "class_selection_state_fragment"
 
 
 class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
-    private lateinit var service: CharacterClassInfoService.Impl
+    private lateinit var supplier: CharacterClassInfoSupplier.Impl
     private val stateSubject = BehaviorSubject.create<CharacterClassSelectionState>()
     private var job: Job? = null
     private var stateFragment: CharacterCreationStateFragment? = null
@@ -30,7 +30,7 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        service = CharacterClassInfoService.Impl(activity!!)
+        supplier = CharacterClassInfoSupplier.Impl(activity!!)
         val addedFragment = fragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG) as? CharacterCreationStateFragment
         if (addedFragment != null) {
             stateFragment = addedFragment
@@ -51,7 +51,7 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
         notifyDataChanged()
         job = launch(UI) {
             try {
-                val result = async(parent = job) {  service.getCharacterClasses() }.await()
+                val result = async(parent = job) {  supplier.getCharacterClasses() }.await()
                 Log.d("CHARACTER_CREATION", "Got " + result.characterClassDirectories.size + " character classes. The first one is " + result.characterClassDirectories[0].name)
                 classSelectionState.updateOptions(result.characterClassDirectories)
             } catch (e: Exception) {
@@ -70,7 +70,7 @@ class ClassSelectionStateFragment : Fragment(), ClassSelectionStateProvider {
             job = launch(UI) {
                 try {
                     val result = async(parent = job) {
-                        service.getClassInfo(selection)
+                        supplier.getClassInfo(selection)
                     }.await()
                     Log.d("CHARACTER_CREATION", result.toString())
                     classSelectionState.select(result)

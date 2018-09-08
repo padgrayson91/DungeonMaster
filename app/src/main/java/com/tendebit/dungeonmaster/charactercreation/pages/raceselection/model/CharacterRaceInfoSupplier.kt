@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.classselection.model
+package com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model
 
 import android.content.Context
 import android.util.Log
@@ -11,48 +11,32 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 
-interface CharacterClassInfoService {
-    suspend fun getCharacterClasses() : CharacterClassManifest
-    suspend fun getClassInfo(directory: CharacterClassDirectory) : CharacterClassInfo
+interface CharacterRaceInfoSupplier {
+    suspend fun getCharacterRaces() : CharacterRaceManifest
 
-    class Impl(c: Context) : CharacterClassInfoService {
+    class Impl(c: Context) : CharacterRaceInfoSupplier {
         private companion object {
             const val BASE_URL = "http://dnd5eapi.co/api/"
-            const val CLASSES_PATH = "classes/"
+            const val RACES_PATH = "races/"
         }
 
         private val client = OkHttpClient()
         private val gson = Gson()
         private val db : DnDDatabase = DnDDatabase.getInstance(c.applicationContext)
 
-        override suspend fun getCharacterClasses(): CharacterClassManifest {
-            attemptExtractStoredResponse(BASE_URL + CLASSES_PATH, CharacterClassManifest::class.java)?.let {
+        override suspend fun getCharacterRaces(): CharacterRaceManifest {
+            attemptExtractStoredResponse(BASE_URL + RACES_PATH, CharacterRaceManifest::class.java)?.let {
                 return it
             }
 
             Log.d("CHARACTER_CREATION", "Loading from network")
             val request = Request.Builder()
-                    .url(BASE_URL + CLASSES_PATH)
+                    .url(BASE_URL + RACES_PATH)
                     .build()
 
             val response = client.newCall(request).execute()
-            val responseBody = storeResponse(BASE_URL + CLASSES_PATH, response)
-            return gson.fromJson(responseBody!!, CharacterClassManifest::class.java)
-        }
-
-        override suspend fun getClassInfo(directory: CharacterClassDirectory): CharacterClassInfo {
-            attemptExtractStoredResponse(directory.url, CharacterClassInfo::class.java)?.let {
-                return it
-            }
-
-            Log.d("CHARACTER_CREATION", "Loading from network")
-            val request = Request.Builder()
-                    .url(directory.url)
-                    .build()
-
-            val response = client.newCall(request).execute()
-            val responseBody = storeResponse(directory.url, response)
-            return gson.fromJson(responseBody!!, CharacterClassInfo::class.java)
+            val responseBody = storeResponse(BASE_URL + RACES_PATH, response)
+            return gson.fromJson(responseBody!!, CharacterRaceManifest::class.java)
         }
 
         private fun <T> attemptExtractStoredResponse(url: String, classOf: Class<T>) : T? {
