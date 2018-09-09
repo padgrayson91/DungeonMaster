@@ -12,6 +12,7 @@ import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CharacterCreationState {
@@ -21,7 +22,8 @@ class CharacterCreationState {
     }
 
     var currentPage = 0
-    val availablePages = LinkedList<CharacterCreationPageDescriptor>()
+    var pageCollection = CharacterCreationPageCollection(arrayListOf(CharacterCreationPageDescriptor(
+            CharacterCreationPageDescriptor.PageType.RACE_SELECTION, 0)))
     val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
@@ -64,22 +66,22 @@ class CharacterCreationState {
 
                 // ... etc for other pages ...
         )
-        addPage(
-                CharacterCreationPageDescriptor(
-                        CharacterCreationPageDescriptor.PageType.RACE_SELECTION, 0))
         notifyDataChanged()
     }
 
     private fun clearPagesStartingAt(index: Int) {
-        if (index >= availablePages.size) return
-        availablePages.subList(index, availablePages.size).clear()
-        if (currentPage >= availablePages.size) {
-            currentPage = availablePages.size
+        if (index >= pageCollection.size) return
+        val pagesToKeep = pageCollection.pages.subList(0, index)
+        pageCollection = CharacterCreationPageCollection(pagesToKeep)
+        if (currentPage >= pageCollection.size) {
+            currentPage = pageCollection.size
         }
     }
 
     private fun addPage(pageDescriptor: CharacterCreationPageDescriptor) {
-        availablePages.add(pageDescriptor)
+        val updatedPages = ArrayList(pageCollection.pages)
+        updatedPages.add(pageDescriptor)
+        pageCollection = CharacterCreationPageCollection(updatedPages)
     }
 
     fun onPageSelected(selection: Int) {
@@ -97,6 +99,7 @@ class CharacterCreationState {
 
             selectedClass = selection
             clearPagesStartingAt(PROFICIENCY_SELECTION_PAGE_INDEX)
+            notifyDataChanged()
             for (i in 0 until selection.proficiencyChoices.size) {
                 addPage(
                         CharacterCreationPageDescriptor(
@@ -110,7 +113,7 @@ class CharacterCreationState {
     private fun onCharacterRaceSelected(selection: CharacterRaceDirectory) {
         if (selectedRace != selection) {
             selectedRace = selection
-            if (availablePages.size - 1 < CLASS_SELECTION_PAGE_INDEX) {
+            if (pageCollection.size - 1 < CLASS_SELECTION_PAGE_INDEX) {
                 addPage(
                         CharacterCreationPageDescriptor(
                                 CharacterCreationPageDescriptor.PageType.CLASS_SELECTION, 0))

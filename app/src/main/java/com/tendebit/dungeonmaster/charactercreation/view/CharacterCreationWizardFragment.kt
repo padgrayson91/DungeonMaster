@@ -8,20 +8,15 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.ClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.confirmation.CharacterConfirmationFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.ProficiencySelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.PROFICIENCY_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.ProficiencySelectionStateFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.RaceSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RACE_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RaceSelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.adapter.CharacterCreationPagerAdapter
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationPageDescriptor
 import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
@@ -102,10 +97,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     }
 
     private fun updateViewFromState(creationState: CharacterCreationState) {
-        adapter.removePagesAfter(creationState.availablePages.size)
-        for (i in adapter.count until creationState.availablePages.size) {
-            adapter.addPage(getPageForDescriptor(creationState.availablePages[i]))
-        }
+        adapter.update(creationState.pageCollection)
         // ... etc ...
         if (viewPager.currentItem != creationState.currentPage) {
             val previouslyConfigured = configured
@@ -116,20 +108,11 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         }
 
         backButton.isEnabled = creationState.currentPage != 0
-        forwardButton.isEnabled = creationState.currentPage < creationState.availablePages.size -1
+        forwardButton.isEnabled = creationState.currentPage < creationState.pageCollection.size -1
         // For now, block the whole UI while anything is loading, but in the future
         // the user should still be allowed to interact
         loadingDialog.visibility = if(creationState.isLoading) View.VISIBLE else View.GONE
         configured = true
-    }
-
-    private fun getPageForDescriptor(pageDescriptor: CharacterCreationPageDescriptor) : Fragment {
-        return when(pageDescriptor.type) {
-            CharacterCreationPageDescriptor.PageType.RACE_SELECTION -> RaceSelectionFragment()
-            CharacterCreationPageDescriptor.PageType.CLASS_SELECTION -> ClassSelectionFragment()
-            CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION -> ProficiencySelectionFragment.newInstance(pageDescriptor.indexInGroup)
-            CharacterCreationPageDescriptor.PageType.CONFIRMATION -> CharacterConfirmationFragment()
-        }
     }
 
     override fun onPause() {

@@ -11,7 +11,6 @@ const val PROFICIENCY_SELECTION_FRAGMENT_TAG = "proficiency_selection_state_frag
 
 class ProficiencySelectionStateFragment: Fragment() {
     private lateinit var stateFragment: CharacterCreationStateFragment
-
     lateinit var state : ProficiencySelectionState
 
     override fun onCreate(savedInstanceState: Bundle?) {

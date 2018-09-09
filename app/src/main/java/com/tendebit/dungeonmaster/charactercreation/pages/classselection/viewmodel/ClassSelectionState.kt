@@ -50,6 +50,8 @@ class ClassSelectionState(private val supplier: CharacterClassInfoSupplier) : Se
                     notifyDataChanged()
                 }
             }
+        } else {
+            notifyDataChanged()
         }
     }
 

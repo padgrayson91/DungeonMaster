@@ -58,10 +58,8 @@ class RaceSelectionState(val supplier: CharacterRaceInfoSupplier) : SelectionSta
     }
 
     fun onRaceSelected(selectedRace: CharacterRaceDirectory) {
-        if (selectedRace.primaryId() != selection?.primaryId()) {
-            this.selection = selectedRace
-            notifyDataChanged()
-        }
+        this.selection = selectedRace
+        notifyDataChanged()
     }
 
     private fun notifyDataChanged() {

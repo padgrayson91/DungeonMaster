@@ -7,4 +7,17 @@ class CharacterCreationPageDescriptor(val type: PageType, val indexInGroup: Int)
         PROFICIENCY_SELECTION,
         CONFIRMATION
     }
+
+    override fun equals(other: Any?): Boolean {
+        return other is CharacterCreationPageDescriptor
+                && other.type == type
+                && other.indexInGroup == indexInGroup
+    }
+
+    override fun hashCode(): Int {
+        var result = 12
+        result = 31 * result + type.hashCode()
+        result = 31 * result + indexInGroup
+        return result
+    }
 }

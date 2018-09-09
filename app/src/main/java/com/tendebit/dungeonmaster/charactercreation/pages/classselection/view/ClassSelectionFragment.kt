@@ -53,7 +53,7 @@ class ClassSelectionFragment : Fragment() {
         }
         subscriptions.addAll(
                 stateProvider.state.changes.subscribe{updateViewFromState(it)},
-                adapter.itemClicks.distinctUntilChanged().subscribe{stateProvider.state.select(it)}
+                adapter.itemClicks.subscribe{stateProvider.state.select(it)}
         )
     }
 
