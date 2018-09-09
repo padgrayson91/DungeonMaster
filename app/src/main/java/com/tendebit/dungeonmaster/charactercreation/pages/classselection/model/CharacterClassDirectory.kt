@@ -1,9 +1,9 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.classselection.model
 
 import com.google.gson.annotations.SerializedName
-import com.tendebit.dungeonmaster.core.model.SelectionElement
+import com.tendebit.dungeonmaster.core.model.SelectableElement
 
-class CharacterClassDirectory : SelectionElement {
+class CharacterClassDirectory : SelectableElement {
     @SerializedName("name")
     lateinit var name: String
     @SerializedName("url")

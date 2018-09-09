@@ -3,9 +3,9 @@ package com.tendebit.dungeonmaster.charactercreation.pages.classselection.model
 import com.google.gson.annotations.SerializedName
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyGroup
-import com.tendebit.dungeonmaster.core.model.SelectionElement
+import com.tendebit.dungeonmaster.core.model.SelectableElement
 
-class CharacterClassInfo : SelectionElement {
+class CharacterClassInfo : SelectableElement {
     lateinit var name: String
     lateinit var url: String
     @SerializedName("hit_die")

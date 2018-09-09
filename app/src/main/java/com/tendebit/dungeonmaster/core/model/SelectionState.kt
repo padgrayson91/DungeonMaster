@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.core.model
 
 
-interface SelectionState<T : SelectionElement, SelectedType: SelectionElement> {
+interface SelectionState<T : SelectableElement, SelectedType: SelectableElement> {
     val options: List<T>
     var selection: SelectedType?
 

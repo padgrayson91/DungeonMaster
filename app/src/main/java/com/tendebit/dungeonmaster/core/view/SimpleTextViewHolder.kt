@@ -1,30 +1,16 @@
 package com.tendebit.dungeonmaster.core.view
 
-import android.graphics.Color
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.core.model.SelectionElement
-import io.reactivex.subjects.PublishSubject
+import com.tendebit.dungeonmaster.core.model.DisplayableElement
 
-class SimpleTextViewHolder<T : SelectionElement>(inflater: LayoutInflater, parent: ViewGroup, private val view: View = inflater.inflate(R.layout.list_item_generic_selection, parent, false)) : RecyclerView.ViewHolder(view) {
-    private val classNameText = view.findViewById<TextView>(R.id.class_name)
-    val itemSelection = PublishSubject.create<T>()
+class SimpleTextViewHolder<T : DisplayableElement>(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_generic_text, parent, false)) {
+    private val text = itemView.findViewById<TextView>(R.id.item_text)
 
-    fun populate(element: T, currentlySelected: SelectionElement?) {
-        view.setOnClickListener {
-            itemSelection.onNext(element)
-        }
-        classNameText.text = element.primaryText()
-        if (element.primaryId() == currentlySelected?.primaryId()) {
-            classNameText.setTextColor(ContextCompat.getColor(view.context, R.color.colorAccent))
-        } else {
-            classNameText.setTextColor(Color.LTGRAY)
-        }
+    fun populate(item : T) {
+        text.text = item.primaryText()
     }
-
 }

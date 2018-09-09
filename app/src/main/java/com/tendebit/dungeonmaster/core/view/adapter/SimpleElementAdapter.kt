@@ -3,13 +3,11 @@ package com.tendebit.dungeonmaster.core.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tendebit.dungeonmaster.core.model.SelectionElement
+import com.tendebit.dungeonmaster.core.model.DisplayableElement
 import com.tendebit.dungeonmaster.core.view.SimpleTextViewHolder
-import io.reactivex.subjects.PublishSubject
 
-class SimpleElementAdapter<T : SelectionElement> : RecyclerView.Adapter<SimpleTextViewHolder<T>>() {
-    val itemClicks = PublishSubject.create<T>()
-    val items = ArrayList<T>()
+class SimpleElementAdapter<T : DisplayableElement> : RecyclerView.Adapter<SimpleTextViewHolder<T>>() {
+    private val items = ArrayList<T>()
 
     fun update(newOptions: Collection<T>) {
         items.clear()
@@ -26,7 +24,6 @@ class SimpleElementAdapter<T : SelectionElement> : RecyclerView.Adapter<SimpleTe
     }
 
     override fun onBindViewHolder(holder: SimpleTextViewHolder<T>, position: Int) {
-        holder.populate(items[position], null)
-        holder.itemSelection.subscribe(itemClicks)
+        holder.populate(items[position])
     }
 }

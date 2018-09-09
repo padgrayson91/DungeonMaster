@@ -1,6 +1,5 @@
 package com.tendebit.dungeonmaster.core.model
 
-interface SelectionElement {
+interface DisplayableElement {
     fun primaryText() : String
-    fun primaryId() : String
 }

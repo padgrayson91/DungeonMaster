@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model
 
-import com.tendebit.dungeonmaster.core.model.SelectionElement
+import com.tendebit.dungeonmaster.core.model.SelectableElement
 
-class CharacterProficiencyDirectory : SelectionElement, Comparable<CharacterProficiencyDirectory> {
+class CharacterProficiencyDirectory : SelectableElement, Comparable<CharacterProficiencyDirectory> {
     lateinit var name: String
     lateinit var url: String
 
