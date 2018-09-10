@@ -41,7 +41,6 @@ class ClassSelectionState(private val supplier: CharacterClassInfoSupplier) : Se
                     val result = async(parent = job) {
                         supplier.getClassInfo(option)
                     }.await()
-                    Log.d("CHARACTER_CREATION", result.toString())
                     selection = result
                 } catch (e: Exception) {
                     Log.e("CHARACTER_CREATION", "Got an error", e)

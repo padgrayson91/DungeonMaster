@@ -10,6 +10,8 @@ import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view.statefragment.CUSTOM_INFO_STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view.statefragment.CustomInfoStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.PROFICIENCY_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.ProficiencySelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RACE_SELECTION_FRAGMENT_TAG
@@ -50,6 +52,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         addFragmentIfMissing(RaceSelectionStateFragment(), RACE_SELECTION_FRAGMENT_TAG)
         addFragmentIfMissing(ClassSelectionStateFragment(), CLASS_SELECTION_FRAGMENT_TAG)
         addFragmentIfMissing(ProficiencySelectionStateFragment(), PROFICIENCY_SELECTION_FRAGMENT_TAG)
+        addFragmentIfMissing(CustomInfoStateFragment(), CUSTOM_INFO_STATE_FRAGMENT_TAG)
     }
 
     private fun initializeViews(root: View) {
@@ -108,6 +111,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         }
 
         backButton.isEnabled = creationState.currentPage != 0
+        backButton.visibility = if (creationState.currentPage != 0) View.VISIBLE else View.INVISIBLE
         forwardButton.isEnabled = creationState.currentPage < creationState.pageCollection.size -1
         // For now, block the whole UI while anything is loading, but in the future
         // the user should still be allowed to interact

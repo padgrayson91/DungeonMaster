@@ -5,6 +5,7 @@ class CharacterCreationPageDescriptor(val type: PageType, val indexInGroup: Int)
         RACE_SELECTION,
         CLASS_SELECTION,
         PROFICIENCY_SELECTION,
+        CUSTOM_INFO,
         CONFIRMATION
     }
 

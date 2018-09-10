@@ -3,6 +3,8 @@ package com.tendebit.dungeonmaster.charactercreation.viewmodel
 import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.ClassSelectionState
+import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.CustomInfo
+import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.viewmodel.CustomInfoEntryState
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.viewmodel.ProficiencySelectionState
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
@@ -27,6 +29,7 @@ class CharacterCreationState {
     val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
+    var customInfo = CustomInfo()
     var isLoading = false
 
     private val stateSubject = BehaviorSubject.create<CharacterCreationState>()
@@ -36,9 +39,11 @@ class CharacterCreationState {
     private val classSelectionSubject = BehaviorSubject.create<ClassSelectionState>()
     private val raceSelectionSubject = BehaviorSubject.create<RaceSelectionState>()
     private val proficiencySelectionSubject = BehaviorSubject.create<ProficiencySelectionState>()
+    private val customInfoSubject = BehaviorSubject.create<CustomInfoEntryState>()
     val classSelectionObserver = classSelectionSubject as Observer<ClassSelectionState>
     val raceSelectionObserver = raceSelectionSubject as Observer<RaceSelectionState>
     val proficiencySelectionObserver = proficiencySelectionSubject as Observer<ProficiencySelectionState>
+    val customInfoObserver = customInfoSubject as Observer<CustomInfoEntryState>
 
     init {
         val networkCallObservables = Arrays.asList(
@@ -62,7 +67,8 @@ class CharacterCreationState {
                         .map { it.selection!! }.subscribe { onCharacterClassSelected(it) },
                 raceSelectionSubject.filter { it.selection != null }
                         .map { it.selection!! }.subscribe { onCharacterRaceSelected(it) },
-                proficiencySelectionSubject.subscribe { onProficiencySelectionChanged(it) }
+                proficiencySelectionSubject.subscribe { onProficiencySelectionChanged(it) },
+                customInfoSubject.subscribe { onCustomDataChanged(it)}
 
                 // ... etc for other pages ...
         )
@@ -126,12 +132,34 @@ class CharacterCreationState {
     private fun onProficiencySelectionChanged(state: ProficiencySelectionState) {
         selectedProficiencies.clear()
         selectedProficiencies.addAll(state.selectedProficiencies)
-        if (state.areAllProficienciesSelected()) {
+        // If all proficiencies are selected and the next page hasn't been added already
+        if (state.areAllProficienciesSelected()
+                && PROFICIENCY_SELECTION_PAGE_INDEX + state.proficiencyGroups.size == pageCollection.size) {
+            addPage(
+                    CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CUSTOM_INFO, 0)
+            )
+            if (customInfo.isComplete()) {
+                // user has info from before that allows them to proceed to confirmation screen
+                addPage(
+                        CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION, 0)
+                )
+            }
+        } else {
+            clearPagesStartingAt(PROFICIENCY_SELECTION_PAGE_INDEX + state.proficiencyGroups.size)
+        }
+        notifyDataChanged()
+    }
+
+    private fun onCustomDataChanged(state: CustomInfoEntryState) {
+        this.customInfo = state.info
+        if (state.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
+                != CharacterCreationPageDescriptor.PageType.CONFIRMATION) {
             addPage(
                     CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION, 0)
             )
-        } else {
-            clearPagesStartingAt(PROFICIENCY_SELECTION_PAGE_INDEX + state.proficiencyGroups.size)
+        } else if(!state.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
+                == CharacterCreationPageDescriptor.PageType.CONFIRMATION) {
+            clearPagesStartingAt(pageCollection.size - 1)
         }
         notifyDataChanged()
     }

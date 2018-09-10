@@ -20,6 +20,8 @@ class CharacterConfirmationFragment : Fragment() {
     private lateinit var characterNameText: TextView
     private lateinit var raceNameText: TextView
     private lateinit var classNameText: TextView
+    private lateinit var heightText: TextView
+    private lateinit var weightText: TextView
     private lateinit var disposable : CompositeDisposable
     private val adapter = SimpleElementAdapter<CharacterProficiencyDirectory>()
     private var stateFragment: CharacterCreationStateFragment? = null
@@ -30,10 +32,18 @@ class CharacterConfirmationFragment : Fragment() {
         characterNameText = root.findViewById(R.id.character_name_txt)
         raceNameText = root.findViewById(R.id.race_name_txt)
         classNameText = root.findViewById(R.id.class_name_txt)
+        heightText = root.findViewById(R.id.height_value)
+        weightText = root.findViewById(R.id.weight_value)
 
         val recycler = root.findViewById<RecyclerView>(R.id.proficiency_list)
         recycler.layoutManager = LinearLayoutManager(activity)
         recycler.adapter = adapter
+        val addedFragment = activity!!.
+                supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG) as? CharacterCreationStateFragment
+        if (addedFragment != null) {
+            stateFragment = addedFragment
+            updateViewFromState(stateFragment?.state ?: return root)
+        }
 
         return root
     }
@@ -41,14 +51,10 @@ class CharacterConfirmationFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         disposable = CompositeDisposable()
-        val addedFragment = activity!!.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG) as? CharacterCreationStateFragment
-        if (addedFragment != null) {
-            stateFragment = addedFragment
-            stateFragment?.let {
-                disposable.addAll(it.state.changes.subscribe {
-                    updateViewFromState(it)
-                })
-            }
+        stateFragment?.let {
+            disposable.addAll(it.state.changes.subscribe {
+                updateViewFromState(it)
+            })
         }
     }
 
@@ -58,9 +64,15 @@ class CharacterConfirmationFragment : Fragment() {
     }
 
     private fun updateViewFromState(state: CharacterCreationState) {
-        characterNameText.text = getString(R.string.character_name_placeholder) // TODO: name should be part of state
+        val displayedName = if (state.customInfo.name != null) state.customInfo.name else getString(R.string.character_name_placeholder)
+        characterNameText.text = displayedName
         raceNameText.text = state.selectedRace?.primaryText()
         classNameText.text = state.selectedClass?.primaryText()
+        heightText.text = String.format(getString(R.string.character_combined_height_format),
+                state.customInfo.heightFeet, state.customInfo.heightInches)
+        weightText.text = if (state.customInfo.weight != null)
+                String.format(getString(R.string.character_weight_format), state.customInfo.weight)
+                else null
         adapter.update(state.selectedProficiencies)
     }
 }

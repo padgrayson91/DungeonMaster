@@ -5,6 +5,14 @@
     <string name="native_proficiencies">Native Proficiencies: %s</string>
     <string name="character_name_placeholder">Your Character</string>
     <string name="proficiency_list_label">Proficient In:</string>
+    <string name="character_name_entry_hint">Character Name</string>
+    <string name="character_height_label">Height</string>
+    <string name="character_height_ft_hint">Ft</string>
+    <string name="character_height_in_hint">In</string>
+    <string name="character_combined_height_format">Height: %dft %din</string>
+    <string name="character_weight_format">Weight: %dlbs</string>
+    <string name="character_weight_label">Weight</string>
+    <string name="character_weight_hint">lbs</string>
     <string name="proficiency_selection">{0,choice,0#Selection Complete|1#Choose 1 Proficiency|1&lt;Choose {0} Proficiencies}</string>
     <string name="next">Next</string>
     <string name="back">Back</string>
