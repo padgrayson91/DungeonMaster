@@ -8,16 +8,6 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CHARACTER_LIST_STATE_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListStateFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view.statefragment.CUSTOM_INFO_STATE_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view.statefragment.CustomInfoStateFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.PROFICIENCY_SELECTION_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.ProficiencySelectionStateFragment
-import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RACE_SELECTION_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RaceSelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.adapter.CharacterCreationPagerAdapter
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
@@ -52,11 +42,6 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     private fun addStateManagers() {
         // TODO: should be a single state fragment with stored states for each page
         stateFragment = addFragmentIfMissing(CharacterCreationStateFragment(), STATE_FRAGMENT_TAG)
-        addFragmentIfMissing(CharacterListStateFragment(), CHARACTER_LIST_STATE_FRAGMENT_TAG)
-        addFragmentIfMissing(RaceSelectionStateFragment(), RACE_SELECTION_FRAGMENT_TAG)
-        addFragmentIfMissing(ClassSelectionStateFragment(), CLASS_SELECTION_FRAGMENT_TAG)
-        addFragmentIfMissing(ProficiencySelectionStateFragment(), PROFICIENCY_SELECTION_FRAGMENT_TAG)
-        addFragmentIfMissing(CustomInfoStateFragment(), CUSTOM_INFO_STATE_FRAGMENT_TAG)
     }
 
     private fun initializeViews(root: View) {

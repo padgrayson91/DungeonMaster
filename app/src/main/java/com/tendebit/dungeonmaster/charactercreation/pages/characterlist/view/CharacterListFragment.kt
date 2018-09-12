@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.characterlist
+package com.tendebit.dungeonmaster.charactercreation.pages.characterlist.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,13 +10,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.viewmodel.CharacterListState
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
 class CharacterListFragment : Fragment() {
 
-    private lateinit var stateFragment: CharacterListStateFragment
+    private lateinit var stateFragment: CharacterCreationStateFragment
     private lateinit var characterList: RecyclerView
     private lateinit var subscriptions: CompositeDisposable
     private lateinit var fab: FloatingActionButton
@@ -43,17 +45,17 @@ class CharacterListFragment : Fragment() {
 
     private fun pageEnter() {
         subscriptions = CompositeDisposable()
-        val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(CHARACTER_LIST_STATE_FRAGMENT_TAG)
-        if (addedFragment is CharacterListStateFragment) {
+        val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
+        if (addedFragment is CharacterCreationStateFragment) {
             stateFragment = addedFragment
         } else {
             throw IllegalStateException(CharacterListFragment::class.java.simpleName + " expects a state manager to be provided")
         }
 
-        fab.setOnClickListener { stateFragment.state.createNewCharacter() }
+        fab.setOnClickListener { stateFragment.savedCharacterListState.createNewCharacter() }
         subscriptions.addAll(
-                stateFragment.state.changes.subscribe { updateViewFromState(it) },
-                adapter.itemClicks.subscribe { stateFragment.state.select(it) }
+                stateFragment.savedCharacterListState.changes.subscribe { updateViewFromState(it) },
+                adapter.itemClicks.subscribe { stateFragment.savedCharacterListState.select(it) }
         )
     }
 

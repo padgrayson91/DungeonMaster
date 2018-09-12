@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.ClassSelectionState
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
@@ -21,7 +21,7 @@ class ClassSelectionFragment : Fragment() {
 
     private lateinit var subscriptions: CompositeDisposable
     private lateinit var recycler: RecyclerView
-    private lateinit var stateProvider: ClassSelectionStateFragment
+    private lateinit var stateProvider: CharacterCreationStateFragment
     private val adapter = SelectionElementAdapter<CharacterClassDirectory, CharacterClassInfo>(null)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -45,15 +45,15 @@ class ClassSelectionFragment : Fragment() {
 
     private fun pageEnter() {
         subscriptions = CompositeDisposable()
-        val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(CLASS_SELECTION_FRAGMENT_TAG)
-        if (addedFragment is ClassSelectionStateFragment) {
+        val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
+        if (addedFragment is CharacterCreationStateFragment) {
             stateProvider = addedFragment
         } else {
             throw IllegalStateException(ClassSelectionFragment::class.java.simpleName + " expects a state manager to be provided")
         }
         subscriptions.addAll(
-                stateProvider.state.changes.subscribe{updateViewFromState(it)},
-                adapter.itemClicks.subscribe{stateProvider.state.select(it)}
+                stateProvider.classState.changes.subscribe{updateViewFromState(it)},
+                adapter.itemClicks.subscribe{stateProvider.classState.select(it)}
         )
     }
 

@@ -3,7 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListFragment
+import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.view.CharacterListFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.ClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.confirmation.CharacterConfirmationFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view.CustomInfoEntryFragment

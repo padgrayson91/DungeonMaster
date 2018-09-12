@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.PROFICIENCY_SELECTION_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.view.statefragment.ProficiencySelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.viewmodel.ProficiencySelectionState
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
 import io.reactivex.disposables.CompositeDisposable
 import java.text.MessageFormat
 
@@ -20,7 +20,7 @@ class ProficiencySelectionFragment : Fragment() {
     private var subscriptions: CompositeDisposable? = null
     private lateinit var chipGroup: ChipGroup
     private lateinit var instructions: TextView
-    private lateinit var stateProvider: ProficiencySelectionStateFragment
+    private lateinit var stateProvider: CharacterCreationStateFragment
     private var groupId = 0
 
     companion object {
@@ -58,14 +58,14 @@ class ProficiencySelectionFragment : Fragment() {
         groupId = arguments!!.getInt(KEY_PAGE_ID)
         subscriptions = CompositeDisposable()
         val addedFragment = activity?.
-                supportFragmentManager?.findFragmentByTag(PROFICIENCY_SELECTION_FRAGMENT_TAG)
-        if (addedFragment is ProficiencySelectionStateFragment) {
+                supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
+        if (addedFragment is CharacterCreationStateFragment) {
             stateProvider = addedFragment
         } else {
             throw IllegalStateException(ProficiencySelectionFragment::class.java.simpleName + " expects a state manager to be provided")
 
         }
-        subscriptions?.add(stateProvider.state.changes.filter { it.proficiencyGroups.size > groupId }.subscribe{updateViewFromState(it)})
+        subscriptions?.add(stateProvider.proficiencyState.changes.filter { it.proficiencyGroups.size > groupId }.subscribe{updateViewFromState(it)})
     }
 
     private fun pageExit() {
@@ -84,8 +84,8 @@ class ProficiencySelectionFragment : Fragment() {
             chip.isChecked = state.isProficiencySelected(proficiency)
             chip.isEnabled = state.isProficiencySelectableForGroup(proficiency, groupId)
             chip.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) stateProvider.state.onProficiencySelected(proficiency, groupId)
-                else stateProvider.state.onProficiencyUnselected(proficiency, groupId)
+                if (isChecked) stateProvider.proficiencyState.onProficiencySelected(proficiency, groupId)
+                else stateProvider.proficiencyState.onProficiencyUnselected(proficiency, groupId)
             }
             chip.text = proficiency.name
             chipGroup.addView(chip)

@@ -9,9 +9,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
-import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RACE_SELECTION_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.view.statefragment.RaceSelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.viewmodel.RaceSelectionState
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
@@ -19,7 +19,7 @@ class RaceSelectionFragment : Fragment() {
 
     private lateinit var subscriptions: CompositeDisposable
     private lateinit var recycler: RecyclerView
-    private lateinit var stateProvider: RaceSelectionStateFragment
+    private lateinit var stateProvider: CharacterCreationStateFragment
     private val adapter = SelectionElementAdapter<CharacterRaceDirectory, CharacterRaceDirectory>(null)
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -43,16 +43,16 @@ class RaceSelectionFragment : Fragment() {
 
     private fun pageEnter() {
         subscriptions = CompositeDisposable()
-        val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(RACE_SELECTION_FRAGMENT_TAG)
-        if (addedFragment is RaceSelectionStateFragment) {
+        val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
+        if (addedFragment is CharacterCreationStateFragment) {
             stateProvider = addedFragment
         } else {
             throw IllegalStateException(RaceSelectionFragment::class.java.simpleName + " expects a state manager to be provided")
 
         }
         subscriptions.addAll(
-                stateProvider.state.stateChanges.subscribe{updateViewFromState(it)},
-                adapter.itemClicks.subscribe{stateProvider.state.onRaceSelected(it)}
+                stateProvider.raceState.stateChanges.subscribe{updateViewFromState(it)},
+                adapter.itemClicks.subscribe{stateProvider.raceState.onRaceSelected(it)}
         )
     }
 

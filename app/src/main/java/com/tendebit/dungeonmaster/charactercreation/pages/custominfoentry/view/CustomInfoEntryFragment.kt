@@ -11,16 +11,16 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputLayout
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.CustomInfo
-import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view.statefragment.CUSTOM_INFO_STATE_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view.statefragment.CustomInfoStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.viewmodel.CustomInfoEntryState
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
 
 class CustomInfoEntryFragment : Fragment() {
     private lateinit var nameEntry: TextInputLayout
     private lateinit var heightFeetEntry: NumberPicker
     private lateinit var heightInchesEntry: NumberPicker
     private lateinit var weightEntry: TextInputLayout
-    private lateinit var stateFragment: CustomInfoStateFragment
+    private lateinit var stateFragment: CharacterCreationStateFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_custom_character_info, container, false)
@@ -33,10 +33,10 @@ class CustomInfoEntryFragment : Fragment() {
         heightInchesEntry.minValue = CustomInfo.MIN_HEIGHT_INCHES
         weightEntry = root.findViewById(R.id.weight_entry)
 
-        val addedFragment = activity!!.supportFragmentManager.findFragmentByTag(CUSTOM_INFO_STATE_FRAGMENT_TAG)
-        if (addedFragment is CustomInfoStateFragment) {
+        val addedFragment = activity!!.supportFragmentManager.findFragmentByTag(STATE_FRAGMENT_TAG)
+        if (addedFragment is CharacterCreationStateFragment) {
             stateFragment = addedFragment
-            updateViewFromState(stateFragment.state)
+            updateViewFromState(stateFragment.customInfoState)
         } else {
             throw IllegalStateException(CustomInfoEntryFragment::class.java.simpleName + " expected a state provider")
         }
