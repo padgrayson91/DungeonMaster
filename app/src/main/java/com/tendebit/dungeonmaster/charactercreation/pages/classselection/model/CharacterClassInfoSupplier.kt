@@ -53,6 +53,8 @@ interface CharacterClassInfoSupplier {
             return gson.fromJson(responseBody!!, CharacterClassInfo::class.java)
         }
 
+        // TODO: by faking the cache headers on responses, okhttp caching can be leveraged instead of the below methods
+
         private fun <T> attemptExtractStoredResponse(url: String, classOf: Class<T>) : T? {
             val storedResponse = db.responseDao().getStoredResponse(url)
             storedResponse?.body?.let {

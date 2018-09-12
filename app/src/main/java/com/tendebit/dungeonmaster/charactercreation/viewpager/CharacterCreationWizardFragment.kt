@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPagerAdapter
+import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import io.reactivex.disposables.CompositeDisposable
@@ -98,6 +99,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         if (viewPager.currentItem != creationState.currentPage) {
             val previouslyConfigured = configured
             launch(UI) {
+                // TODO: the hackity delay here is to avoid UI jank when transitioning to a page that was just added.  Instead, the viewmodel should emit twice: once to add the page and another time to trigger the page switch after delay
                 if (previouslyConfigured) withContext(DefaultDispatcher) { Thread.sleep(200) }
                 viewPager.setCurrentItem(creationState.currentPage, true)
             }
@@ -108,8 +110,9 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         backButton.visibility = if (creationState.currentPage != 0) View.VISIBLE else View.INVISIBLE
         forwardButton.isEnabled = currentPage.isLastPage || creationState.currentPage < creationState.pageCollection.size - 1
         forwardButton.text = if (currentPage.isLastPage) getString(R.string.confirm) else getString(R.string.next)
+        // TODO: page descriptors should handle button clicks.  By default they can just adjust the current page + or - 1
         forwardButton.setOnClickListener {
-            if (currentPage.isLastPage) creationState.saveCharacter(activity!!)
+            if (currentPage.isLastPage) creationState.saveCharacter(DnDDatabase.getInstance(activity!!))
             else viewPager.setCurrentItem(viewPager.currentItem + 1, true)
         }
         // If neither of the navigation buttons are enabled, hide them

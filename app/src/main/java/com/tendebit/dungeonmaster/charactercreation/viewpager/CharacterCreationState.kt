@@ -1,6 +1,5 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
-import android.content.Context
 import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListState
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.ClassSelectionState
@@ -26,7 +25,7 @@ import kotlinx.coroutines.experimental.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+// TODO: this class is becoming unwieldy.  Some of the logic for pages can probably be generified to mitigate this
 class CharacterCreationState {
     private companion object {
         const val RACE_SELECTION_PAGE_INDEX = 1
@@ -86,7 +85,7 @@ class CharacterCreationState {
                 proficiencySelectionSubject.subscribe { onProficiencySelectionChanged(it) },
                 customInfoSubject.subscribe { onCustomDataChanged(it)},
                 savedCharacterSelectionSubject.subscribe {
-                    if (it.isNewCharacter) onNewCharacterCreaetionStarted()
+                    if (it.isNewCharacter) onNewCharacterCreationStarted()
                     else {
                         it.selection?.let { onSavedCharacterSelected(it) }
                     }
@@ -117,10 +116,11 @@ class CharacterCreationState {
         notifyDataChanged()
     }
 
-    fun saveCharacter(context: Context) {
+    fun saveCharacter(db : DnDDatabase) {
         // TODO: should probably have a separate class to handle this
         job = launch(UI) {
             isLoading = true
+            notifyDataChanged()
             try {
                 async(parent = job) {
                     val characterToSave = StoredCharacter(
@@ -133,7 +133,6 @@ class CharacterCreationState {
                             characterClass = selectedClass!!
 
                     )
-                    val db : DnDDatabase = DnDDatabase.getInstance(context.applicationContext)
                     db.characterDao().storeCharacter(characterToSave)
                 }.await()
                 clearSelf()
@@ -154,7 +153,7 @@ class CharacterCreationState {
         }
     }
 
-    private fun onNewCharacterCreaetionStarted() {
+    private fun onNewCharacterCreationStarted() {
         clearPagesStartingAt(RACE_SELECTION_PAGE_INDEX)
         addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION, 0))
         currentPage = RACE_SELECTION_PAGE_INDEX
@@ -256,6 +255,7 @@ class CharacterCreationState {
         currentPage = 0
         pageCollection = CharacterCreationPageCollection(arrayListOf(CharacterCreationPageDescriptor(
                 CharacterCreationPageDescriptor.PageType.CHARACTER_LIST, 0)))
+        notifyDataChanged() // notify here to force a return to the first page BEFORE all the info is cleared
         selectedProficiencies.clear()
         selectedClass = null
         selectedRace = null
