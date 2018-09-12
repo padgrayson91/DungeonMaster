@@ -1,7 +1,9 @@
 package com.tendebit.dungeonmaster.charactercreation.viewmodel
 
-class CharacterCreationPageDescriptor(val type: PageType, val indexInGroup: Int) {
+class CharacterCreationPageDescriptor(val type: PageType, val indexInGroup: Int,
+                                      val isLastPage: Boolean = false) {
     enum class PageType {
+        CHARACTER_LIST,
         RACE_SELECTION,
         CLASS_SELECTION,
         PROFICIENCY_SELECTION,

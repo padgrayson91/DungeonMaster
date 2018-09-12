@@ -8,6 +8,8 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
+import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CHARACTER_LIST_STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.CLASS_SELECTION_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.statefragment.ClassSelectionStateFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view.statefragment.CUSTOM_INFO_STATE_FRAGMENT_TAG
@@ -48,7 +50,9 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     }
 
     private fun addStateManagers() {
+        // TODO: should be a single state fragment with stored states for each page
         stateFragment = addFragmentIfMissing(CharacterCreationStateFragment(), STATE_FRAGMENT_TAG)
+        addFragmentIfMissing(CharacterListStateFragment(), CHARACTER_LIST_STATE_FRAGMENT_TAG)
         addFragmentIfMissing(RaceSelectionStateFragment(), RACE_SELECTION_FRAGMENT_TAG)
         addFragmentIfMissing(ClassSelectionStateFragment(), CLASS_SELECTION_FRAGMENT_TAG)
         addFragmentIfMissing(ProficiencySelectionStateFragment(), PROFICIENCY_SELECTION_FRAGMENT_TAG)
@@ -61,7 +65,6 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         forwardButton = root.findViewById(R.id.button_forward)
         loadingDialog = root.findViewById(R.id.loading_dialog)
         backButton.setOnClickListener { viewPager.setCurrentItem(viewPager.currentItem - 1, true) }
-        forwardButton.setOnClickListener { viewPager.setCurrentItem(viewPager.currentItem + 1, true) }
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
@@ -110,9 +113,15 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
             }
         }
 
+        val currentPage = creationState.pageCollection.pages[creationState.currentPage]
         backButton.isEnabled = creationState.currentPage != 0
         backButton.visibility = if (creationState.currentPage != 0) View.VISIBLE else View.INVISIBLE
-        forwardButton.isEnabled = creationState.currentPage < creationState.pageCollection.size -1
+        forwardButton.isEnabled = currentPage.isLastPage || creationState.currentPage < creationState.pageCollection.size - 1
+        forwardButton.text = if (currentPage.isLastPage) getString(R.string.confirm) else getString(R.string.next)
+        forwardButton.setOnClickListener {
+            if (currentPage.isLastPage) creationState.saveCharacter(activity!!)
+            else viewPager.setCurrentItem(viewPager.currentItem + 1, true)
+        }
         // For now, block the whole UI while anything is loading, but in the future
         // the user should still be allowed to interact
         loadingDialog.visibility = if(creationState.isLoading) View.VISIBLE else View.GONE

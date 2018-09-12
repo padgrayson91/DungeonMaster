@@ -15,5 +15,6 @@
     <string name="character_weight_hint">lbs</string>
     <string name="proficiency_selection">{0,choice,0#Selection Complete|1#Choose 1 Proficiency|1&lt;Choose {0} Proficiencies}</string>
     <string name="next">Next</string>
+    <string name="confirm">Confirm</string>
     <string name="back">Back</string>
 </resources>

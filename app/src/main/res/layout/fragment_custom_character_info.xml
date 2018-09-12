@@ -1,116 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/name_entry"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_large"
-        android:layout_marginTop="@dimen/padding_large"
-        android:layout_marginEnd="@dimen/padding_large"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content">
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:lines="1"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:layout_height="wrap_content"
-            tools:text="Jeff"
-            android:hint="@string/character_name_entry_hint" />
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <TextView
-        android:id="@+id/height_entry_label_txt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_large"
-        android:layout_marginTop="@dimen/padding_small"
-        android:layout_marginEnd="@dimen/padding_small"
-        android:text="@string/character_height_label"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/name_entry" />
-
-    <NumberPicker
-        android:id="@+id/height_entry_feet"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_large"
-        app:layout_constraintTop_toBottomOf="@+id/height_entry_label_txt"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <TextView
-        android:id="@+id/feet_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_small"
-        android:layout_marginEnd="@dimen/padding_large"
-        app:layout_constraintTop_toTopOf="@+id/height_entry_feet"
-        app:layout_constraintBottom_toBottomOf="@+id/height_entry_feet"
-        app:layout_constraintStart_toEndOf="@+id/height_entry_feet"
-        android:text="@string/character_height_ft_hint"/>
-
-    <NumberPicker
-        android:id="@+id/height_entry_inches"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_large"
-        app:layout_constraintTop_toBottomOf="@+id/height_entry_label_txt"
-        app:layout_constraintStart_toEndOf="@+id/feet_label"/>
-
-    <TextView
-        android:id="@+id/inches_label"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_small"
-        android:layout_marginEnd="@dimen/padding_large"
-        app:layout_constraintTop_toTopOf="@+id/height_entry_inches"
-        app:layout_constraintBottom_toBottomOf="@+id/height_entry_inches"
-        app:layout_constraintStart_toEndOf="@+id/height_entry_inches"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:text="@string/character_height_in_hint"/>
-
-    <TextView
-        android:id="@+id/weight_entry_label_txt"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_large"
-        android:layout_marginTop="@dimen/padding_small"
-        android:layout_marginEnd="@dimen/padding_large"
-        android:text="@string/character_weight_label"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/height_entry_feet" />
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/weight_entry"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_large"
-        android:layout_marginTop="@dimen/padding_small"
-        android:layout_marginEnd="@dimen/padding_large"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/weight_entry_label_txt">
-
-        <com.google.android.material.textfield.TextInputEditText
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/name_entry"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lines="1"
-            android:maxLines="1"
-            android:singleLine="true"
-            android:hint="@string/character_weight_hint"
-            android:inputType="number"
-            android:paddingStart="@dimen/padding_small"
-            android:paddingEnd="@dimen/padding_large" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_marginStart="@dimen/padding_large"
+            android:layout_marginTop="@dimen/padding_large"
+            android:layout_marginEnd="@dimen/padding_large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:layout_height="wrap_content"
+                tools:text="Jeff"
+                android:hint="@string/character_name_entry_hint" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
+            android:id="@+id/height_entry_label_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_large"
+            android:layout_marginTop="@dimen/padding_small"
+            android:layout_marginEnd="@dimen/padding_small"
+            android:text="@string/character_height_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_entry" />
+
+        <NumberPicker
+            android:id="@+id/height_entry_feet"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_large"
+            app:layout_constraintTop_toBottomOf="@+id/height_entry_label_txt"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/feet_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_small"
+            android:layout_marginEnd="@dimen/padding_large"
+            app:layout_constraintTop_toTopOf="@+id/height_entry_feet"
+            app:layout_constraintBottom_toBottomOf="@+id/height_entry_feet"
+            app:layout_constraintStart_toEndOf="@+id/height_entry_feet"
+            android:text="@string/character_height_ft_hint"/>
+
+        <NumberPicker
+            android:id="@+id/height_entry_inches"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_large"
+            app:layout_constraintTop_toBottomOf="@+id/height_entry_label_txt"
+            app:layout_constraintStart_toEndOf="@+id/feet_label"/>
+
+        <TextView
+            android:id="@+id/inches_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_small"
+            android:layout_marginEnd="@dimen/padding_large"
+            app:layout_constraintTop_toTopOf="@+id/height_entry_inches"
+            app:layout_constraintBottom_toBottomOf="@+id/height_entry_inches"
+            app:layout_constraintStart_toEndOf="@+id/height_entry_inches"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="@string/character_height_in_hint"/>
+
+        <TextView
+            android:id="@+id/weight_entry_label_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_large"
+            android:layout_marginTop="@dimen/padding_small"
+            android:layout_marginEnd="@dimen/padding_large"
+            android:text="@string/character_weight_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/height_entry_feet" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/weight_entry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_large"
+            android:layout_marginTop="@dimen/padding_small"
+            android:layout_marginEnd="@dimen/padding_large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weight_entry_label_txt">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:hint="@string/character_weight_hint"
+                android:inputType="number"
+                android:paddingStart="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_large" />
+        </com.google.android.material.textfield.TextInputLayout>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

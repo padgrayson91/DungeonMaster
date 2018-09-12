@@ -3,6 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation.view.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.view.ClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.confirmation.CharacterConfirmationFragment
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view.CustomInfoEntryFragment
@@ -31,6 +32,7 @@ class CharacterCreationPagerAdapter(fragmentManager: FragmentManager) : Fragment
 
     private fun getPageForDescriptor(pageDescriptor: CharacterCreationPageDescriptor) : Fragment {
         return when(pageDescriptor.type) {
+            CharacterCreationPageDescriptor.PageType.CHARACTER_LIST -> CharacterListFragment()
             CharacterCreationPageDescriptor.PageType.RACE_SELECTION -> RaceSelectionFragment()
             CharacterCreationPageDescriptor.PageType.CLASS_SELECTION -> ClassSelectionFragment()
             CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION -> ProficiencySelectionFragment.newInstance(pageDescriptor.indexInGroup)

@@ -5,10 +5,13 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
-@Database(entities = [StoredResponse::class], version = 1, exportSchema = false)
+@Database(entities = [StoredResponse::class, StoredCharacter::class], version = 1, exportSchema = false)
+@TypeConverters(CoreTypeConverters::class)
 abstract class DnDDatabase : RoomDatabase() {
     abstract fun responseDao() : StoredResponseDao
+    abstract fun characterDao() : StoredCharacterDao
 
     companion object {
         private var INSTANCE: DnDDatabase? = null
