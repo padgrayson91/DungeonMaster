@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.viewmodel
+package com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection
 
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyGroup

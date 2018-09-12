@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.characterlist.view
+package com.tendebit.dungeonmaster.charactercreation.pages.characterlist
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,9 +9,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.viewmodel.CharacterListState
-import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.viewpager.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable

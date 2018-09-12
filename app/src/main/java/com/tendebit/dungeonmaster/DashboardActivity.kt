@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.tendebit.dungeonmaster.charactercreation.view.CharacterCreationWizardFragment
+import androidx.appcompat.app.AppCompatActivity
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationWizardFragment
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import io.reactivex.Observable
 

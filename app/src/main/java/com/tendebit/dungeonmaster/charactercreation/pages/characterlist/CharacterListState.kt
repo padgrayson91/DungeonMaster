@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.characterlist.viewmodel
+package com.tendebit.dungeonmaster.charactercreation.pages.characterlist
 
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.model.SelectionState

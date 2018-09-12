@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.viewmodel
+package com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry
 
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.CustomInfo
 import io.reactivex.Observable

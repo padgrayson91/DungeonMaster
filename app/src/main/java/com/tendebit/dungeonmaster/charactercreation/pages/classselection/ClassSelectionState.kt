@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel
+package com.tendebit.dungeonmaster.charactercreation.pages.classselection
 
 import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory

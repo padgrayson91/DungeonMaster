@@ -1,0 +1,26 @@
+package com.tendebit.dungeonmaster.charactercreation.viewpager
+
+class CharacterCreationPageDescriptor(val type: PageType, val indexInGroup: Int,
+                                      val isLastPage: Boolean = false) {
+    enum class PageType {
+        CHARACTER_LIST,
+        RACE_SELECTION,
+        CLASS_SELECTION,
+        PROFICIENCY_SELECTION,
+        CUSTOM_INFO,
+        CONFIRMATION
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is CharacterCreationPageDescriptor
+                && other.type == type
+                && other.indexInGroup == indexInGroup
+    }
+
+    override fun hashCode(): Int {
+        var result = 12
+        result = 31 * result + type.hashCode()
+        result = 31 * result + indexInGroup
+        return result
+    }
+}

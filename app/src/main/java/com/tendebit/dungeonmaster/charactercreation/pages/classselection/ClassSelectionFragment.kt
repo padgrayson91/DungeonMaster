@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.classselection.view
+package com.tendebit.dungeonmaster.charactercreation.pages.classselection
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,9 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.viewmodel.ClassSelectionState
-import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.viewpager.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 

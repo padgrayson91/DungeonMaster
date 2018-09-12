@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.view
+package com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry
 
 import android.os.Bundle
 import android.text.Editable
@@ -11,9 +11,8 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputLayout
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.CustomInfo
-import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.viewmodel.CustomInfoEntryState
-import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.viewpager.STATE_FRAGMENT_TAG
 
 class CustomInfoEntryFragment : Fragment() {
     private lateinit var nameEntry: TextInputLayout

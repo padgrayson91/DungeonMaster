@@ -1,8 +1,8 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.viewmodel
+package com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection
 
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationState
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject

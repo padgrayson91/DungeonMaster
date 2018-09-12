@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
-import com.tendebit.dungeonmaster.charactercreation.view.statefragment.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.view.statefragment.STATE_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.viewpager.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.view.adapter.SimpleElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 

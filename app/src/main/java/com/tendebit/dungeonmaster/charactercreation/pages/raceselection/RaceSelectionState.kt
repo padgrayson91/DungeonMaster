@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.pages.raceselection.viewmodel
+package com.tendebit.dungeonmaster.charactercreation.pages.raceselection
 
 import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
