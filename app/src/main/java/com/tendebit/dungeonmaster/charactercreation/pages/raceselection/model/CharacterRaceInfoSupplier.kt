@@ -1,6 +1,5 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model
 
-import android.content.Context
 import android.util.Log
 import androidx.annotation.CheckResult
 import com.google.gson.Gson
@@ -14,7 +13,7 @@ import okhttp3.Response
 interface CharacterRaceInfoSupplier {
     suspend fun getCharacterRaces() : CharacterRaceManifest
 
-    class Impl(c: Context) : CharacterRaceInfoSupplier {
+    class Impl(private val db: DnDDatabase) : CharacterRaceInfoSupplier {
         private companion object {
             const val BASE_URL = "http://dnd5eapi.co/api/"
             const val RACES_PATH = "races/"
@@ -22,7 +21,6 @@ interface CharacterRaceInfoSupplier {
 
         private val client = OkHttpClient()
         private val gson = Gson()
-        private val db : DnDDatabase = DnDDatabase.getInstance(c.applicationContext)
 
         override suspend fun getCharacterRaces(): CharacterRaceManifest {
             attemptExtractStoredResponse(BASE_URL + RACES_PATH, CharacterRaceManifest::class.java)?.let {

@@ -1,6 +1,5 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.classselection.model
 
-import android.content.Context
 import android.util.Log
 import androidx.annotation.CheckResult
 import com.google.gson.Gson
@@ -15,7 +14,7 @@ interface CharacterClassInfoSupplier {
     suspend fun getCharacterClasses() : CharacterClassManifest
     suspend fun getClassInfo(directory: CharacterClassDirectory) : CharacterClassInfo
 
-    class Impl(c: Context) : CharacterClassInfoSupplier {
+    class Impl(private val db: DnDDatabase) : CharacterClassInfoSupplier {
         private companion object {
             const val BASE_URL = "http://dnd5eapi.co/api/"
             const val CLASSES_PATH = "classes/"
@@ -23,7 +22,6 @@ interface CharacterClassInfoSupplier {
 
         private val client = OkHttpClient()
         private val gson = Gson()
-        private val db : DnDDatabase = DnDDatabase.getInstance(c.applicationContext)
 
         override suspend fun getCharacterClasses(): CharacterClassManifest {
             attemptExtractStoredResponse(BASE_URL + CLASSES_PATH, CharacterClassManifest::class.java)?.let {

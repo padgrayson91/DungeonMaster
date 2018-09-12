@@ -3,6 +3,7 @@ package com.tendebit.dungeonmaster.core.model
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import io.reactivex.Flowable
 
 @Dao
 interface StoredCharacterDao {
@@ -11,5 +12,5 @@ interface StoredCharacterDao {
     fun storeCharacter(character: StoredCharacter)
 
     @Query("SELECT * FROM player_characters")
-    fun getCharacters() : List<StoredCharacter>
+    fun getCharacters() : Flowable<List<StoredCharacter>>
 }

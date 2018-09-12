@@ -13,7 +13,6 @@ import com.tendebit.dungeonmaster.charactercreation.viewmodel.CharacterCreationS
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
@@ -23,7 +22,7 @@ class CharacterCreationStateFragment : Fragment() {
 
 
     val state = CharacterCreationState()
-    val savedCharacterListState = CharacterListState()
+    lateinit var savedCharacterListState: CharacterListState
     lateinit var raceState : RaceSelectionState
     lateinit var classState: ClassSelectionState
     lateinit var proficiencyState: ProficiencySelectionState
@@ -35,8 +34,9 @@ class CharacterCreationStateFragment : Fragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         db = DnDDatabase.getInstance(activity!!)
-        raceState = RaceSelectionState(CharacterRaceInfoSupplier.Impl(activity!!))
-        classState = ClassSelectionState(CharacterClassInfoSupplier.Impl(activity!!))
+        savedCharacterListState = CharacterListState(db)
+        raceState = RaceSelectionState(CharacterRaceInfoSupplier.Impl(db))
+        classState = ClassSelectionState(CharacterClassInfoSupplier.Impl(db))
         proficiencyState = ProficiencySelectionState(state.changes)
 
         savedCharacterListState.changes.subscribe(state.savedCharacterSelectionObserver)
@@ -44,28 +44,17 @@ class CharacterCreationStateFragment : Fragment() {
         classState.changes.subscribe(state.classSelectionObserver)
         proficiencyState.changes.subscribe(state.proficiencySelectionObserver)
         customInfoState.changes.subscribe(state.customInfoObserver)
-        attemptLoadSavedCharactersFromDb()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         state.cancelAllSubscriptions()
+        savedCharacterListState.cancelAllCalls()
         raceState.cancelAllCalls()
         classState.cancelAllCalls()
         proficiencyState.cancelAllSubscriptions()
         launch(UI) {
             job?.cancelAndJoin()
-        }
-    }
-
-    private fun attemptLoadSavedCharactersFromDb()  {
-        // TODO: this should be in a separate class
-        job = launch(UI) {
-            val db = DnDDatabase.getInstance(activity!!)
-            val results = async(parent = job) {
-                db.characterDao().getCharacters()
-            }.await()
-            savedCharacterListState.updateOptions(results)
         }
     }
 

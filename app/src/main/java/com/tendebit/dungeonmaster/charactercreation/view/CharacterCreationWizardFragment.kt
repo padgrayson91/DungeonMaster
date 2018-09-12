@@ -1,9 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation.view
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
@@ -20,9 +22,11 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
+
 class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
     private lateinit var adapter: CharacterCreationPagerAdapter
     private lateinit var viewPager: ViewPager
+    private lateinit var buttonWrapper: ViewGroup
     private lateinit var backButton: Button
     private lateinit var forwardButton: Button
     private lateinit var loadingDialog: LoadingDialog
@@ -46,14 +50,18 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
 
     private fun initializeViews(root: View) {
         viewPager = root.findViewById(R.id.view_pager)
+        buttonWrapper = root.findViewById(R.id.button_wrapper)
         backButton = root.findViewById(R.id.button_back)
         forwardButton = root.findViewById(R.id.button_forward)
         loadingDialog = root.findViewById(R.id.loading_dialog)
-        backButton.setOnClickListener { viewPager.setCurrentItem(viewPager.currentItem - 1, true) }
+        backButton.setOnClickListener { onBackPressed() }
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
                 stateFragment.state.onPageSelected(position)
+                // hide the soft keyboard
+                val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(view?.windowToken, 0)
 
             }
         })
@@ -106,6 +114,12 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         forwardButton.setOnClickListener {
             if (currentPage.isLastPage) creationState.saveCharacter(activity!!)
             else viewPager.setCurrentItem(viewPager.currentItem + 1, true)
+        }
+        // If neither of the navigation buttons are enabled, hide them
+        if (backButton.isEnabled || forwardButton.isEnabled) {
+            buttonWrapper.visibility = View.VISIBLE
+        } else {
+            buttonWrapper.visibility = View.GONE
         }
         // For now, block the whole UI while anything is loading, but in the future
         // the user should still be allowed to interact
