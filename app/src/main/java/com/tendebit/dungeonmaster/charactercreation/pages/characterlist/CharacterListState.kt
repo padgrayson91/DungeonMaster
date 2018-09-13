@@ -18,7 +18,6 @@ class CharacterListState(private val db : DnDDatabase) : SelectionState<StoredCh
     override val selection = BehaviorSubject.create<StoredCharacter>()
     var job: Job? = null
     val changes = BehaviorSubject.create<CharacterListState>()
-    val selectionChanges = BehaviorSubject.create<StoredCharacter>()
     val newCharacterCreationStart = PublishSubject.create<Any>()
     var dbDisposable: Disposable? = null
 

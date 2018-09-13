@@ -28,11 +28,6 @@ import kotlin.collections.ArrayList
 class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListState, val raceState: RaceSelectionState,
                              val classState: ClassSelectionState, val proficiencyState: ProficiencySelectionState,
                              val customInfoState: CustomInfoEntryState) {
-    private companion object {
-        const val RACE_SELECTION_PAGE_INDEX = 1
-        const val CLASS_SELECTION_PAGE_INDEX = 2
-        const val PROFICIENCY_SELECTION_PAGE_INDEX = 3
-    }
 
     var job: Job? = null
     var currentPage = 0
@@ -68,7 +63,7 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
 
         disposables.addAll(
                 activeCallCountForChildren.subscribe { onNetworkCallCountChanged(it) },
-                listState.selectionChanges.subscribe { onSavedCharacterSelected(it) },
+                listState.selection.subscribe { onSavedCharacterSelected(it) },
                 listState.newCharacterCreationStart.subscribe { onNewCharacterCreationStarted() },
                 raceState.selection.subscribe { onCharacterRaceSelected(it) },
                 classState.selection.subscribe { onCharacterClassSelected(it) },
@@ -82,12 +77,37 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
     }
 
     private fun clearPagesStartingAt(index: Int) {
-        if (index >= pageCollection.size) return
+        if (index >= pageCollection.size || index < 0) return
         val pagesToKeep = pageCollection.pages.subList(0, index)
         pageCollection = CharacterCreationPageCollection(pagesToKeep)
         if (currentPage >= pageCollection.size) {
             currentPage = pageCollection.size
         }
+    }
+
+    private fun clearPagesAfter(pageType: CharacterCreationPageDescriptor.PageType) {
+        val startIndex = findStartOfGroup(pageType)
+        var index = -1
+        if (startIndex >= 0) {
+            for (i in startIndex until pageCollection.size) {
+                if (pageCollection.pages[i].type != pageType) {
+                    index = i
+                    break
+                }
+            }
+        }
+        clearPagesStartingAt(index)
+    }
+
+    private fun findStartOfGroup(pageType: CharacterCreationPageDescriptor.PageType) : Int {
+        var index = -1
+        for (i in 0 until pageCollection.size) {
+            if (pageCollection.pages[i].type == pageType) {
+                index = i
+                break
+            }
+        }
+        return index
     }
 
     private fun addPage(pageDescriptor: CharacterCreationPageDescriptor) {
@@ -139,14 +159,14 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
     }
 
     private fun onNewCharacterCreationStarted() {
-        clearPagesStartingAt(RACE_SELECTION_PAGE_INDEX)
+        clearPagesAfter(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)
         addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION, 0))
-        currentPage = RACE_SELECTION_PAGE_INDEX
+        currentPage = findStartOfGroup(CharacterCreationPageDescriptor.PageType.RACE_SELECTION)
         notifyDataChanged()
     }
 
     private fun onSavedCharacterSelected(character: StoredCharacter) {
-        clearPagesStartingAt(RACE_SELECTION_PAGE_INDEX)
+        clearPagesAfter(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)
         selectedRace = character.race
         selectedClass = character.characterClass
         selectedProficiencies.clear()
@@ -156,8 +176,8 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
         customInfo.heightFeet = character.heightFeet
         customInfo.heightInches = character.heightInches
         customInfo.weight = character.weight
-        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION, 0))
-        currentPage = RACE_SELECTION_PAGE_INDEX
+        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION, 0))
+        currentPage = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CONFIRMATION)
         notifyDataChanged()
 
 
@@ -168,7 +188,7 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
         if (selectedClass != selection) {
 
             selectedClass = selection
-            clearPagesStartingAt(PROFICIENCY_SELECTION_PAGE_INDEX)
+            clearPagesAfter(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
             proficiencyState.onNewClassSelected(selection)
             notifyDataChanged()
             for (i in 0 until selection.proficiencyChoices.size) {
@@ -177,20 +197,20 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
                                 CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION, i))
             }
         }
-        currentPage = PROFICIENCY_SELECTION_PAGE_INDEX
+        currentPage = findStartOfGroup(CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION)
         if (notify) notifyDataChanged()
     }
 
     private fun onCharacterRaceSelected(selection: CharacterRaceDirectory, notify: Boolean = true) {
         if (selectedRace != selection) {
             selectedRace = selection
-            if (pageCollection.size - 1 < CLASS_SELECTION_PAGE_INDEX) {
+            if (findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION) == -1) {
                 addPage(
                         CharacterCreationPageDescriptor(
                                 CharacterCreationPageDescriptor.PageType.CLASS_SELECTION, 0))
             }
         }
-        currentPage = CLASS_SELECTION_PAGE_INDEX
+        currentPage = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
         if (notify) notifyDataChanged()
     }
 
@@ -208,7 +228,7 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
                 )
             }
         } else {
-            clearPagesStartingAt(PROFICIENCY_SELECTION_PAGE_INDEX + proficiencyState.proficiencyGroups.size)
+            clearPagesAfter(CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION)
         }
         notifyDataChanged()
     }

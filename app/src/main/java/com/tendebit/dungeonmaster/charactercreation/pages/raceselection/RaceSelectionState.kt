@@ -5,7 +5,6 @@ import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.Ch
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
 import com.tendebit.dungeonmaster.core.model.SelectionState
-import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.Job
@@ -20,8 +19,6 @@ class RaceSelectionState(val supplier: CharacterRaceInfoSupplier) : SelectionSta
     override var activeNetworkCalls = 0
     override val networkCallChanges = PublishSubject.create<Int>()
     private var job: Job? = null
-    private val stateSubject = BehaviorSubject.create<RaceSelectionState>()
-    val stateChanges = stateSubject as Observable<RaceSelectionState>
 
     init {
         loadRaceOptions()

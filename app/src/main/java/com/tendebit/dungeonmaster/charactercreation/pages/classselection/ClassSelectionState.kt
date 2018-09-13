@@ -19,7 +19,7 @@ class ClassSelectionState(private val supplier: CharacterClassInfoSupplier) : Se
 
     override val options = BehaviorSubject.create<List<CharacterClassDirectory>>()
     override val selection = BehaviorSubject.create<CharacterClassInfo>()
-    var previousSelection: CharacterClassInfo? = null
+    private var previousSelection: CharacterClassInfo? = null
     override var activeNetworkCalls = 0
     override val networkCallChanges = PublishSubject.create<Int>()
     init {
@@ -39,6 +39,7 @@ class ClassSelectionState(private val supplier: CharacterClassInfoSupplier) : Se
                     val result = async(parent = job) {
                         supplier.getClassInfo(option)
                     }.await()
+                    previousSelection = result
                     selection.onNext(result)
                 } catch (e: Exception) {
                     Log.e("CHARACTER_CREATION", "Got an error", e)

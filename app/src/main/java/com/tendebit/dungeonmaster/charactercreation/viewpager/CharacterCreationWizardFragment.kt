@@ -113,7 +113,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
             // Character was created, start the whole flow over by replacing the state fragment
             resetState()
         } else {
-            adapter.update(creationState.pageCollection)
+            adapter.update(creationState.pageCollection, viewPager.currentItem)
             // ... etc ...
             if (viewPager.currentItem != creationState.currentPage) {
                 val previouslyConfigured = configured
