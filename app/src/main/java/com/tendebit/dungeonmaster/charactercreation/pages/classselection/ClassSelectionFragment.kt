@@ -21,28 +21,18 @@ class ClassSelectionFragment : Fragment() {
     private lateinit var subscriptions: CompositeDisposable
     private lateinit var recycler: RecyclerView
     private lateinit var stateProvider: CharacterCreationStateFragment
-    private val adapter = SelectionElementAdapter<CharacterClassDirectory, CharacterClassInfo>(null)
+    private lateinit var adapter: SelectionElementAdapter<CharacterClassDirectory, CharacterClassInfo>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_list, container, false)
         recycler = root.findViewById(R.id.class_list)
         recycler.layoutManager = LinearLayoutManager(activity)
-        recycler.adapter = adapter
         return root
     }
 
 
     override fun onResume() {
         super.onResume()
-        pageEnter()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        pageExit()
-    }
-
-    private fun pageEnter() {
         subscriptions = CompositeDisposable()
         val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
         if (addedFragment is CharacterCreationStateFragment) {
@@ -50,20 +40,19 @@ class ClassSelectionFragment : Fragment() {
         } else {
             throw IllegalStateException(ClassSelectionFragment::class.java.simpleName + " expects a state manager to be provided")
         }
+
+        val state = stateProvider.state.classState
+        adapter = SelectionElementAdapter(state)
+        recycler.adapter = adapter
         subscriptions.addAll(
-                stateProvider.classState.changes.subscribe{updateViewFromState(it)},
-                adapter.itemClicks.subscribe{stateProvider.classState.select(it)}
+                adapter.itemClicks.subscribe{state.select(it)}
         )
     }
 
-    private fun pageExit() {
+    override fun onPause() {
+        super.onPause()
         subscriptions.dispose()
+        adapter.clear()
     }
 
-
-    private fun updateViewFromState(state: ClassSelectionState) {
-        if (state.options.size > 0) {
-            adapter.update(state)
-        }
-    }
 }

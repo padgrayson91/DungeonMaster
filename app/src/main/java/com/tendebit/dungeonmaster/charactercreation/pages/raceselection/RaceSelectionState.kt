@@ -7,6 +7,7 @@ import com.tendebit.dungeonmaster.core.model.NetworkUIState
 import com.tendebit.dungeonmaster.core.model.SelectionState
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -14,9 +15,10 @@ import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
 class RaceSelectionState(val supplier: CharacterRaceInfoSupplier) : SelectionState<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState {
-    override val options = ArrayList<CharacterRaceDirectory>()
-    override var selection: CharacterRaceDirectory? = null
+    override val options = BehaviorSubject.create<List<CharacterRaceDirectory>>()
+    override val selection = BehaviorSubject.create<CharacterRaceDirectory>()
     override var activeNetworkCalls = 0
+    override val networkCallChanges = PublishSubject.create<Int>()
     private var job: Job? = null
     private val stateSubject = BehaviorSubject.create<RaceSelectionState>()
     val stateChanges = stateSubject as Observable<RaceSelectionState>
@@ -26,12 +28,11 @@ class RaceSelectionState(val supplier: CharacterRaceInfoSupplier) : SelectionSta
     }
 
     override fun updateOptions(options: List<CharacterRaceDirectory>) {
-        this.options.clear()
-        this.options.addAll(options)
+        this.options.onNext(options)
     }
 
     override fun select(option: CharacterRaceDirectory) {
-        this.selection = option
+        this.selection.onNext(option)
     }
 
     override fun cancelAllCalls() {
@@ -44,7 +45,6 @@ class RaceSelectionState(val supplier: CharacterRaceInfoSupplier) : SelectionSta
         job = launch(UI) {
             try {
                 onNetworkCallStart()
-                notifyDataChanged()
                 val result = async(parent = job) {  supplier.getCharacterRaces() }.await()
                 Log.d("CHARACTER_CREATION", "Got " + result.characterRaceDirectories.size + " character races. The first one is " + result.characterRaceDirectories[0].name)
                 updateOptions(result.characterRaceDirectories)
@@ -52,17 +52,7 @@ class RaceSelectionState(val supplier: CharacterRaceInfoSupplier) : SelectionSta
                 Log.e("CHARACTER_CREATION", "Got an error", e)
             } finally {
                 onNetworkCallFinish()
-                notifyDataChanged()
             }
         }
-    }
-
-    fun onRaceSelected(selectedRace: CharacterRaceDirectory) {
-        this.selection = selectedRace
-        notifyDataChanged()
-    }
-
-    private fun notifyDataChanged() {
-        stateSubject.onNext(this)
     }
 }

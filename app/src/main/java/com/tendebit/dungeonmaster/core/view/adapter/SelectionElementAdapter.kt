@@ -6,13 +6,30 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.core.model.SelectableElement
 import com.tendebit.dungeonmaster.core.model.SelectionState
 import com.tendebit.dungeonmaster.core.view.SelectableCardViewHolder
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 
-class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableElement>(private var state: SelectionState<T, SelectedType>?) : RecyclerView.Adapter<SelectableCardViewHolder<T>>() {
+class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableElement>(val state: SelectionState<T, SelectedType>) : RecyclerView.Adapter<SelectableCardViewHolder<T>>() {
     val itemClicks = PublishSubject.create<T>()
+    private val disposable = CompositeDisposable()
+    private val options = ArrayList<T>()
+    private var selection: SelectedType? = null
 
-    fun update(newState: SelectionState<T, SelectedType>) {
-        state = newState
+    init {
+        disposable.addAll(
+                state.options.subscribe { updateOptions(it) },
+                state.selection.subscribe { updateSelection(it) }
+                )
+    }
+
+    private fun updateOptions(options: List<T>) {
+        this.options.clear()
+        this.options.addAll(options)
+        notifyDataSetChanged()
+    }
+
+    private fun updateSelection(selection: SelectedType?) {
+        this.selection = selection
         notifyDataSetChanged()
     }
 
@@ -21,12 +38,15 @@ class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableEl
     }
 
     override fun getItemCount(): Int {
-        state?.options?.let { return it.size }
-        return 0
+        return options.size
     }
 
     override fun onBindViewHolder(holder: SelectableCardViewHolder<T>, position: Int) {
-        holder.populate(state!!.options[position], state!!.selection)
+        holder.populate(options[position], selection)
         holder.itemSelection.subscribe(itemClicks)
+    }
+
+    fun clear() {
+        disposable.dispose()
     }
 }

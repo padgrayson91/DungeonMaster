@@ -35,7 +35,7 @@ class CustomInfoEntryFragment : Fragment() {
         val addedFragment = activity!!.supportFragmentManager.findFragmentByTag(STATE_FRAGMENT_TAG)
         if (addedFragment is CharacterCreationStateFragment) {
             stateFragment = addedFragment
-            updateViewFromState(stateFragment.customInfoState)
+            updateViewFromState(stateFragment.state.customInfoState)
         } else {
             throw IllegalStateException(CustomInfoEntryFragment::class.java.simpleName + " expected a state provider")
         }

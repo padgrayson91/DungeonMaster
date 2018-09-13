@@ -14,7 +14,6 @@ import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterC
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
 import io.reactivex.Observable
-import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import kotlinx.coroutines.experimental.Job
@@ -26,7 +25,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 // TODO: this class is becoming unwieldy.  Some of the logic for pages can probably be generified to mitigate this
-class CharacterCreationState {
+class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListState, val raceState: RaceSelectionState,
+                             val classState: ClassSelectionState, val proficiencyState: ProficiencySelectionState,
+                             val customInfoState: CustomInfoEntryState) {
     private companion object {
         const val RACE_SELECTION_PAGE_INDEX = 1
         const val CLASS_SELECTION_PAGE_INDEX = 2
@@ -42,26 +43,17 @@ class CharacterCreationState {
     var selectedRace: CharacterRaceDirectory? = null
     var customInfo = CustomInfo()
     var isLoading = false
+    var isComplete = false
 
     private val stateSubject = BehaviorSubject.create<CharacterCreationState>()
     val changes = stateSubject as Observable<CharacterCreationState>
 
     private val disposables = CompositeDisposable()
-    private val savedCharacterSelectionSubject = BehaviorSubject.create<CharacterListState>()
-    private val classSelectionSubject = BehaviorSubject.create<ClassSelectionState>()
-    private val raceSelectionSubject = BehaviorSubject.create<RaceSelectionState>()
-    private val proficiencySelectionSubject = BehaviorSubject.create<ProficiencySelectionState>()
-    private val customInfoSubject = BehaviorSubject.create<CustomInfoEntryState>()
-    val savedCharacterSelectionObserver = savedCharacterSelectionSubject as Observer<CharacterListState>
-    val classSelectionObserver = classSelectionSubject as Observer<ClassSelectionState>
-    val raceSelectionObserver = raceSelectionSubject as Observer<RaceSelectionState>
-    val proficiencySelectionObserver = proficiencySelectionSubject as Observer<ProficiencySelectionState>
-    val customInfoObserver = customInfoSubject as Observer<CustomInfoEntryState>
 
     init {
         val networkCallObservables = Arrays.asList(
-                classSelectionSubject.map { it.activeNetworkCalls }.startWith(0),
-                raceSelectionSubject.map { it.activeNetworkCalls }.startWith(0)
+                classState.networkCallChanges.startWith(0),
+                raceState.networkCallChanges.startWith(0)
                 // ... etc for other pages ...
         )
 
@@ -74,22 +66,15 @@ class CharacterCreationState {
         }.sum()
         }
 
-        // TODO: might be better to use combinelatest with all of these to update the overall
-        // TODO: page state in a single place
         disposables.addAll(
                 activeCallCountForChildren.subscribe { onNetworkCallCountChanged(it) },
-                classSelectionSubject.filter { it.selection != null }
-                        .map { it.selection!! }.subscribe { onCharacterClassSelected(it) },
-                raceSelectionSubject.filter { it.selection != null }
-                        .map { it.selection!! }.subscribe { onCharacterRaceSelected(it) },
-                proficiencySelectionSubject.subscribe { onProficiencySelectionChanged(it) },
-                customInfoSubject.subscribe { onCustomDataChanged(it)},
-                savedCharacterSelectionSubject.subscribe {
-                    if (it.isNewCharacter) onNewCharacterCreationStarted()
-                    else {
-                        it.selection?.let { onSavedCharacterSelected(it) }
-                    }
-                }
+                listState.selectionChanges.subscribe { onSavedCharacterSelected(it) },
+                listState.newCharacterCreationStart.subscribe { onNewCharacterCreationStarted() },
+                raceState.selection.subscribe { onCharacterRaceSelected(it) },
+                classState.selection.subscribe { onCharacterClassSelected(it) },
+                proficiencyState.selectionChanges.map { it.first }.subscribe { onProficiencySelectionChanged(it) },
+                proficiencyState.completionChanges.subscribe { onProficiencyCompletionChanged(it) },
+                customInfoState.changes.subscribe { onCustomDataChanged(it) }
 
                 // ... etc for other pages ...
         )
@@ -135,7 +120,7 @@ class CharacterCreationState {
                     )
                     db.characterDao().storeCharacter(characterToSave)
                 }.await()
-                clearSelf()
+                isComplete = true
             } catch (e: Exception) {
                 Log.e("CHARACTER_CREATION", "Got an error while trying to save character", e)
             } finally {
@@ -184,6 +169,7 @@ class CharacterCreationState {
 
             selectedClass = selection
             clearPagesStartingAt(PROFICIENCY_SELECTION_PAGE_INDEX)
+            proficiencyState.onNewClassSelected(selection)
             notifyDataChanged()
             for (i in 0 until selection.proficiencyChoices.size) {
                 addPage(
@@ -208,12 +194,9 @@ class CharacterCreationState {
         if (notify) notifyDataChanged()
     }
 
-    private fun onProficiencySelectionChanged(state: ProficiencySelectionState, notify: Boolean = true) {
-        selectedProficiencies.clear()
-        selectedProficiencies.addAll(state.selectedProficiencies)
+    private fun onProficiencyCompletionChanged(isComplete: Boolean) {
         // If all proficiencies are selected and the next page hasn't been added already
-        if (state.areAllProficienciesSelected()
-                && PROFICIENCY_SELECTION_PAGE_INDEX + state.proficiencyGroups.size == pageCollection.size) {
+        if (isComplete) {
             addPage(
                     CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CUSTOM_INFO, 0)
             )
@@ -225,8 +208,14 @@ class CharacterCreationState {
                 )
             }
         } else {
-            clearPagesStartingAt(PROFICIENCY_SELECTION_PAGE_INDEX + state.proficiencyGroups.size)
+            clearPagesStartingAt(PROFICIENCY_SELECTION_PAGE_INDEX + proficiencyState.proficiencyGroups.size)
         }
+        notifyDataChanged()
+    }
+
+    private fun onProficiencySelectionChanged(selections: Collection<CharacterProficiencyDirectory>, notify: Boolean = true) {
+        selectedProficiencies.clear()
+        selectedProficiencies.addAll(selections)
         if (notify) notifyDataChanged()
     }
 
@@ -249,17 +238,6 @@ class CharacterCreationState {
         Log.d("CHARACTER_CREATION", "There are now $count async calls awaiting a response")
         isLoading = count > 0
         notifyDataChanged()
-    }
-
-    private fun clearSelf() {
-        currentPage = 0
-        pageCollection = CharacterCreationPageCollection(arrayListOf(CharacterCreationPageDescriptor(
-                CharacterCreationPageDescriptor.PageType.CHARACTER_LIST, 0)))
-        notifyDataChanged() // notify here to force a return to the first page BEFORE all the info is cleared
-        selectedProficiencies.clear()
-        selectedClass = null
-        selectedRace = null
-        customInfo = CustomInfo()
     }
 
     private fun notifyDataChanged() {

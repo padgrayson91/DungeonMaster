@@ -19,13 +19,12 @@ class RaceSelectionFragment : Fragment() {
     private lateinit var subscriptions: CompositeDisposable
     private lateinit var recycler: RecyclerView
     private lateinit var stateProvider: CharacterCreationStateFragment
-    private val adapter = SelectionElementAdapter<CharacterRaceDirectory, CharacterRaceDirectory>(null)
+    private lateinit var adapter: SelectionElementAdapter<CharacterRaceDirectory, CharacterRaceDirectory>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_list, container, false)
         recycler = root.findViewById(R.id.class_list)
         recycler.layoutManager = LinearLayoutManager(activity)
-        recycler.adapter = adapter
         return root
     }
 
@@ -49,20 +48,16 @@ class RaceSelectionFragment : Fragment() {
             throw IllegalStateException(RaceSelectionFragment::class.java.simpleName + " expects a state manager to be provided")
 
         }
+
+        val state = stateProvider.state.raceState
+        adapter = SelectionElementAdapter(state)
+        recycler.adapter = adapter
         subscriptions.addAll(
-                stateProvider.raceState.stateChanges.subscribe{updateViewFromState(it)},
-                adapter.itemClicks.subscribe{stateProvider.raceState.onRaceSelected(it)}
+                adapter.itemClicks.subscribe{state.select(it)}
         )
     }
 
     private fun pageExit() {
         subscriptions.dispose()
-    }
-
-
-    private fun updateViewFromState(state: RaceSelectionState) {
-        if (state.options.size > 0) {
-            adapter.update(state)
-        }
     }
 }

@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.viewpager.STATE_FRAGMENT_TAG
 import io.reactivex.disposables.CompositeDisposable
@@ -16,10 +17,11 @@ import java.text.MessageFormat
 
 class ProficiencySelectionFragment : Fragment() {
 
-    private var subscriptions: CompositeDisposable? = null
+    private lateinit var subscriptions: CompositeDisposable
     private lateinit var chipGroup: ChipGroup
     private lateinit var instructions: TextView
     private lateinit var stateProvider: CharacterCreationStateFragment
+    private lateinit var state: ProficiencySelectionState
     private var groupId = 0
 
     companion object {
@@ -45,15 +47,6 @@ class ProficiencySelectionFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        pageEnter()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        pageExit()
-    }
-
-    private fun pageEnter() {
         groupId = arguments!!.getInt(KEY_PAGE_ID)
         subscriptions = CompositeDisposable()
         val addedFragment = activity?.
@@ -64,27 +57,28 @@ class ProficiencySelectionFragment : Fragment() {
             throw IllegalStateException(ProficiencySelectionFragment::class.java.simpleName + " expects a state manager to be provided")
 
         }
-        subscriptions?.add(stateProvider.proficiencyState.changes.filter { it.proficiencyGroups.size > groupId }.subscribe{updateViewFromState(it)})
+        state = stateProvider.state.proficiencyState
+        subscriptions.add(state.selectionChanges.filter { it.second.size > groupId }.subscribe{updateViewForSelections(it.first, it.second)})
     }
 
-    private fun pageExit() {
-        subscriptions?.dispose()
-
+    override fun onPause() {
+        super.onPause()
+        subscriptions.dispose()
     }
 
 
-    private fun updateViewFromState(state: ProficiencySelectionState) {
-        val localState = state.proficiencyGroups[groupId]
+    private fun updateViewForSelections(selections: Collection<CharacterProficiencyDirectory>, groups: List<ProficiencyGroupSelectionState>) {
+        val localState = groups[groupId]
         val group = localState.proficiencyGroup
         chipGroup.removeAllViews()
         for (proficiency in group.proficiencyOptions) {
             val chip = Chip(activity)
             chip.isCheckable = true
-            chip.isChecked = state.isProficiencySelected(proficiency)
-            chip.isEnabled = state.isProficiencySelectableForGroup(proficiency, groupId)
+            chip.isChecked = selections.contains(proficiency)
+            chip.isEnabled = state.isProficiencySelectableForGroup(proficiency, localState, selections)
             chip.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) stateProvider.proficiencyState.onProficiencySelected(proficiency, groupId)
-                else stateProvider.proficiencyState.onProficiencyUnselected(proficiency, groupId)
+                if (isChecked) state.onProficiencySelected(proficiency, groupId)
+                else state.onProficiencyUnselected(proficiency, groupId)
             }
             chip.text = proficiency.name
             chipGroup.addView(chip)

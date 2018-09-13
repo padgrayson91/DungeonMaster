@@ -6,8 +6,8 @@ import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.C
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
 import com.tendebit.dungeonmaster.core.model.SelectionState
-import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -17,40 +17,37 @@ import kotlinx.coroutines.experimental.launch
 class ClassSelectionState(private val supplier: CharacterClassInfoSupplier) : SelectionState<CharacterClassDirectory, CharacterClassInfo>, NetworkUIState {
     private var job: Job? = null
 
-    private val stateSubject = BehaviorSubject.create<ClassSelectionState>()
-    val changes = stateSubject as Observable<ClassSelectionState>
-    override val options = ArrayList<CharacterClassDirectory>()
-    override var selection: CharacterClassInfo? = null
+    override val options = BehaviorSubject.create<List<CharacterClassDirectory>>()
+    override val selection = BehaviorSubject.create<CharacterClassInfo>()
+    var previousSelection: CharacterClassInfo? = null
     override var activeNetworkCalls = 0
-
+    override val networkCallChanges = PublishSubject.create<Int>()
     init {
         loadClassOptions()
     }
 
     override fun updateOptions(options: List<CharacterClassDirectory>) {
-        this.options.clear()
-        this.options.addAll(options)
+        this.options.onNext(options)
     }
 
     override fun select(option: CharacterClassDirectory) {
-        if (option.primaryId() != selection?.primaryId()) {
+
+        if (option.primaryId() != previousSelection?.primaryId()) {
             job = launch(UI) {
                 try {
                     onNetworkCallStart()
-                    notifyDataChanged()
                     val result = async(parent = job) {
                         supplier.getClassInfo(option)
                     }.await()
-                    selection = result
+                    selection.onNext(result)
                 } catch (e: Exception) {
                     Log.e("CHARACTER_CREATION", "Got an error", e)
                 } finally {
                     onNetworkCallFinish()
-                    notifyDataChanged()
                 }
             }
         } else {
-            notifyDataChanged()
+            selection.onNext(previousSelection!!)
         }
     }
 
@@ -64,7 +61,6 @@ class ClassSelectionState(private val supplier: CharacterClassInfoSupplier) : Se
         job = launch(UI) {
             try {
                 onNetworkCallStart()
-                notifyDataChanged()
                 val result = async(parent = job) {  supplier.getCharacterClasses() }.await()
                 Log.d("CHARACTER_CREATION", "Got " + result.characterClassDirectories.size + " character classes. The first one is " + result.characterClassDirectories[0].name)
                 updateOptions(result.characterClassDirectories)
@@ -72,13 +68,8 @@ class ClassSelectionState(private val supplier: CharacterClassInfoSupplier) : Se
                 Log.e("CHARACTER_CREATION", "Got an error", e)
             } finally {
                 onNetworkCallFinish()
-                notifyDataChanged()
             }
         }
-    }
-
-    private fun notifyDataChanged() {
-        stateSubject.onNext(this)
     }
 
 }

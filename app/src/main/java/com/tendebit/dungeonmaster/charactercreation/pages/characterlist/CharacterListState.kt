@@ -5,6 +5,7 @@ import com.tendebit.dungeonmaster.core.model.SelectionState
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -13,11 +14,12 @@ import kotlinx.coroutines.experimental.launch
 
 class CharacterListState(private val db : DnDDatabase) : SelectionState<StoredCharacter, StoredCharacter> {
 
-    override val options = ArrayList<StoredCharacter>()
-    override var selection: StoredCharacter? = null
+    override val options = BehaviorSubject.create<List<StoredCharacter>>()
+    override val selection = BehaviorSubject.create<StoredCharacter>()
     var job: Job? = null
     val changes = BehaviorSubject.create<CharacterListState>()
-    var isNewCharacter = false
+    val selectionChanges = BehaviorSubject.create<StoredCharacter>()
+    val newCharacterCreationStart = PublishSubject.create<Any>()
     var dbDisposable: Disposable? = null
 
     init {
@@ -25,14 +27,11 @@ class CharacterListState(private val db : DnDDatabase) : SelectionState<StoredCh
     }
 
     override fun updateOptions(options: List<StoredCharacter>) {
-        this.options.clear()
-        this.options.addAll(options)
-        notifyDataChanged()
+        this.options.onNext(options)
     }
 
     override fun select(option: StoredCharacter) {
-        selection = option
-        notifyDataChanged()
+        selection.onNext(option)
     }
 
     fun cancelAllCalls() {
@@ -43,14 +42,7 @@ class CharacterListState(private val db : DnDDatabase) : SelectionState<StoredCh
     }
 
     fun createNewCharacter() {
-        selection = null
-        isNewCharacter = true
-        notifyDataChanged()
-        isNewCharacter = false
-    }
-
-    private fun notifyDataChanged() {
-        changes.onNext(this)
+        newCharacterCreationStart.onNext(Object())
     }
 
     private fun attemptLoadSavedCharactersFromDb()  {

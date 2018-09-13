@@ -20,12 +20,12 @@ const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
 class CharacterCreationStateFragment : Fragment() {
 
 
-    val state = CharacterCreationState()
-    lateinit var savedCharacterListState: CharacterListState
-    lateinit var raceState : RaceSelectionState
-    lateinit var classState: ClassSelectionState
-    lateinit var proficiencyState: ProficiencySelectionState
-    val customInfoState = CustomInfoEntryState()
+    lateinit var state: CharacterCreationState
+    private lateinit var savedCharacterListState: CharacterListState
+    private lateinit var raceState : RaceSelectionState
+    private lateinit var classState: ClassSelectionState
+    private lateinit var proficiencyState: ProficiencySelectionState
+    private val customInfoState = CustomInfoEntryState()
     lateinit var db : DnDDatabase
     var job : Job? = null
 
@@ -36,13 +36,9 @@ class CharacterCreationStateFragment : Fragment() {
         savedCharacterListState = CharacterListState(db)
         raceState = RaceSelectionState(CharacterRaceInfoSupplier.Impl(db))
         classState = ClassSelectionState(CharacterClassInfoSupplier.Impl(db))
-        proficiencyState = ProficiencySelectionState(state.changes)
-
-        savedCharacterListState.changes.subscribe(state.savedCharacterSelectionObserver)
-        raceState.stateChanges.subscribe(state.raceSelectionObserver)
-        classState.changes.subscribe(state.classSelectionObserver)
-        proficiencyState.changes.subscribe(state.proficiencySelectionObserver)
-        customInfoState.changes.subscribe(state.customInfoObserver)
+        proficiencyState = ProficiencySelectionState()
+        state = CharacterCreationState(db, savedCharacterListState, raceState,
+                classState, proficiencyState, customInfoState)
     }
 
     override fun onDestroy() {
@@ -51,7 +47,6 @@ class CharacterCreationStateFragment : Fragment() {
         savedCharacterListState.cancelAllCalls()
         raceState.cancelAllCalls()
         classState.cancelAllCalls()
-        proficiencyState.cancelAllSubscriptions()
         launch(UI) {
             job?.cancelAndJoin()
         }
