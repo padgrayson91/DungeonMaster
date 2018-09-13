@@ -51,11 +51,12 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                stateFragment.viewModel.onPageSelected(position)
-                // hide the soft keyboard
-                val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(view?.windowToken, 0)
-
+                if (stateFragment.viewModel.currentPage != position) {
+                    // hide the soft keyboard
+                    val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+                    imm?.hideSoftInputFromWindow(view?.windowToken, 0)
+                    stateFragment.viewModel.onPageSelected(position)
+                }
             }
         })
         adapter = CharacterCreationPagerAdapter(childFragmentManager)
@@ -109,7 +110,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
             // Character was created, start the whole flow over by replacing the state fragment
             resetState()
         } else {
-            adapter.update(creationViewModel.pageCollection, viewPager.currentItem)
+            adapter.update(creationViewModel.pageCollection)
             // ... etc ...
             if (viewPager.currentItem != creationViewModel.currentPage) {
                 val previouslyConfigured = configured

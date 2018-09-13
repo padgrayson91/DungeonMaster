@@ -14,10 +14,8 @@ import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationP
 
 class CharacterCreationPagerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
     private var pageCollection = CharacterCreationPageCollection(ArrayList())
-    private var requiresFullRefresh = false
 
     override fun getItem(position: Int): Fragment {
-        requiresFullRefresh = false
         return getPageForDescriptor(pageCollection.pages[position])
     }
 
@@ -26,18 +24,16 @@ class CharacterCreationPagerAdapter(fragmentManager: FragmentManager) : Fragment
     }
 
     override fun getItemPosition(`object`: Any): Int {
-        return if (requiresFullRefresh) {
+        val descriptor = getDescriptorForPage(`object`)
+        return if (!pageCollection.pages.contains(descriptor)) {
             PagerAdapter.POSITION_NONE
         } else {
-            super.getItemPosition(`object`)
+            pageCollection.pages.indexOf(descriptor)
         }
     }
 
-    fun update(updatedCollection: CharacterCreationPageCollection, currentPosition: Int) {
+    fun update(updatedCollection: CharacterCreationPageCollection) {
         if (updatedCollection != pageCollection) {
-            if (pageCollection.findFirstDifferingIndex(updatedCollection) <= currentPosition + 1) {
-                requiresFullRefresh = true
-            }
             pageCollection = updatedCollection
             notifyDataSetChanged()
         }
@@ -51,6 +47,18 @@ class CharacterCreationPagerAdapter(fragmentManager: FragmentManager) : Fragment
             CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION -> ProficiencySelectionFragment.newInstance(pageDescriptor.indexInGroup)
             CharacterCreationPageDescriptor.PageType.CUSTOM_INFO -> CustomInfoEntryFragment()
             CharacterCreationPageDescriptor.PageType.CONFIRMATION -> CharacterConfirmationFragment()
+        }
+    }
+
+    private fun getDescriptorForPage(page: Any): CharacterCreationPageDescriptor? {
+        return when (page) {
+            is CharacterListFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)
+            is RaceSelectionFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION)
+            is ClassSelectionFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
+            is ProficiencySelectionFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION, page.arguments!![ProficiencySelectionFragment.KEY_PAGE_ID]!! as Int)
+            is CustomInfoEntryFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CUSTOM_INFO)
+            is CharacterConfirmationFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION)
+            else -> null
         }
     }
 

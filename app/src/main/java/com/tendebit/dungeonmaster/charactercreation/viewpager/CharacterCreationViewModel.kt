@@ -33,7 +33,7 @@ class CharacterCreationViewModel(val db: DnDDatabase, val listViewModel: Charact
     var job: Job? = null
     var currentPage = 0
     var pageCollection = CharacterCreationPageCollection(arrayListOf(CharacterCreationPageDescriptor(
-            CharacterCreationPageDescriptor.PageType.CHARACTER_LIST, 0)))
+            CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)))
     val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
@@ -163,7 +163,7 @@ class CharacterCreationViewModel(val db: DnDDatabase, val listViewModel: Charact
 
     private fun onNewCharacterCreationStarted() {
         clearPagesAfter(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)
-        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION, 0))
+        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION))
         currentPage = findStartOfGroup(CharacterCreationPageDescriptor.PageType.RACE_SELECTION)
         notifyDataChanged()
     }
@@ -179,7 +179,7 @@ class CharacterCreationViewModel(val db: DnDDatabase, val listViewModel: Charact
         customInfo.heightFeet = character.heightFeet
         customInfo.heightInches = character.heightInches
         customInfo.weight = character.weight
-        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION, 0))
+        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION))
         currentPage = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CONFIRMATION)
         notifyDataChanged()
 
@@ -210,7 +210,7 @@ class CharacterCreationViewModel(val db: DnDDatabase, val listViewModel: Charact
             if (findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION) == -1) {
                 addPage(
                         CharacterCreationPageDescriptor(
-                                CharacterCreationPageDescriptor.PageType.CLASS_SELECTION, 0))
+                                CharacterCreationPageDescriptor.PageType.CLASS_SELECTION))
             }
         }
         currentPage = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
@@ -221,7 +221,7 @@ class CharacterCreationViewModel(val db: DnDDatabase, val listViewModel: Charact
         // If all proficiencies are selected and the next page hasn't been added already
         if (isComplete) {
             addPage(
-                    CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CUSTOM_INFO, 0)
+                    CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CUSTOM_INFO)
             )
             if (customInfo.isComplete()) {
                 // user has info from before that allows them to proceed to confirmation screen

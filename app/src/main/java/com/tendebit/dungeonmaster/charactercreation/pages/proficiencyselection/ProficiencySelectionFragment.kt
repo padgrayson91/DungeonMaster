@@ -26,7 +26,7 @@ class ProficiencySelectionFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        private val KEY_PAGE_ID = "proficiency_page_index"
+        val KEY_PAGE_ID = "proficiency_page_index"
         @JvmStatic
         fun newInstance(id: Int) : ProficiencySelectionFragment {
             val fragment = ProficiencySelectionFragment()
