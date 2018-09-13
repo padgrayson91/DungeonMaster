@@ -41,7 +41,7 @@ class ClassSelectionFragment : Fragment() {
             throw IllegalStateException(ClassSelectionFragment::class.java.simpleName + " expects a state manager to be provided")
         }
 
-        val state = stateProvider.state.classState
+        val state = stateProvider.viewModel.classViewModel
         adapter = SelectionElementAdapter(state)
         recycler.adapter = adapter
         subscriptions.addAll(

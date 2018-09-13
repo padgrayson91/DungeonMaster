@@ -21,7 +21,7 @@ import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
 
-class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
+class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
     private lateinit var adapter: CharacterCreationPagerAdapter
     private lateinit var viewPager: ViewPager
     private lateinit var buttonWrapper: ViewGroup
@@ -34,15 +34,11 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_viewpager, container, false)
-        addStateManagers()
+        stateFragment = addFragmentIfMissing(CharacterCreationStateFragment(), STATE_FRAGMENT_TAG)
         initializeViews(root)
 
 
         return root
-    }
-
-    private fun addStateManagers() {
-        stateFragment = addFragmentIfMissing(CharacterCreationStateFragment(), STATE_FRAGMENT_TAG)
     }
 
     private fun initializeViews(root: View) {
@@ -55,7 +51,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                stateFragment.state.onPageSelected(position)
+                stateFragment.viewModel.onPageSelected(position)
                 // hide the soft keyboard
                 val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
                 imm?.hideSoftInputFromWindow(view?.windowToken, 0)
@@ -93,7 +89,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
 
     private fun registerSubscriptions() {
         subscription = CompositeDisposable()
-        subscription.addAll(stateFragment.state.changes.subscribe{ updateViewFromState(it) })
+        subscription.addAll(stateFragment.viewModel.changes.subscribe{ updateViewFromViewModel(it) })
     }
 
     private fun resetState() {
@@ -108,30 +104,30 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
         registerSubscriptions()
     }
 
-    private fun updateViewFromState(creationState: CharacterCreationState) {
-        if (creationState.isComplete) {
+    private fun updateViewFromViewModel(creationViewModel: CharacterCreationViewModel) {
+        if (creationViewModel.isComplete) {
             // Character was created, start the whole flow over by replacing the state fragment
             resetState()
         } else {
-            adapter.update(creationState.pageCollection, viewPager.currentItem)
+            adapter.update(creationViewModel.pageCollection, viewPager.currentItem)
             // ... etc ...
-            if (viewPager.currentItem != creationState.currentPage) {
+            if (viewPager.currentItem != creationViewModel.currentPage) {
                 val previouslyConfigured = configured
                 launch(UI) {
-                    // TODO: the hackity delay here is to avoid UI jank when transitioning to a page that was just added.  Instead, the viewmodel should emit twice: once to add the page and another time to trigger the page switch after delay
+                    // TODO: the delay should only happen when switching to newly added pages
                     if (previouslyConfigured) withContext(DefaultDispatcher) { Thread.sleep(200) }
-                    viewPager.setCurrentItem(creationState.currentPage, true)
+                    viewPager.setCurrentItem(creationViewModel.currentPage, true)
                 }
             }
 
-            val currentPage = creationState.pageCollection.pages[creationState.currentPage]
-            backButton.isEnabled = creationState.currentPage != 0
-            backButton.visibility = if (creationState.currentPage != 0) View.VISIBLE else View.INVISIBLE
-            forwardButton.isEnabled = currentPage.isLastPage || creationState.currentPage < creationState.pageCollection.size - 1
+            val currentPage = creationViewModel.pageCollection.pages[creationViewModel.currentPage]
+            backButton.isEnabled = creationViewModel.currentPage != 0
+            backButton.visibility = if (creationViewModel.currentPage != 0) View.VISIBLE else View.INVISIBLE
+            forwardButton.isEnabled = currentPage.isLastPage || creationViewModel.currentPage < creationViewModel.pageCollection.size - 1
             forwardButton.text = if (currentPage.isLastPage) getString(R.string.confirm) else getString(R.string.next)
-            // TODO: page descriptors should handle button clicks.  By default they can just adjust the current page + or - 1
+            // TODO: page descriptors should expose logic to determine which buttons to show/what they do when clicked
             forwardButton.setOnClickListener {
-                if (currentPage.isLastPage) creationState.saveCharacter(DnDDatabase.getInstance(activity!!))
+                if (currentPage.isLastPage) creationViewModel.saveCharacter(DnDDatabase.getInstance(activity!!))
                 else viewPager.setCurrentItem(viewPager.currentItem + 1, true)
             }
             // If neither of the navigation buttons are enabled, hide them
@@ -142,7 +138,7 @@ class CharacterCreationWizardFragment: Fragment(), BackNavigationHandler {
             }
             // For now, block the whole UI while anything is loading, but in the future
             // the user should still be allowed to interact
-            loadingDialog.visibility = if (creationState.isLoading) View.VISIBLE else View.GONE
+            loadingDialog.visibility = if (creationViewModel.isLoading) View.VISIBLE else View.GONE
             configured = true
         }
     }

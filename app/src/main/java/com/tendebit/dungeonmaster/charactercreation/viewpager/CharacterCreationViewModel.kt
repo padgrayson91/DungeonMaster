@@ -1,14 +1,14 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
 import android.util.Log
-import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListState
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.ClassSelectionState
+import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListViewModel
+import com.tendebit.dungeonmaster.charactercreation.pages.classselection.ClassSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
-import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.CustomInfoEntryState
+import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.CustomInfoEntryViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.CustomInfo
-import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.ProficiencySelectionState
+import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.ProficiencySelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
-import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.RaceSelectionState
+import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.RaceSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPageCollection
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
@@ -24,10 +24,11 @@ import kotlinx.coroutines.experimental.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
-// TODO: this class is becoming unwieldy.  Some of the logic for pages can probably be generified to mitigate this
-class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListState, val raceState: RaceSelectionState,
-                             val classState: ClassSelectionState, val proficiencyState: ProficiencySelectionState,
-                             val customInfoState: CustomInfoEntryState) {
+// TODO: Class may be best split so that page logic is handled by a separate ViewModel, while this class
+// TODO: should just coordinate passing data from one ViewModel to another when needed
+class CharacterCreationViewModel(val db: DnDDatabase, val listViewModel: CharacterListViewModel, val raceViewModel: RaceSelectionViewModel,
+                                 val classViewModel: ClassSelectionViewModel, val proficiencyViewModel: ProficiencySelectionViewModel,
+                                 val customInfoViewModel: CustomInfoEntryViewModel) {
 
     var job: Job? = null
     var currentPage = 0
@@ -40,15 +41,15 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
     var isLoading = false
     var isComplete = false
 
-    private val stateSubject = BehaviorSubject.create<CharacterCreationState>()
-    val changes = stateSubject as Observable<CharacterCreationState>
+    private val stateSubject = BehaviorSubject.create<CharacterCreationViewModel>()
+    val changes = stateSubject as Observable<CharacterCreationViewModel>
 
     private val disposables = CompositeDisposable()
 
     init {
         val networkCallObservables = Arrays.asList(
-                classState.networkCallChanges.startWith(0),
-                raceState.networkCallChanges.startWith(0)
+                classViewModel.networkCallChanges.startWith(0),
+                raceViewModel.networkCallChanges.startWith(0)
                 // ... etc for other pages ...
         )
 
@@ -63,13 +64,13 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
 
         disposables.addAll(
                 activeCallCountForChildren.subscribe { onNetworkCallCountChanged(it) },
-                listState.selection.subscribe { onSavedCharacterSelected(it) },
-                listState.newCharacterCreationStart.subscribe { onNewCharacterCreationStarted() },
-                raceState.selection.subscribe { onCharacterRaceSelected(it) },
-                classState.selection.subscribe { onCharacterClassSelected(it) },
-                proficiencyState.selectionChanges.map { it.first }.subscribe { onProficiencySelectionChanged(it) },
-                proficiencyState.completionChanges.subscribe { onProficiencyCompletionChanged(it) },
-                customInfoState.changes.subscribe { onCustomDataChanged(it) }
+                listViewModel.selection.subscribe { onSavedCharacterSelected(it) },
+                listViewModel.newCharacterCreationStart.subscribe { onNewCharacterCreationStarted() },
+                raceViewModel.selection.subscribe { onCharacterRaceSelected(it) },
+                classViewModel.selection.subscribe { onCharacterClassSelected(it) },
+                proficiencyViewModel.selectionChanges.map { it.first }.subscribe { onProficiencySelectionChanged(it) },
+                proficiencyViewModel.completionChanges.subscribe { onProficiencyCompletionChanged(it) },
+                customInfoViewModel.changes.subscribe { onCustomDataChanged(it) }
 
                 // ... etc for other pages ...
         )
@@ -158,6 +159,8 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
         }
     }
 
+    // TODO: functionality to clear state (will require substates to expose similar functionality)
+
     private fun onNewCharacterCreationStarted() {
         clearPagesAfter(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)
         addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION, 0))
@@ -189,7 +192,7 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
 
             selectedClass = selection
             clearPagesAfter(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
-            proficiencyState.onNewClassSelected(selection)
+            proficiencyViewModel.onNewClassSelected(selection)
             notifyDataChanged()
             for (i in 0 until selection.proficiencyChoices.size) {
                 addPage(
@@ -239,15 +242,15 @@ class CharacterCreationState(val db: DnDDatabase, val listState: CharacterListSt
         if (notify) notifyDataChanged()
     }
 
-    private fun onCustomDataChanged(state: CustomInfoEntryState, notify: Boolean = true) {
-        this.customInfo = state.info
-        if (state.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
+    private fun onCustomDataChanged(viewModel: CustomInfoEntryViewModel, notify: Boolean = true) {
+        this.customInfo = viewModel.info
+        if (viewModel.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
                 != CharacterCreationPageDescriptor.PageType.CONFIRMATION) {
             addPage(
                     CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION,
                             0, true)
             )
-        } else if(!state.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
+        } else if(!viewModel.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
                 == CharacterCreationPageDescriptor.PageType.CONFIRMATION) {
             clearPagesStartingAt(pageCollection.size - 1)
         }

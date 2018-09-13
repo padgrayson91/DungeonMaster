@@ -35,15 +35,15 @@ class CustomInfoEntryFragment : Fragment() {
         val addedFragment = activity!!.supportFragmentManager.findFragmentByTag(STATE_FRAGMENT_TAG)
         if (addedFragment is CharacterCreationStateFragment) {
             stateFragment = addedFragment
-            updateViewFromState(stateFragment.state.customInfoState)
+            updateViewFromViewModel(stateFragment.viewModel.customInfoViewModel)
         } else {
             throw IllegalStateException(CustomInfoEntryFragment::class.java.simpleName + " expected a state provider")
         }
         return root
     }
 
-    private fun updateViewFromState(state: CustomInfoEntryState) {
-        val info = state.info
+    private fun updateViewFromViewModel(viewModel: CustomInfoEntryViewModel) {
+        val info = viewModel.info
         nameEntry.editText?.setText(info.name)
         heightFeetEntry.value = info.heightFeet
         heightInchesEntry.value = info.heightInches
@@ -51,14 +51,14 @@ class CustomInfoEntryFragment : Fragment() {
 
         nameEntry.editText?.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                state.setName(s)
+                viewModel.setName(s)
             }
         })
-        heightFeetEntry.setOnValueChangedListener { _, _, newVal ->  state.setHeightFeet(newVal) }
-        heightInchesEntry.setOnValueChangedListener { _, _, newVal -> state.setHeightInches(newVal) }
+        heightFeetEntry.setOnValueChangedListener { _, _, newVal ->  viewModel.setHeightFeet(newVal) }
+        heightInchesEntry.setOnValueChangedListener { _, _, newVal -> viewModel.setHeightInches(newVal) }
         weightEntry.editText?.addTextChangedListener(object : SimpleTW() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                state.setWeight(s)
+                viewModel.setWeight(s)
             }
         })
 

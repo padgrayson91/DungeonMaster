@@ -4,9 +4,9 @@ import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
-class CustomInfoEntryState {
-    private val stateSubject = BehaviorSubject.create<CustomInfoEntryState>()
-    val changes = stateSubject as Observable<CustomInfoEntryState>
+class CustomInfoEntryViewModel {
+    private val stateSubject = BehaviorSubject.create<CustomInfoEntryViewModel>()
+    val changes = stateSubject as Observable<CustomInfoEntryViewModel>
     val info = CustomInfo()
 
 

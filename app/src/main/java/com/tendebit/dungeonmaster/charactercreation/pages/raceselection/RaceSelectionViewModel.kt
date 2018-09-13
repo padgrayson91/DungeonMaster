@@ -13,7 +13,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
-class RaceSelectionState(val supplier: CharacterRaceInfoSupplier) : SelectionState<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState {
+class RaceSelectionViewModel(val supplier: CharacterRaceInfoSupplier) : SelectionState<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState {
     override val options = BehaviorSubject.create<List<CharacterRaceDirectory>>()
     override val selection = BehaviorSubject.create<CharacterRaceDirectory>()
     override var activeNetworkCalls = 0

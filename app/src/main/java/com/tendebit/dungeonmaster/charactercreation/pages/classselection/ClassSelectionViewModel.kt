@@ -14,7 +14,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
-class ClassSelectionState(private val supplier: CharacterClassInfoSupplier) : SelectionState<CharacterClassDirectory, CharacterClassInfo>, NetworkUIState {
+class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) : SelectionState<CharacterClassDirectory, CharacterClassInfo>, NetworkUIState {
     private var job: Job? = null
 
     override val options = BehaviorSubject.create<List<CharacterClassDirectory>>()

@@ -51,7 +51,7 @@ class CharacterListFragment : Fragment() {
         }
 
 
-        val state = stateFragment.state.listState
+        val state = stateFragment.viewModel.listViewModel
         adapter = SelectionElementAdapter(state)
         characterList.adapter = adapter
         fab.setOnClickListener { state.createNewCharacter() }

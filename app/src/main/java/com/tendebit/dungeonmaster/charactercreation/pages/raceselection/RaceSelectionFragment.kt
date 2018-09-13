@@ -31,15 +31,6 @@ class RaceSelectionFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        pageEnter()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        pageExit()
-    }
-
-    private fun pageEnter() {
         subscriptions = CompositeDisposable()
         val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
         if (addedFragment is CharacterCreationStateFragment) {
@@ -49,7 +40,7 @@ class RaceSelectionFragment : Fragment() {
 
         }
 
-        val state = stateProvider.state.raceState
+        val state = stateProvider.viewModel.raceViewModel
         adapter = SelectionElementAdapter(state)
         recycler.adapter = adapter
         subscriptions.addAll(
@@ -57,7 +48,8 @@ class RaceSelectionFragment : Fragment() {
         )
     }
 
-    private fun pageExit() {
+    override fun onPause() {
+        super.onPause()
         subscriptions.dispose()
     }
 }

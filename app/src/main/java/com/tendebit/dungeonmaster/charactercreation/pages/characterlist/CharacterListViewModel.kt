@@ -12,12 +12,12 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
-class CharacterListState(private val db : DnDDatabase) : SelectionState<StoredCharacter, StoredCharacter> {
+class CharacterListViewModel(private val db : DnDDatabase) : SelectionState<StoredCharacter, StoredCharacter> {
 
     override val options = BehaviorSubject.create<List<StoredCharacter>>()
     override val selection = BehaviorSubject.create<StoredCharacter>()
     var job: Job? = null
-    val changes = BehaviorSubject.create<CharacterListState>()
+    val changes = BehaviorSubject.create<CharacterListViewModel>()
     val newCharacterCreationStart = PublishSubject.create<Any>()
     var dbDisposable: Disposable? = null
 

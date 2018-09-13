@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
-import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationState
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation.viewpager.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.view.adapter.SimpleElementAdapter
 import io.reactivex.disposables.CompositeDisposable
@@ -42,7 +42,7 @@ class CharacterConfirmationFragment : Fragment() {
                 supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG) as? CharacterCreationStateFragment
         if (addedFragment != null) {
             stateFragment = addedFragment
-            updateViewFromState(stateFragment?.state ?: return root)
+            updateViewFromState(stateFragment?.viewModel ?: return root)
         }
 
         return root
@@ -52,8 +52,8 @@ class CharacterConfirmationFragment : Fragment() {
         super.onResume()
         disposable = CompositeDisposable()
         stateFragment?.let {
-            disposable.addAll(it.state.changes.subscribe {
-                updateViewFromState(it)
+            disposable.addAll(it.viewModel.changes.subscribe { vm ->
+                updateViewFromState(vm)
             })
         }
     }
@@ -63,16 +63,16 @@ class CharacterConfirmationFragment : Fragment() {
         disposable.dispose()
     }
 
-    private fun updateViewFromState(state: CharacterCreationState) {
-        val displayedName = if (state.customInfo.name != null) state.customInfo.name else getString(R.string.character_name_placeholder)
+    private fun updateViewFromState(viewModel: CharacterCreationViewModel) {
+        val displayedName = if (viewModel.customInfo.name != null) viewModel.customInfo.name else getString(R.string.character_name_placeholder)
         characterNameText.text = displayedName
-        raceNameText.text = state.selectedRace?.primaryText()
-        classNameText.text = state.selectedClass?.primaryText()
+        raceNameText.text = viewModel.selectedRace?.primaryText()
+        classNameText.text = viewModel.selectedClass?.primaryText()
         heightText.text = String.format(getString(R.string.character_combined_height_format),
-                state.customInfo.heightFeet, state.customInfo.heightInches)
-        weightText.text = if (state.customInfo.weight != null)
-                String.format(getString(R.string.character_weight_format), state.customInfo.weight)
+                viewModel.customInfo.heightFeet, viewModel.customInfo.heightInches)
+        weightText.text = if (viewModel.customInfo.weight != null)
+                String.format(getString(R.string.character_weight_format), viewModel.customInfo.weight)
                 else null
-        adapter.update(state.selectedProficiencies)
+        adapter.update(viewModel.selectedProficiencies)
     }
 }

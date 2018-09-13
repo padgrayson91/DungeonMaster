@@ -6,7 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 import java.util.*
 
-class ProficiencySelectionState {
+class ProficiencySelectionViewModel {
     val proficiencyGroups = ArrayList<ProficiencyGroupSelectionState>()
     private val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     val selectionChanges = BehaviorSubject.create<Pair<Collection<CharacterProficiencyDirectory>, List<ProficiencyGroupSelectionState>>>()

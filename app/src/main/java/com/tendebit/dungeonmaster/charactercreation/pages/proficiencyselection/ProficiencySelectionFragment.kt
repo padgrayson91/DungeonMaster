@@ -21,7 +21,7 @@ class ProficiencySelectionFragment : Fragment() {
     private lateinit var chipGroup: ChipGroup
     private lateinit var instructions: TextView
     private lateinit var stateProvider: CharacterCreationStateFragment
-    private lateinit var state: ProficiencySelectionState
+    private lateinit var viewModel: ProficiencySelectionViewModel
     private var groupId = 0
 
     companion object {
@@ -57,8 +57,8 @@ class ProficiencySelectionFragment : Fragment() {
             throw IllegalStateException(ProficiencySelectionFragment::class.java.simpleName + " expects a state manager to be provided")
 
         }
-        state = stateProvider.state.proficiencyState
-        subscriptions.add(state.selectionChanges.filter { it.second.size > groupId }.subscribe{updateViewForSelections(it.first, it.second)})
+        viewModel = stateProvider.viewModel.proficiencyViewModel
+        subscriptions.add(viewModel.selectionChanges.filter { it.second.size > groupId }.subscribe{updateViewForSelections(it.first, it.second)})
     }
 
     override fun onPause() {
@@ -75,10 +75,10 @@ class ProficiencySelectionFragment : Fragment() {
             val chip = Chip(activity)
             chip.isCheckable = true
             chip.isChecked = selections.contains(proficiency)
-            chip.isEnabled = state.isProficiencySelectableForGroup(proficiency, localState, selections)
+            chip.isEnabled = viewModel.isProficiencySelectableForGroup(proficiency, localState, selections)
             chip.setOnCheckedChangeListener { _, isChecked ->
-                if (isChecked) state.onProficiencySelected(proficiency, groupId)
-                else state.onProficiencyUnselected(proficiency, groupId)
+                if (isChecked) viewModel.onProficiencySelected(proficiency, groupId)
+                else viewModel.onProficiencyUnselected(proficiency, groupId)
             }
             chip.text = proficiency.name
             chipGroup.addView(chip)
