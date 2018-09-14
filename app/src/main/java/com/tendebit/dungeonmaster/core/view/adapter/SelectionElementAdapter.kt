@@ -8,6 +8,8 @@ import com.tendebit.dungeonmaster.core.model.SelectionState
 import com.tendebit.dungeonmaster.core.view.SelectableCardViewHolder
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
 
 class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableElement>(val state: SelectionState<T, SelectedType>) : RecyclerView.Adapter<SelectableCardViewHolder<T>>() {
     val itemClicks = PublishSubject.create<T>()
@@ -25,12 +27,12 @@ class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableEl
     private fun updateOptions(options: List<T>) {
         this.options.clear()
         this.options.addAll(options)
-        notifyDataSetChanged()
+        launch(UI) { notifyDataSetChanged() }
     }
 
     private fun updateSelection(selection: SelectedType?) {
         this.selection = selection
-        notifyDataSetChanged()
+        launch(UI) { notifyDataSetChanged() }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectableCardViewHolder<T> {

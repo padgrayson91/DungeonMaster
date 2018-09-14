@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.viewpager
+package com.tendebit.dungeonmaster.charactercreation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,6 +9,7 @@ import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.Custom
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.ProficiencySelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.RaceSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPagesViewModel
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
@@ -21,6 +22,7 @@ class CharacterCreationStateFragment : Fragment() {
 
 
     lateinit var viewModel: CharacterCreationViewModel
+    private lateinit var pagesViewModel: CharacterCreationPagesViewModel
     private lateinit var savedCharacterListViewModel: CharacterListViewModel
     private lateinit var raceViewModel : RaceSelectionViewModel
     private lateinit var classViewModel: ClassSelectionViewModel
@@ -33,11 +35,12 @@ class CharacterCreationStateFragment : Fragment() {
         super.onCreate(savedInstanceState)
         retainInstance = true
         db = DnDDatabase.getInstance(activity!!)
+        pagesViewModel = CharacterCreationPagesViewModel()
         savedCharacterListViewModel = CharacterListViewModel(db)
         raceViewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(db))
         classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db))
         proficiencyViewModel = ProficiencySelectionViewModel()
-        viewModel = CharacterCreationViewModel(db, savedCharacterListViewModel, raceViewModel,
+        viewModel = CharacterCreationViewModel(db, pagesViewModel, savedCharacterListViewModel, raceViewModel,
                 classViewModel, proficiencyViewModel, customInfoState)
     }
 

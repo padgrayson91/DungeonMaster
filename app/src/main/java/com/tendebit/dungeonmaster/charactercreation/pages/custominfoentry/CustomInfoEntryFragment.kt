@@ -10,9 +10,9 @@ import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputLayout
 import com.tendebit.dungeonmaster.R
+import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.CustomInfo
-import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.viewpager.STATE_FRAGMENT_TAG
 
 class CustomInfoEntryFragment : Fragment() {
     private lateinit var nameEntry: TextInputLayout

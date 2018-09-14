@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
+import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
-import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.viewpager.STATE_FRAGMENT_TAG
 import io.reactivex.disposables.CompositeDisposable
 import java.text.MessageFormat
 

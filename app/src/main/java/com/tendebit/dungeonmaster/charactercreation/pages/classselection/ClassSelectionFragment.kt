@@ -8,10 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
+import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
-import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.viewpager.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
