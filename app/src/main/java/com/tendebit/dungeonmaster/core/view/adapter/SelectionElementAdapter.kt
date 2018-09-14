@@ -32,7 +32,7 @@ class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableEl
 
     private fun updateSelection(selection: SelectedType?) {
         this.selection = selection
-        launch(UI) { notifyDataSetChanged() }
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SelectableCardViewHolder<T> {

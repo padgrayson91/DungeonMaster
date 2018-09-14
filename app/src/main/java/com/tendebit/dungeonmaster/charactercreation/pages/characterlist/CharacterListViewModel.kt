@@ -3,30 +3,25 @@ package com.tendebit.dungeonmaster.charactercreation.pages.characterlist
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.model.SelectionState
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
+import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
 class CharacterListViewModel(private val db : DnDDatabase) : SelectionState<StoredCharacter, StoredCharacter> {
 
-    override val options = BehaviorSubject.create<List<StoredCharacter>>()
+    override lateinit var options: Flowable<List<StoredCharacter>>
     override val selection = BehaviorSubject.create<StoredCharacter>()
-    var job: Job? = null
-    val changes = BehaviorSubject.create<CharacterListViewModel>()
+    private var job: Job? = null
     val newCharacterCreationStart = PublishSubject.create<Any>()
-    var dbDisposable: Disposable? = null
+    private var dbDisposable: Disposable? = null
 
     init {
         attemptLoadSavedCharactersFromDb()
-    }
-
-    override fun updateOptions(options: List<StoredCharacter>) {
-        this.options.onNext(options)
     }
 
     override fun select(option: StoredCharacter) {
@@ -45,10 +40,6 @@ class CharacterListViewModel(private val db : DnDDatabase) : SelectionState<Stor
     }
 
     private fun attemptLoadSavedCharactersFromDb()  {
-        job = launch(UI) {
-            dbDisposable = async(parent = job) {
-                db.characterDao().getCharacters().subscribe { updateOptions(it) }
-            }.await()
-        }
+        options = db.characterDao().getCharacters()
     }
 }

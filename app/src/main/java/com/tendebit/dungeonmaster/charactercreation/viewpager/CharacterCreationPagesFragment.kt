@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPageCollection
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPagerAdapter
@@ -94,20 +93,20 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
 
     private fun registerSubscriptions() {
         subscription = CompositeDisposable()
-        subscription.addAll(stateFragment.viewModel.changes.subscribe{ updateViewFromViewModel(it) },
-                stateFragment.viewModel.pagesViewModel.pageChanges.subscribe { updatePagesFromViewModel(it) })
+        subscription.addAll(
+                stateFragment.viewModel.loadingChanges.subscribe { updateLoadingDialog(it) },
+                stateFragment.viewModel.completionChanges.distinctUntilChanged().filter{it}.subscribe{ resetState() },
+                stateFragment.viewModel.pagesViewModel.pageChanges.subscribe { updatePagesFromViewModel(it) }
+        )
     }
 
     private fun resetState() {
         subscription.dispose()
-        val clearedState = CharacterCreationStateFragment()
-        fragmentManager?.beginTransaction()
-                ?.remove(stateFragment)
-                ?.add(clearedState, STATE_FRAGMENT_TAG)
-                ?.commit()
-        fragmentManager?.executePendingTransactions()
-        stateFragment = clearedState
-        registerSubscriptions()
+        stateFragment.reset()
+        launch(UI) {
+            withContext(DefaultDispatcher) { Thread.sleep(1000) }
+            registerSubscriptions()
+        }
     }
 
     private fun updatePagesFromViewModel(pageCollection: CharacterCreationPageCollection) {
@@ -142,15 +141,10 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         configured = true
     }
 
-    private fun updateViewFromViewModel(creationViewModel: CharacterCreationViewModel) {
-        if (creationViewModel.isComplete) {
-            // Character was created, start the whole flow over by replacing the state fragment
-            resetState()
-        } else {
-            // For now, block the whole UI while anything is loading, but in the future
-            // the user should still be allowed to interact
-            loadingDialog.visibility = if (creationViewModel.isLoading) View.VISIBLE else View.GONE
-        }
+    private fun updateLoadingDialog(isLoading: Boolean) {
+        // For now, block the whole UI while anything is loading, but in the future
+        // the user should still be allowed to interact
+        loadingDialog.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onPause() {

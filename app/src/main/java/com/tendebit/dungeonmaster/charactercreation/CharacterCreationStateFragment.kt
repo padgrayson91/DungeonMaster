@@ -11,10 +11,6 @@ import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.RaceSele
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPagesViewModel
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.cancelAndJoin
-import kotlinx.coroutines.experimental.launch
 
 const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
 
@@ -27,32 +23,46 @@ class CharacterCreationStateFragment : Fragment() {
     private lateinit var raceViewModel : RaceSelectionViewModel
     private lateinit var classViewModel: ClassSelectionViewModel
     private lateinit var proficiencyViewModel: ProficiencySelectionViewModel
-    private val customInfoState = CustomInfoEntryViewModel()
+    private lateinit var customInfoViewModel: CustomInfoEntryViewModel
     lateinit var db : DnDDatabase
-    var job : Job? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        db = DnDDatabase.getInstance(activity!!)
+        db = DnDDatabase.getInstance(activity!!.applicationContext)
         pagesViewModel = CharacterCreationPagesViewModel()
         savedCharacterListViewModel = CharacterListViewModel(db)
         raceViewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(db))
         classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db))
         proficiencyViewModel = ProficiencySelectionViewModel()
+        customInfoViewModel = CustomInfoEntryViewModel()
         viewModel = CharacterCreationViewModel(db, pagesViewModel, savedCharacterListViewModel, raceViewModel,
-                classViewModel, proficiencyViewModel, customInfoState)
+                classViewModel, proficiencyViewModel, customInfoViewModel)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        clear()
+    }
+
+    // TODO: this should be done asynchronously, then the UI shouldn't need a delay
+    fun reset() {
+        clear()
+
+        pagesViewModel = CharacterCreationPagesViewModel()
+        raceViewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(db))
+        classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db))
+        proficiencyViewModel = ProficiencySelectionViewModel()
+        customInfoViewModel = CustomInfoEntryViewModel()
+        viewModel = CharacterCreationViewModel(db, pagesViewModel, savedCharacterListViewModel, raceViewModel,
+                classViewModel, proficiencyViewModel, customInfoViewModel)
+    }
+
+    private fun clear() {
         viewModel.cancelAllSubscriptions()
         savedCharacterListViewModel.cancelAllCalls()
         raceViewModel.cancelAllCalls()
         classViewModel.cancelAllCalls()
-        launch(UI) {
-            job?.cancelAndJoin()
-        }
     }
 
 }

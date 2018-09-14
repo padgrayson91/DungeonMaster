@@ -5,6 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.Ch
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
 import com.tendebit.dungeonmaster.core.model.SelectionState
+import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.Job
@@ -14,7 +15,8 @@ import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
 class RaceSelectionViewModel(val supplier: CharacterRaceInfoSupplier) : SelectionState<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState {
-    override val options = BehaviorSubject.create<List<CharacterRaceDirectory>>()
+    val optionsSubject = BehaviorSubject.create<List<CharacterRaceDirectory>>()
+    override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)
     override val selection = BehaviorSubject.create<CharacterRaceDirectory>()
     override var activeNetworkCalls = 0
     override val networkCallChanges = PublishSubject.create<Int>()
@@ -24,8 +26,8 @@ class RaceSelectionViewModel(val supplier: CharacterRaceInfoSupplier) : Selectio
         loadRaceOptions()
     }
 
-    override fun updateOptions(options: List<CharacterRaceDirectory>) {
-        this.options.onNext(options)
+    private fun updateOptions(update: List<CharacterRaceDirectory>) {
+        this.optionsSubject.onNext(update)
     }
 
     override fun select(option: CharacterRaceDirectory) {

@@ -16,6 +16,7 @@ import com.tendebit.dungeonmaster.core.model.StoredCharacter
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -27,20 +28,22 @@ import kotlin.collections.ArrayList
 // TODO: Class may be best split so that page logic is handled by a separate ViewModel, while this class
 // TODO: should just coordinate passing data from one ViewModel to another when needed
 class CharacterCreationViewModel(val db: DnDDatabase, val pagesViewModel: CharacterCreationPagesViewModel,
-                                 val listViewModel: CharacterListViewModel, val raceViewModel: RaceSelectionViewModel,
-                                 val classViewModel: ClassSelectionViewModel, val proficiencyViewModel: ProficiencySelectionViewModel,
-                                 val customInfoViewModel: CustomInfoEntryViewModel) {
+                                 val listViewModel: CharacterListViewModel, var raceViewModel: RaceSelectionViewModel,
+                                 var classViewModel: ClassSelectionViewModel, var proficiencyViewModel: ProficiencySelectionViewModel,
+                                 var customInfoViewModel: CustomInfoEntryViewModel) {
 
     var job: Job? = null
     val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
     var customInfo = CustomInfo()
-    var isLoading = false
-    var isComplete = false
 
     private val stateSubject = BehaviorSubject.create<CharacterCreationViewModel>()
+    private val loadingSubject = BehaviorSubject.create<Boolean>()
+    private val completionSubject = PublishSubject.create<Boolean>()
     val changes = stateSubject as Observable<CharacterCreationViewModel>
+    val loadingChanges = loadingSubject as Observable<Boolean>
+    val completionChanges = completionSubject as Observable<Boolean>
 
     private val disposables = CompositeDisposable()
 
@@ -55,7 +58,7 @@ class CharacterCreationViewModel(val db: DnDDatabase, val pagesViewModel: Charac
                 networkCallObservables) { counts: Array<out Any> -> counts.map {
             when(it) {
                 is Int -> it
-                else -> throw IllegalStateException("Call counts should be Ints. Got " + it.javaClass.simpleName + " instead")
+                else -> throw IllegalStateException("Call counts should be Ints. Got ${it.javaClass.simpleName} instead")
             }
         }.sum()
         }
@@ -78,11 +81,11 @@ class CharacterCreationViewModel(val db: DnDDatabase, val pagesViewModel: Charac
     fun saveCharacter(db : DnDDatabase) {
         // TODO: should probably have a separate class to handle this
         job = launch(UI) {
-            isLoading = true
-            notifyDataChanged()
+            loadingSubject.onNext(true)
             try {
                 async(parent = job) {
                     val characterToSave = StoredCharacter(
+                            id = UUID.randomUUID().toString(),
                             name = customInfo.name!!.toString(),
                             heightFeet = customInfo.heightFeet,
                             heightInches = customInfo.heightInches,
@@ -94,15 +97,13 @@ class CharacterCreationViewModel(val db: DnDDatabase, val pagesViewModel: Charac
                     )
                     db.characterDao().storeCharacter(characterToSave)
                 }.await()
-                isComplete = true
+                completionSubject.onNext(true)
             } catch (e: Exception) {
                 Log.e("CHARACTER_CREATION", "Got an error while trying to save character", e)
             } finally {
-                isLoading = false
-                notifyDataChanged()
+                loadingSubject.onNext(false)
             }
         }
-        notifyDataChanged()
     }
 
     fun cancelAllSubscriptions() {
@@ -111,8 +112,6 @@ class CharacterCreationViewModel(val db: DnDDatabase, val pagesViewModel: Charac
             job?.cancelAndJoin()
         }
     }
-
-    // TODO: functionality to clear state (will require substates to expose similar functionality)
 
     private fun onNewCharacterCreationStarted() {
         pagesViewModel.startNewCharacterCreation()
@@ -174,8 +173,7 @@ class CharacterCreationViewModel(val db: DnDDatabase, val pagesViewModel: Charac
 
     private fun onNetworkCallCountChanged(count: Int) {
         Log.d("CHARACTER_CREATION", "There are now $count async calls awaiting a response")
-        isLoading = count > 0
-        notifyDataChanged()
+        loadingSubject.onNext(count > 0)
     }
 
     private fun notifyDataChanged() {

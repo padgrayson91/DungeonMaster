@@ -6,6 +6,7 @@ import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.C
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
 import com.tendebit.dungeonmaster.core.model.SelectionState
+import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.Job
@@ -17,7 +18,8 @@ import kotlinx.coroutines.experimental.launch
 class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) : SelectionState<CharacterClassDirectory, CharacterClassInfo>, NetworkUIState {
     private var job: Job? = null
 
-    override val options = BehaviorSubject.create<List<CharacterClassDirectory>>()
+    val optionsSubject = BehaviorSubject.create<List<CharacterClassDirectory>>()
+    override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)
     override val selection = BehaviorSubject.create<CharacterClassInfo>()
     private var previousSelection: CharacterClassInfo? = null
     override var activeNetworkCalls = 0
@@ -26,8 +28,8 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
         loadClassOptions()
     }
 
-    override fun updateOptions(options: List<CharacterClassDirectory>) {
-        this.options.onNext(options)
+    private fun updateOptions(update: List<CharacterClassDirectory>) {
+        this.optionsSubject.onNext(update)
     }
 
     override fun select(option: CharacterClassDirectory) {
