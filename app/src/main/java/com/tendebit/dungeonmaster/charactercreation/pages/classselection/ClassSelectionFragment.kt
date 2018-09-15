@@ -15,7 +15,9 @@ import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.C
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
-
+/**
+ * UI fragment for character class selection
+ */
 class ClassSelectionFragment : Fragment() {
 
     private lateinit var subscriptions: CompositeDisposable

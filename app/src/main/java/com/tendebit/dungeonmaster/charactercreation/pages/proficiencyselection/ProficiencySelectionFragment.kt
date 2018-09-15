@@ -15,6 +15,9 @@ import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.m
 import io.reactivex.disposables.CompositeDisposable
 import java.text.MessageFormat
 
+/**
+ * UI Fragment for making selections from a single proficiency group
+ */
 class ProficiencySelectionFragment : Fragment() {
 
     private lateinit var subscriptions: CompositeDisposable
@@ -67,7 +70,7 @@ class ProficiencySelectionFragment : Fragment() {
     }
 
 
-    private fun updateViewForSelections(selections: Collection<CharacterProficiencyDirectory>, groups: List<ProficiencyGroupSelectionState>) {
+    private fun updateViewForSelections(selections: Collection<CharacterProficiencyDirectory>, groups: List<ProficiencyGroupSelectionViewModel>) {
         val localState = groups[groupId]
         val group = localState.proficiencyGroup
         chipGroup.removeAllViews()

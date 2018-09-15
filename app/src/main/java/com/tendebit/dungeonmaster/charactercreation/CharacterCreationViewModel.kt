@@ -25,8 +25,11 @@ import kotlinx.coroutines.experimental.launch
 import java.util.*
 import kotlin.collections.ArrayList
 
-// TODO: Class may be best split so that page logic is handled by a separate ViewModel, while this class
-// TODO: should just coordinate passing data from one ViewModel to another when needed
+/**
+ * Top-level ViewModel for character creation.  Contains references to ViewModels for each individual page
+ * of the character creation workflow so that information about the state of those pages can be queried/updated
+ * from anywhere
+ */
 class CharacterCreationViewModel(val db: DnDDatabase, val pagesViewModel: CharacterCreationPagesViewModel,
                                  val listViewModel: CharacterListViewModel, var raceViewModel: RaceSelectionViewModel,
                                  var classViewModel: ClassSelectionViewModel, var proficiencyViewModel: ProficiencySelectionViewModel,

@@ -15,11 +15,14 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
+/**
+ * ViewModel for character class selection. Exposes functionality to read the list of options and make a selection
+ */
 class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) : SelectionViewModel<CharacterClassDirectory, CharacterClassInfo>, NetworkUIState {
     private var job: Job? = null
 
-    val optionsSubject = BehaviorSubject.create<List<CharacterClassDirectory>>()
-    override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)
+    private val optionsSubject = BehaviorSubject.create<List<CharacterClassDirectory>>()
+    override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)!!
     override val selection = BehaviorSubject.create<CharacterClassInfo>()
     private var previousSelection: CharacterClassInfo? = null
     override var activeNetworkCalls = 0

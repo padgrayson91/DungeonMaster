@@ -23,7 +23,9 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 
-
+/**
+ * UI fragment for displaying the character creation workflow to the user
+ */
 class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
     private lateinit var adapter: CharacterCreationPagerAdapter
     private lateinit var viewPager: ViewPager

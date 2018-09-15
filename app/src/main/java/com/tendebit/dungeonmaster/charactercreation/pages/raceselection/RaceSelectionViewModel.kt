@@ -14,9 +14,12 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
-class RaceSelectionViewModel(val supplier: CharacterRaceInfoSupplier) : SelectionViewModel<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState {
-    val optionsSubject = BehaviorSubject.create<List<CharacterRaceDirectory>>()
-    override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)
+/**
+ * ViewModel for character race selection
+ */
+class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : SelectionViewModel<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState {
+    private val optionsSubject = BehaviorSubject.create<List<CharacterRaceDirectory>>()
+    override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)!!
     override val selection = BehaviorSubject.create<CharacterRaceDirectory>()
     override var activeNetworkCalls = 0
     override val networkCallChanges = PublishSubject.create<Int>()

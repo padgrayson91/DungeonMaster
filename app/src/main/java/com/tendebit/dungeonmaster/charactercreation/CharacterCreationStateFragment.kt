@@ -14,6 +14,12 @@ import com.tendebit.dungeonmaster.core.model.DnDDatabase
 
 const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
 
+/**
+ * Headless fragment which maintains references to the ViewModels for character creation.  Because this
+ * fragment is headless, it does not get destroyed/recreated when the UI is redrawn, so the data will
+ * be preserved here across orientation change.  UI components can then access this fragment via the
+ * fragment manager at any time in order to read/write data from the ViewModels
+ */
 class CharacterCreationStateFragment : Fragment() {
 
 

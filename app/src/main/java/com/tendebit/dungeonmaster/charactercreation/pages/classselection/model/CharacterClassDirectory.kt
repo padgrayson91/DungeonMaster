@@ -3,6 +3,9 @@ package com.tendebit.dungeonmaster.charactercreation.pages.classselection.model
 import com.google.gson.annotations.SerializedName
 import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
+/**
+ * Model object corresponding to the basic class info sent by the dnd5e API
+ */
 class CharacterClassDirectory : SelectableElement {
     @SerializedName("name")
     lateinit var name: String

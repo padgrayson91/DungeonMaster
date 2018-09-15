@@ -16,6 +16,9 @@ import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.m
 import com.tendebit.dungeonmaster.core.view.adapter.SimpleElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
+/**
+ * UI Fragment for character confirmation/review
+ */
 class CharacterConfirmationFragment : Fragment() {
     private lateinit var characterNameText: TextView
     private lateinit var raceNameText: TextView

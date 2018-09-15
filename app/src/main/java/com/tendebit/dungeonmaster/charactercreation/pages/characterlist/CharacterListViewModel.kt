@@ -12,6 +12,9 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
+/**
+ * ViewModel for the character list, which exposes functionality to read/update saved characters
+ */
 class CharacterListViewModel(private val db : DnDDatabase) : SelectionViewModel<DisplayedCharacter, DisplayedCharacter> {
 
     override lateinit var options: Flowable<List<DisplayedCharacter>>

@@ -10,6 +10,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 
+/**
+ * Abstraction + implementation of a means of retrieving race info data from the dnd5e API
+ */
 interface CharacterRaceInfoSupplier {
     suspend fun getCharacterRaces() : CharacterRaceManifest
 

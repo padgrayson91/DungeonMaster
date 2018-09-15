@@ -16,6 +16,9 @@ import com.tendebit.dungeonmaster.core.viewmodel.DisplayedCharacter
 import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import io.reactivex.disposables.CompositeDisposable
 
+/**
+ * UI Fragment for the list of saved characters
+ */
 class CharacterListFragment : Fragment() {
 
     private lateinit var stateFragment: CharacterCreationStateFragment

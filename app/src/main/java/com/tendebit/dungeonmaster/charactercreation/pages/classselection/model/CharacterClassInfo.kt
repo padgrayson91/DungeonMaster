@@ -5,6 +5,9 @@ import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.m
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyGroup
 import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
+/**
+ * Model object corresponding to the detailed character class info provided by the dnd5e API
+ */
 class CharacterClassInfo : SelectableElement {
     lateinit var name: String
     lateinit var url: String

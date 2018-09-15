@@ -2,6 +2,9 @@ package com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.
 
 import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
+/**
+ * Model representing basic proficiency info as provided by the dnd5e API
+ */
 class CharacterProficiencyDirectory : SelectableElement, Comparable<CharacterProficiencyDirectory> {
     lateinit var name: String
     lateinit var url: String

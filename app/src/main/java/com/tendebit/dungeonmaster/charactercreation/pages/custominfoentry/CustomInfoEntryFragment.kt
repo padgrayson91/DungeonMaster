@@ -14,6 +14,9 @@ import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragme
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.CustomInfo
 
+/**
+ * UI Fragment for enter character biographical information
+ */
 class CustomInfoEntryFragment : Fragment() {
     private lateinit var nameEntry: TextInputLayout
     private lateinit var heightFeetEntry: NumberPicker

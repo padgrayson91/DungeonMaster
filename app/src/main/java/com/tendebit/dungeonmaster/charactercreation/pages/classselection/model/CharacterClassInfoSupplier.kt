@@ -10,6 +10,9 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 
+/**
+ * Abstraction + Implementation of a means of retrieving character class data from the dnd5e API
+ */
 interface CharacterClassInfoSupplier {
     suspend fun getCharacterClasses() : CharacterClassManifest
     suspend fun getClassInfo(directory: CharacterClassDirectory) : CharacterClassInfo

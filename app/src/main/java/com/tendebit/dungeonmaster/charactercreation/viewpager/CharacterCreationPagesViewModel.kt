@@ -5,6 +5,10 @@ import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.Custom
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPageCollection
 import io.reactivex.subjects.BehaviorSubject
 
+/**
+ * ViewModel for the current state of the workflow page progression.  Contains a [CharacterCreationPageCollection]
+ * which provides specific details about pages and workflow progress
+ */
 class CharacterCreationPagesViewModel {
 
     var pageCollection = CharacterCreationPageCollection(arrayListOf(CharacterCreationPageDescriptor(

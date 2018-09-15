@@ -1,5 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
+/**
+ * Provides information about a page in the creation workflow, such as the type of information collected
+ * by the page as well as some metadata about the page
+ */
+// TODO: this class should contain info about actions which can be performed on the page
 class CharacterCreationPageDescriptor(val type: PageType, val indexInGroup: Int = 0,
                                       val isLastPage: Boolean = false) {
     enum class PageType {

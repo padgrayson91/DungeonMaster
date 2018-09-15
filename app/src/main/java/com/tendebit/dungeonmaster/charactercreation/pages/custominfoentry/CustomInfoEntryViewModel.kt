@@ -4,6 +4,10 @@ import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 
+/**
+ * ViewModel for character biographical information entry which exposes methods to update various
+ * aspects of the biographical info
+ */
 class CustomInfoEntryViewModel {
     private val stateSubject = BehaviorSubject.create<CustomInfoEntryViewModel>()
     val changes = stateSubject as Observable<CustomInfoEntryViewModel>
@@ -40,7 +44,7 @@ class CustomInfoEntryViewModel {
 
 
 
-    fun notifyDataChanged() {
+    private fun notifyDataChanged() {
         stateSubject.onNext(this)
     }
 

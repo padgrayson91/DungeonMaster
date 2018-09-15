@@ -1,5 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model
 
+/**
+ * Model for biographical information about a character such as name, height, and weight
+ */
 class CustomInfo {
     companion object {
         val MIN_HEIGHT_FEET = 1

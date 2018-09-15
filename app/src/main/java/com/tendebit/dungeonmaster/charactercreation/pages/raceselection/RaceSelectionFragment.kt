@@ -14,6 +14,9 @@ import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.Ch
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import io.reactivex.disposables.CompositeDisposable
 
+/**
+ * UI Fragment for character race selection
+ */
 class RaceSelectionFragment : Fragment() {
 
     private lateinit var subscriptions: CompositeDisposable
