@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager.widget.ViewPager
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPageCollection
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPagerAdapter
@@ -82,7 +83,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
 
     override fun onResume() {
         super.onResume()
-        registerSubscriptions()
+        registerSubscriptions(stateFragment.viewModel)
     }
 
     override fun onBackPressed() : Boolean {
@@ -93,22 +94,18 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         return false
     }
 
-    private fun registerSubscriptions() {
+    private fun registerSubscriptions(viewModel: CharacterCreationViewModel) {
         subscription = CompositeDisposable()
         subscription.addAll(
-                stateFragment.viewModel.loadingChanges.subscribe { updateLoadingDialog(it) },
-                stateFragment.viewModel.completionChanges.distinctUntilChanged().filter{it}.subscribe{ resetState() },
-                stateFragment.viewModel.pagesViewModel.pageChanges.subscribe { updatePagesFromViewModel(it) }
+                viewModel.loadingChanges.subscribe { updateLoadingDialog(it) },
+                viewModel.completionChanges.distinctUntilChanged().filter{it}.subscribe{ resetState() },
+                viewModel.pagesViewModel.pageChanges.subscribe { updatePagesFromViewModel(it) }
         )
     }
 
     private fun resetState() {
         subscription.dispose()
-        stateFragment.reset()
-        launch(UI) {
-            withContext(DefaultDispatcher) { Thread.sleep(1000) }
-            registerSubscriptions()
-        }
+        stateFragment.reset {registerSubscriptions(it)}
     }
 
     private fun updatePagesFromViewModel(pageCollection: CharacterCreationPageCollection) {

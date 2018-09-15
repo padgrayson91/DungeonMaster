@@ -4,16 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.core.view.SelectableCardViewHolder
-import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
 class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableElement>(val viewModel: SelectionViewModel<T, SelectedType>) : RecyclerView.Adapter<SelectableCardViewHolder<T>>() {
-    val itemActions = PublishSubject.create<Pair<T, List<ItemAction>>>()
     private val disposable = CompositeDisposable()
     private val options = ArrayList<T>()
     private var selection: SelectedType? = null
@@ -44,7 +41,7 @@ class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableEl
 
     override fun onBindViewHolder(holder: SelectableCardViewHolder<T>, position: Int) {
         holder.populate(options[position], selection)
-        holder.itemActions.subscribe(itemActions)
+        disposable.add(holder.itemActions.subscribe {viewModel.performActions(it.first, it.second)})
     }
 
     fun clear() {

@@ -13,14 +13,12 @@ import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
-import io.reactivex.disposables.CompositeDisposable
 
 /**
  * UI fragment for character class selection
  */
 class ClassSelectionFragment : Fragment() {
 
-    private lateinit var subscriptions: CompositeDisposable
     private lateinit var recycler: RecyclerView
     private lateinit var stateProvider: CharacterCreationStateFragment
     private lateinit var adapter: SelectionElementAdapter<CharacterClassDirectory, CharacterClassInfo>
@@ -35,7 +33,6 @@ class ClassSelectionFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        subscriptions = CompositeDisposable()
         val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
         if (addedFragment is CharacterCreationStateFragment) {
             stateProvider = addedFragment
@@ -46,15 +43,10 @@ class ClassSelectionFragment : Fragment() {
         val state = stateProvider.viewModel.classViewModel
         adapter = SelectionElementAdapter(state)
         recycler.adapter = adapter
-        subscriptions.addAll(
-                // TODO: shouldn't blindly assume the action is a select action
-                adapter.itemActions.subscribe{state.select(it.first)}
-        )
     }
 
     override fun onPause() {
         super.onPause()
-        subscriptions.dispose()
         adapter.clear()
     }
 

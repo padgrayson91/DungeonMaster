@@ -5,6 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.C
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
+import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.BehaviorSubject
@@ -31,11 +32,28 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
         loadClassOptions()
     }
 
+    override fun performActions(target: CharacterClassDirectory, actions: List<ItemAction>) {
+        for (action in actions) {
+            when(action) {
+                ItemAction.HIGHLIGHT -> Log.d("CHARACTER_CREATION", "Highlighted class")
+                ItemAction.SELECT -> select(target)
+                else -> throw throw RuntimeException(
+                        "${this::class.java.simpleName} unable to perform action ${action.name}")
+            }
+        }
+    }
+
+    override fun cancelAllCalls() {
+        launch(UI) {
+            job?.cancelAndJoin()
+        }
+    }
+
     private fun updateOptions(update: List<CharacterClassDirectory>) {
         this.optionsSubject.onNext(update)
     }
 
-    override fun select(option: CharacterClassDirectory) {
+    private fun select(option: CharacterClassDirectory) {
 
         if (option.primaryId() != previousSelection?.primaryId()) {
             job = launch(UI) {
@@ -57,18 +75,11 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
         }
     }
 
-    override fun cancelAllCalls() {
-        launch(UI) {
-            job?.cancelAndJoin()
-        }
-    }
-
     private fun loadClassOptions() {
         job = launch(UI) {
             try {
                 onNetworkCallStart()
                 val result = async(parent = job) {  supplier.getCharacterClasses() }.await()
-                Log.d("CHARACTER_CREATION", "Got " + result.characterClassDirectories.size + " character classes. The first one is " + result.characterClassDirectories[0].name)
                 updateOptions(result.characterClassDirectories)
             } catch (e: Exception) {
                 Log.e("CHARACTER_CREATION", "Got an error", e)

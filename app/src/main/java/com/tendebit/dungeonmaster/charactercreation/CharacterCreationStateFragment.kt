@@ -11,6 +11,9 @@ import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.RaceSele
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPagesViewModel
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 
 const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
 
@@ -51,17 +54,23 @@ class CharacterCreationStateFragment : Fragment() {
         clear()
     }
 
-    // TODO: this should be done asynchronously, then the UI shouldn't need a delay
-    fun reset() {
-        clear()
+    fun reset(onComplete: (vm: CharacterCreationViewModel) -> Unit) {
+        launch(UI) {
+            val result = async {
+                clear()
 
-        pagesViewModel = CharacterCreationPagesViewModel()
-        raceViewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(db))
-        classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db))
-        proficiencyViewModel = ProficiencySelectionViewModel()
-        customInfoViewModel = CustomInfoEntryViewModel()
-        viewModel = CharacterCreationViewModel(db, pagesViewModel, savedCharacterListViewModel, raceViewModel,
-                classViewModel, proficiencyViewModel, customInfoViewModel)
+                pagesViewModel = CharacterCreationPagesViewModel()
+                raceViewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(db))
+                classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db))
+                proficiencyViewModel = ProficiencySelectionViewModel()
+                customInfoViewModel = CustomInfoEntryViewModel()
+                viewModel = CharacterCreationViewModel(db, pagesViewModel, savedCharacterListViewModel, raceViewModel,
+                        classViewModel, proficiencyViewModel, customInfoViewModel)
+                Thread.sleep(500)
+                return@async viewModel
+            }.await()
+            onComplete(result)
+        }
     }
 
     private fun clear() {

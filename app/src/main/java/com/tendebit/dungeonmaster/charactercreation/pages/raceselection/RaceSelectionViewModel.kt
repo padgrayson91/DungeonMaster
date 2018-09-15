@@ -4,6 +4,7 @@ import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
+import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.BehaviorSubject
@@ -29,18 +30,30 @@ class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : 
         loadRaceOptions()
     }
 
-    private fun updateOptions(update: List<CharacterRaceDirectory>) {
-        this.optionsSubject.onNext(update)
-    }
-
-    override fun select(option: CharacterRaceDirectory) {
-        this.selection.onNext(option)
+    override fun performActions(target: CharacterRaceDirectory, actions: List<ItemAction>) {
+        for (action in actions) {
+            when(action) {
+                ItemAction.HIGHLIGHT -> Log.d("CHARACTER_CREATION", "Highlighted race")
+                ItemAction.SELECT -> select(target)
+                else -> throw throw RuntimeException(
+                        "${this::class.java.simpleName} unable to perform action ${action.name}")
+            }
+        }
     }
 
     override fun cancelAllCalls() {
         launch(UI) {
             job?.cancelAndJoin()
         }
+    }
+
+
+    private fun updateOptions(update: List<CharacterRaceDirectory>) {
+        this.optionsSubject.onNext(update)
+    }
+
+    private fun select(option: CharacterRaceDirectory) {
+        this.selection.onNext(option)
     }
 
     private fun loadRaceOptions() {

@@ -13,8 +13,6 @@ import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragme
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 import com.tendebit.dungeonmaster.core.viewmodel.DisplayedCharacter
-import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
-import io.reactivex.disposables.CompositeDisposable
 
 /**
  * UI Fragment for the list of saved characters
@@ -23,7 +21,6 @@ class CharacterListFragment : Fragment() {
 
     private lateinit var stateFragment: CharacterCreationStateFragment
     private lateinit var characterList: RecyclerView
-    private lateinit var subscriptions: CompositeDisposable
     private lateinit var fab: FloatingActionButton
     private lateinit var adapter: SelectionElementAdapter<DisplayedCharacter, DisplayedCharacter>
 
@@ -39,16 +36,6 @@ class CharacterListFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        pageEnter()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        pageExit()
-    }
-
-    private fun pageEnter() {
-        subscriptions = CompositeDisposable()
         val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
         if (addedFragment is CharacterCreationStateFragment) {
             stateFragment = addedFragment
@@ -61,22 +48,10 @@ class CharacterListFragment : Fragment() {
         adapter = SelectionElementAdapter(viewModel)
         characterList.adapter = adapter
         fab.setOnClickListener { viewModel.createNewCharacter() }
-        subscriptions.addAll(
-                adapter.itemActions.subscribe { handleItemActions(viewModel, it.first, it.second) }
-        )
     }
 
-    private fun handleItemActions(viewModel: CharacterListViewModel, character: DisplayedCharacter, actions: List<ItemAction>) {
-        for (action in actions) {
-            when (action) {
-                ItemAction.SELECT -> viewModel.select(character)
-                ItemAction.DELETE -> viewModel.delete(character)
-                else -> throw RuntimeException("User requested action ${action.name} but no action could be performed")
-            }
-        }
-    }
-
-    private fun pageExit() {
-        subscriptions.dispose()
+    override fun onPause() {
+        super.onPause()
+        adapter.clear()
     }
 }

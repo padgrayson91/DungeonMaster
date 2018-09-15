@@ -8,5 +8,5 @@ interface SelectionViewModel<T : SelectableElement, SelectedType: SelectableElem
     val options: Flowable<List<T>>
     val selection: Observable<SelectedType>
 
-    fun select(option: T)
+    fun performActions(target: T, actions: List<ItemAction>)
 }

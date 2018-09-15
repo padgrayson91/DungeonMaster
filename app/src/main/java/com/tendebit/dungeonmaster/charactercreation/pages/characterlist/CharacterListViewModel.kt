@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation.pages.characterlist
 
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.viewmodel.DisplayedCharacter
+import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
@@ -27,11 +28,22 @@ class CharacterListViewModel(private val db : DnDDatabase) : SelectionViewModel<
         attemptLoadSavedCharactersFromDb()
     }
 
-    override fun select(option: DisplayedCharacter) {
+    override fun performActions(target: DisplayedCharacter, actions: List<ItemAction>) {
+        for (action in actions) {
+            when (action) {
+                ItemAction.SELECT -> select(target)
+                ItemAction.DELETE -> delete(target)
+                else -> throw RuntimeException(
+                        "${CharacterListViewModel::class.java.simpleName} unable to perform action ${action.name}")
+            }
+        }
+    }
+
+    private fun select(option: DisplayedCharacter) {
         selection.onNext(option)
     }
 
-    fun delete(option: DisplayedCharacter) {
+    private fun delete(option: DisplayedCharacter) {
         launch { db.characterDao().deleteCharacter(option.storedCharacter) }
     }
 
