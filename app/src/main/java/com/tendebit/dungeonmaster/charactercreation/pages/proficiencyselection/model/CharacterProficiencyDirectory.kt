@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model
 
-import com.tendebit.dungeonmaster.core.model.SelectableElement
+import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
 class CharacterProficiencyDirectory : SelectableElement, Comparable<CharacterProficiencyDirectory> {
     lateinit var name: String

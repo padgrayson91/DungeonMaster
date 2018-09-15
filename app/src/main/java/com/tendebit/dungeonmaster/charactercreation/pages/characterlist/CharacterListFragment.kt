@@ -11,8 +11,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.core.model.StoredCharacter
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
+import com.tendebit.dungeonmaster.core.viewmodel.DisplayedCharacter
+import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import io.reactivex.disposables.CompositeDisposable
 
 class CharacterListFragment : Fragment() {
@@ -21,7 +22,7 @@ class CharacterListFragment : Fragment() {
     private lateinit var characterList: RecyclerView
     private lateinit var subscriptions: CompositeDisposable
     private lateinit var fab: FloatingActionButton
-    private lateinit var adapter: SelectionElementAdapter<StoredCharacter, StoredCharacter>
+    private lateinit var adapter: SelectionElementAdapter<DisplayedCharacter, DisplayedCharacter>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_list, container, false)
@@ -53,13 +54,23 @@ class CharacterListFragment : Fragment() {
         }
 
 
-        val state = stateFragment.viewModel.listViewModel
-        adapter = SelectionElementAdapter(state)
+        val viewModel = stateFragment.viewModel.listViewModel
+        adapter = SelectionElementAdapter(viewModel)
         characterList.adapter = adapter
-        fab.setOnClickListener { state.createNewCharacter() }
+        fab.setOnClickListener { viewModel.createNewCharacter() }
         subscriptions.addAll(
-                adapter.itemClicks.subscribe { state.select(it) }
+                adapter.itemActions.subscribe { handleItemActions(viewModel, it.first, it.second) }
         )
+    }
+
+    private fun handleItemActions(viewModel: CharacterListViewModel, character: DisplayedCharacter, actions: List<ItemAction>) {
+        for (action in actions) {
+            when (action) {
+                ItemAction.SELECT -> viewModel.select(character)
+                ItemAction.DELETE -> viewModel.delete(character)
+                else -> throw RuntimeException("User requested action ${action.name} but no action could be performed")
+            }
+        }
     }
 
     private fun pageExit() {

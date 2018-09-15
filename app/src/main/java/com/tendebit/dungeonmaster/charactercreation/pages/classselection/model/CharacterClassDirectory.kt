@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.classselection.model
 
 import com.google.gson.annotations.SerializedName
-import com.tendebit.dungeonmaster.core.model.SelectableElement
+import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
 class CharacterClassDirectory : SelectableElement {
     @SerializedName("name")

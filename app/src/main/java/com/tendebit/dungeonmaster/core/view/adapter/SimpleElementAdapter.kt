@@ -3,8 +3,8 @@ package com.tendebit.dungeonmaster.core.view.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tendebit.dungeonmaster.core.model.DisplayableElement
 import com.tendebit.dungeonmaster.core.view.SimpleTextViewHolder
+import com.tendebit.dungeonmaster.core.viewmodel.DisplayableElement
 
 class SimpleElementAdapter<T : DisplayableElement> : RecyclerView.Adapter<SimpleTextViewHolder<T>>() {
     private val items = ArrayList<T>()

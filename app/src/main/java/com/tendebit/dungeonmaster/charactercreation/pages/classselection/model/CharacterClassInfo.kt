@@ -3,7 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation.pages.classselection.model
 import com.google.gson.annotations.SerializedName
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyGroup
-import com.tendebit.dungeonmaster.core.model.SelectableElement
+import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
 class CharacterClassInfo : SelectableElement {
     lateinit var name: String

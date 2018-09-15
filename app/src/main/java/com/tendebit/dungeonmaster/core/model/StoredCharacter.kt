@@ -16,14 +16,7 @@ class StoredCharacter(
     @ColumnInfo(name = "weight") var weight: Int,
     @ColumnInfo(name = "proficiencies") var proficiencies : List<CharacterProficiencyDirectory>,
     @ColumnInfo(name = "race") var race: CharacterRaceDirectory,
-    @ColumnInfo(name = "class") var characterClass: CharacterClassInfo) : SelectableElement {
-    override fun primaryId(): String {
-        return id
-    }
-
-    override fun primaryText(): String {
-        return name
-    }
+    @ColumnInfo(name = "class") var characterClass: CharacterClassInfo) {
 
     override fun equals(other: Any?): Boolean {
         return other is StoredCharacter &&

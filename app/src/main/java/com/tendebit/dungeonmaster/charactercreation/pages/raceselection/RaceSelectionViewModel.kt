@@ -4,7 +4,7 @@ import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
-import com.tendebit.dungeonmaster.core.model.SelectionViewModel
+import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject

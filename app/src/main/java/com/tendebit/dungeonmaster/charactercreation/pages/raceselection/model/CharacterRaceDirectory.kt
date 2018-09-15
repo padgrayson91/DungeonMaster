@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model
 
-import com.tendebit.dungeonmaster.core.model.SelectableElement
+import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
 class CharacterRaceDirectory : SelectableElement {
     lateinit var name: String

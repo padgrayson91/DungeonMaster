@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.core.model
+package com.tendebit.dungeonmaster.core.viewmodel
 
 import io.reactivex.Flowable
 import io.reactivex.Observable

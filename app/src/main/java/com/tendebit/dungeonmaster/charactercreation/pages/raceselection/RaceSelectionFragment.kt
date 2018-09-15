@@ -44,7 +44,8 @@ class RaceSelectionFragment : Fragment() {
         adapter = SelectionElementAdapter(state)
         recycler.adapter = adapter
         subscriptions.addAll(
-                adapter.itemClicks.subscribe{state.select(it)}
+                // TODO: shouldn't blindly assume the action is a select action
+                adapter.itemActions.subscribe{state.select(it.first)}
         )
     }
 

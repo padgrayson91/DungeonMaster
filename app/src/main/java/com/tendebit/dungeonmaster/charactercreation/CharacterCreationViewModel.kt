@@ -65,7 +65,7 @@ class CharacterCreationViewModel(val db: DnDDatabase, val pagesViewModel: Charac
 
         disposables.addAll(
                 activeCallCountForChildren.subscribe { onNetworkCallCountChanged(it) },
-                listViewModel.selection.subscribe { onSavedCharacterSelected(it) },
+                listViewModel.selection.subscribe { onSavedCharacterSelected(it.storedCharacter) },
                 listViewModel.newCharacterCreationStart.subscribe { onNewCharacterCreationStarted() },
                 raceViewModel.selection.subscribe { onCharacterRaceSelected(it) },
                 classViewModel.selection.subscribe { onCharacterClassSelected(it) },
