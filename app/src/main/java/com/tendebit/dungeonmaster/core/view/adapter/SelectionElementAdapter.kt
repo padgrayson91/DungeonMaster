@@ -4,24 +4,22 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.core.model.SelectableElement
-import com.tendebit.dungeonmaster.core.model.SelectionState
+import com.tendebit.dungeonmaster.core.model.SelectionViewModel
 import com.tendebit.dungeonmaster.core.view.SelectableCardViewHolder
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 
-class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableElement>(val state: SelectionState<T, SelectedType>) : RecyclerView.Adapter<SelectableCardViewHolder<T>>() {
+class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableElement>(val viewModel: SelectionViewModel<T, SelectedType>) : RecyclerView.Adapter<SelectableCardViewHolder<T>>() {
     val itemClicks = PublishSubject.create<T>()
     private val disposable = CompositeDisposable()
     private val options = ArrayList<T>()
     private var selection: SelectedType? = null
 
     init {
-        disposable.addAll(
-                state.options.subscribe { updateOptions(it) },
-                state.selection.subscribe { updateSelection(it) }
-                )
+        disposable.add(viewModel.options.subscribe { updateOptions(it) })
+        disposable.add(viewModel.selection.subscribe { updateSelection(it) })
     }
 
     private fun updateOptions(options: List<T>) {

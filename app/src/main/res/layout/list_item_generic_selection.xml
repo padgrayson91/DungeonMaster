@@ -11,14 +11,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:background="@android:color/darker_gray">
 
-    <TextView
-        android:id="@+id/class_name"
-        android:layout_margin="@dimen/padding_large"
-        android:gravity="center"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/text_size_xlarge"
-        android:textStyle="bold"
-        tools:text="Selectable Item"/>
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/primary_item_text"
+            android:layout_margin="@dimen/padding_large"
+            android:gravity="center"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_xlarge"
+            android:textStyle="bold"
+            tools:text="Selectable Item With text that is very long"/>
+
+        <ImageButton
+            android:id="@+id/action_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/list_action_icon_height"
+            android:minWidth="@dimen/list_action_icon_width"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:paddingStart="@dimen/padding_small"
+            android:paddingEnd="-8dp"
+            android:paddingTop="@dimen/padding_small"
+            android:paddingBottom="@dimen/padding_large"
+            android:visibility="gone"
+            android:contentDescription="@string/delete_character_button_accessible"
+            tools:src="@drawable/ic_material_clear_button"/>
+
+    </RelativeLayout>
 
 </androidx.cardview.widget.CardView>

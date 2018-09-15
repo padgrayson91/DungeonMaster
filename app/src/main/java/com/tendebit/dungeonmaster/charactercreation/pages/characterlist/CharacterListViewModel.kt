@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.characterlist
 
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
-import com.tendebit.dungeonmaster.core.model.SelectionState
+import com.tendebit.dungeonmaster.core.model.SelectionViewModel
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
 import io.reactivex.Flowable
 import io.reactivex.disposables.Disposable
@@ -12,7 +12,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
-class CharacterListViewModel(private val db : DnDDatabase) : SelectionState<StoredCharacter, StoredCharacter> {
+class CharacterListViewModel(private val db : DnDDatabase) : SelectionViewModel<StoredCharacter, StoredCharacter> {
 
     override lateinit var options: Flowable<List<StoredCharacter>>
     override val selection = BehaviorSubject.create<StoredCharacter>()

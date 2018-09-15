@@ -17,4 +17,8 @@
     <string name="next">Next</string>
     <string name="confirm">Confirm</string>
     <string name="back">Back</string>
+
+    <!-- Accessibility -->
+    <string name="add_character_button_accessible">Create New Character</string>
+    <string name="delete_character_button_accessible">Delete Character</string>
 </resources>

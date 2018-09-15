@@ -11,7 +11,7 @@ import com.tendebit.dungeonmaster.core.model.SelectableElement
 import io.reactivex.subjects.PublishSubject
 
 class SelectableCardViewHolder<T : SelectableElement>(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_generic_selection, parent, false)) {
-    private val classNameText = itemView.findViewById<TextView>(R.id.class_name)
+    private val classNameText = itemView.findViewById<TextView>(R.id.primary_item_text)
     val itemSelection = PublishSubject.create<T>()
 
     fun populate(element: T, currentlySelected: SelectableElement?) {

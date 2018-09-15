@@ -24,9 +24,11 @@ class CharacterListFragment : Fragment() {
     private lateinit var adapter: SelectionElementAdapter<StoredCharacter, StoredCharacter>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val root = inflater.inflate(R.layout.fragment_character_list, container, false)
-        characterList = root.findViewById(R.id.character_list)
-        fab = root.findViewById(R.id.new_character_btn)
+        val root = inflater.inflate(R.layout.fragment_generic_list, container, false)
+        characterList = root.findViewById(R.id.item_list)
+        fab = root.findViewById(R.id.create_new_btn)
+        fab.contentDescription = getString(R.string.add_character_button_accessible)
+        fab.show()
         characterList.layoutManager = LinearLayoutManager(activity)
         return root
     }

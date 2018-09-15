@@ -17,6 +17,6 @@
         android:layout_margin="@dimen/padding_large"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:src="@android:drawable/ic_menu_add"/>
+        android:src="@drawable/ic_material_add_button"/>
 
 </RelativeLayout>

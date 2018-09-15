@@ -25,7 +25,7 @@ class ClassSelectionFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_list, container, false)
-        recycler = root.findViewById(R.id.class_list)
+        recycler = root.findViewById(R.id.item_list)
         recycler.layoutManager = LinearLayoutManager(activity)
         return root
     }

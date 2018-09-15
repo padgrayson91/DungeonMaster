@@ -5,7 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.C
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
-import com.tendebit.dungeonmaster.core.model.SelectionState
+import com.tendebit.dungeonmaster.core.model.SelectionViewModel
 import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -15,7 +15,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
-class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) : SelectionState<CharacterClassDirectory, CharacterClassInfo>, NetworkUIState {
+class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) : SelectionViewModel<CharacterClassDirectory, CharacterClassInfo>, NetworkUIState {
     private var job: Job? = null
 
     val optionsSubject = BehaviorSubject.create<List<CharacterClassDirectory>>()

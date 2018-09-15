@@ -4,7 +4,7 @@ import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
-import com.tendebit.dungeonmaster.core.model.SelectionState
+import com.tendebit.dungeonmaster.core.model.SelectionViewModel
 import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
@@ -14,7 +14,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
-class RaceSelectionViewModel(val supplier: CharacterRaceInfoSupplier) : SelectionState<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState {
+class RaceSelectionViewModel(val supplier: CharacterRaceInfoSupplier) : SelectionViewModel<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState {
     val optionsSubject = BehaviorSubject.create<List<CharacterRaceDirectory>>()
     override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)
     override val selection = BehaviorSubject.create<CharacterRaceDirectory>()
