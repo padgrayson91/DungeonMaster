@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
+import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.CustomInfoEntryViewModel
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPageCollection
@@ -11,8 +12,13 @@ import io.reactivex.subjects.BehaviorSubject
  */
 class CharacterCreationPagesViewModel {
 
-    var pageCollection = CharacterCreationPageCollection(arrayListOf(CharacterCreationPageDescriptor(
-            CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)))
+    private companion object {
+        private val DEFAULT_FIRST_PAGE = CharacterCreationPageDescriptor(
+                CharacterCreationPageDescriptor.PageType.CHARACTER_LIST,
+                emptyList())
+    }
+
+    var pageCollection = CharacterCreationPageCollection(arrayListOf(DEFAULT_FIRST_PAGE))
     val pageChanges = BehaviorSubject.create<CharacterCreationPageCollection>()
 
     init {
@@ -24,31 +30,42 @@ class CharacterCreationPagesViewModel {
         notifyPagesChanged()
     }
 
+    fun performAction(action: PageAction) {
+        when(action) {
+            PageAction.NAVIGATE_BACK -> onPageSelected(pageCollection.currentPageIndex - 1)
+            PageAction.NAVIGATE_FORWARD -> onPageSelected(pageCollection.currentPageIndex + 1)
+            PageAction.CONFIRM -> Log.d("CHARACTER_C", "User selected save character") // TODO
+        }
+    }
+
     fun startNewCharacterCreation() {
         clearPagesAfter(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)
-        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION))
+        val actions = arrayListOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_FORWARD)
+        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION, actions))
         pageCollection.currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.RACE_SELECTION)
         notifyPagesChanged()
     }
 
     fun switchToSavedCharacterPage() {
         clearPagesAfter(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)
-        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION))
+        val actions = arrayListOf(PageAction.NAVIGATE_BACK)
+        addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION, actions))
         pageCollection.currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CONFIRMATION)
         notifyPagesChanged()
     }
 
     fun handleProficiencyStatusChange(isComplete: Boolean, isCustomInfoComplete: Boolean) {
         // If all proficiencies are selected and the next page hasn't been added already
+        val actions = arrayListOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_FORWARD)
         if (isComplete) {
             addPage(
-                    CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CUSTOM_INFO)
+                    CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CUSTOM_INFO, actions)
             )
             if (isCustomInfoComplete) {
                 // user has info from before that allows them to proceed to confirmation screen
                 addPage(
                         CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION,
-                                0, true)
+                                actions)
                 )
             }
         } else {
@@ -60,9 +77,10 @@ class CharacterCreationPagesViewModel {
     fun handleCustomDataChanged(viewModel: CustomInfoEntryViewModel) {
         if (viewModel.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
                 != CharacterCreationPageDescriptor.PageType.CONFIRMATION) {
+            val actions = arrayListOf(PageAction.NAVIGATE_BACK, PageAction.CONFIRM)
             addPage(
                     CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION,
-                            0, true)
+                            actions)
             )
             notifyPagesChanged()
         } else if(!viewModel.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
@@ -77,10 +95,11 @@ class CharacterCreationPagesViewModel {
         if (isNew) {
 
             clearPagesAfter(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
+            val actions = arrayListOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_FORWARD)
             for (i in 0 until selection.proficiencyChoices.size) {
                 addPage(
                         CharacterCreationPageDescriptor(
-                                CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION, i))
+                                CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION, actions, i))
             }
         }
         pageCollection.currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION)
@@ -90,9 +109,10 @@ class CharacterCreationPagesViewModel {
     fun handleCharacterRaceSelected(isNew: Boolean) {
         if (isNew) {
             if (findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION) == -1) {
+                val actions = arrayListOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_FORWARD)
                 addPage(
                         CharacterCreationPageDescriptor(
-                                CharacterCreationPageDescriptor.PageType.CLASS_SELECTION))
+                                CharacterCreationPageDescriptor.PageType.CLASS_SELECTION, actions))
             }
         }
         pageCollection.currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)

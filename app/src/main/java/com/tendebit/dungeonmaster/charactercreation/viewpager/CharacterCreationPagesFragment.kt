@@ -86,6 +86,11 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         registerSubscriptions(stateFragment.viewModel)
     }
 
+    override fun onPause() {
+        super.onPause()
+        subscription.dispose()
+    }
+
     override fun onBackPressed() : Boolean {
         if (viewPager.currentItem > 0) {
             viewPager.setCurrentItem(viewPager.currentItem - 1, true)
@@ -120,34 +125,72 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
             }
         }
 
+        configureActionButtonsForPage(pageCollection)
+        configured = true
+    }
+
+    private fun configureActionButtonsForPage(pageCollection: CharacterCreationPageCollection) {
+        var backAction: PageAction? = null
         val currentPage = pageCollection.getCurrentPage()
-        backButton.isEnabled = pageCollection.currentPageIndex != 0
-        backButton.visibility = if (pageCollection.currentPageIndex != 0) View.VISIBLE else View.INVISIBLE
-        forwardButton.isEnabled = currentPage.isLastPage || pageCollection.currentPageIndex < pageCollection.size - 1
-        forwardButton.text = if (currentPage.isLastPage) getString(R.string.confirm) else getString(R.string.next)
-        // TODO: page descriptors should expose logic to determine which buttons to show/what they do when clicked
-        forwardButton.setOnClickListener {
-            if (currentPage.isLastPage) stateFragment.viewModel.saveCharacter(DnDDatabase.getInstance(activity!!))
-            else viewPager.setCurrentItem(viewPager.currentItem + 1, true)
+        if (currentPage.actions.contains(PageAction.NAVIGATE_BACK)) {
+            backAction = PageAction.NAVIGATE_BACK
         }
+
+        if (backAction != null) {
+            backButton.visibility = View.VISIBLE
+            backButton.isEnabled = true
+            backButton.setOnClickListener { stateFragment.viewModel.pagesViewModel.performAction(backAction) }
+            backButton.text = getTextForAction(backAction)
+        } else {
+            backButton.visibility = View.INVISIBLE
+            backButton.isEnabled = false
+        }
+
+        backButton.visibility = if (currentPage.actions.contains(PageAction.NAVIGATE_BACK))
+            View.VISIBLE else View.INVISIBLE
+
+        var forwardAction: PageAction? = null
+        if (currentPage.actions.contains(PageAction.NAVIGATE_FORWARD)) {
+            forwardAction = PageAction.NAVIGATE_FORWARD
+        } else if (currentPage.actions.contains(PageAction.CONFIRM)) {
+            forwardAction = PageAction.CONFIRM
+        }
+
+        if (forwardAction != null) {
+            forwardButton.visibility = View.VISIBLE
+            forwardButton.setOnClickListener {
+                if (forwardAction == PageAction.CONFIRM)
+                    stateFragment.viewModel.saveCharacter(DnDDatabase.getInstance(activity!!))
+                stateFragment.viewModel.pagesViewModel.performAction(forwardAction)
+            }
+            forwardButton.text = getTextForAction(forwardAction)
+            // TODO: the enabled state should be part of the action object
+            forwardButton.isEnabled = forwardAction == PageAction.CONFIRM ||
+                    pageCollection.currentPageIndex < pageCollection.size - 1
+        } else {
+            forwardButton.visibility = View.INVISIBLE
+            forwardButton.isEnabled = false
+        }
+
         // If neither of the navigation buttons are enabled, hide them
         if (backButton.isEnabled || forwardButton.isEnabled) {
             buttonWrapper.visibility = View.VISIBLE
         } else {
             buttonWrapper.visibility = View.GONE
         }
+    }
 
-        configured = true
+    private fun getTextForAction(action: PageAction) : String {
+        return when(action) {
+            PageAction.NAVIGATE_BACK -> getString(R.string.back)
+            PageAction.NAVIGATE_FORWARD -> getString(R.string.next)
+            PageAction.CONFIRM -> getString(R.string.confirm)
+        }
     }
 
     private fun updateLoadingDialog(isLoading: Boolean) {
         // For now, block the whole UI while anything is loading, but in the future
         // the user should still be allowed to interact
         loadingDialog.visibility = if (isLoading) View.VISIBLE else View.GONE
-    }
-
-    override fun onPause() {
-        super.onPause()
-        subscription.dispose()
     }
 }

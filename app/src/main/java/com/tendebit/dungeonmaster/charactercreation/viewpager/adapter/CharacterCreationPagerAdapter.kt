@@ -52,12 +52,12 @@ class CharacterCreationPagerAdapter(fragmentManager: FragmentManager) : Fragment
 
     private fun getDescriptorForPage(page: Any): CharacterCreationPageDescriptor? {
         return when (page) {
-            is CharacterListFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)
-            is RaceSelectionFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION)
-            is ClassSelectionFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
-            is ProficiencySelectionFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION, page.arguments!![ProficiencySelectionFragment.KEY_PAGE_ID]!! as Int)
-            is CustomInfoEntryFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CUSTOM_INFO)
-            is CharacterConfirmationFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION)
+            is CharacterListFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST, emptyList())
+            is RaceSelectionFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION, emptyList())
+            is ClassSelectionFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION, emptyList())
+            is ProficiencySelectionFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION, emptyList(), page.arguments!![ProficiencySelectionFragment.KEY_PAGE_ID]!! as Int)
+            is CustomInfoEntryFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CUSTOM_INFO, emptyList())
+            is CharacterConfirmationFragment -> CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION, emptyList())
             else -> null
         }
     }
