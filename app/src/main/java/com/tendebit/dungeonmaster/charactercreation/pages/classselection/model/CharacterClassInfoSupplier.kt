@@ -4,8 +4,8 @@ import android.util.Log
 import androidx.annotation.CheckResult
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
-import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.model.StoredResponse
+import com.tendebit.dungeonmaster.core.model.StoredResponseDao
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
@@ -17,7 +17,7 @@ interface CharacterClassInfoSupplier {
     suspend fun getCharacterClasses() : CharacterClassManifest
     suspend fun getClassInfo(directory: CharacterClassDirectory) : CharacterClassInfo
 
-    class Impl(private val db: DnDDatabase) : CharacterClassInfoSupplier {
+    class Impl(private val dao: StoredResponseDao) : CharacterClassInfoSupplier {
         private companion object {
             const val BASE_URL = "http://dnd5eapi.co/api/"
             const val CLASSES_PATH = "classes/"
@@ -59,7 +59,7 @@ interface CharacterClassInfoSupplier {
         // TODO: by faking the cache headers on responses, okhttp caching can be leveraged instead of the below methods
 
         private fun <T> attemptExtractStoredResponse(url: String, classOf: Class<T>) : T? {
-            val storedResponse = db.responseDao().getStoredResponse(url)
+            val storedResponse = dao.getStoredResponse(url)
             storedResponse?.body?.let {
                 return try {
                     gson.fromJson(it, classOf)
@@ -73,7 +73,7 @@ interface CharacterClassInfoSupplier {
         @CheckResult
         private fun storeResponse(url: String, response: Response) : String? {
             response.body()?.string()?.let {
-                db.responseDao().storeResponse(StoredResponse(url, it))
+                dao.storeResponse(StoredResponse(url, it))
                 return it
             }
             return null

@@ -3,6 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListViewModel
+import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.model.CharacterInfoSupplier
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.ClassSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoSupplier
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.CustomInfoEntryViewModel
@@ -40,9 +41,9 @@ class CharacterCreationStateFragment : Fragment() {
         retainInstance = true
         db = DnDDatabase.getInstance(activity!!.applicationContext)
         pagesViewModel = CharacterCreationPagesViewModel()
-        savedCharacterListViewModel = CharacterListViewModel(db)
-        raceViewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(db))
-        classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db))
+        savedCharacterListViewModel = CharacterListViewModel(CharacterInfoSupplier.Impl(db.characterDao()))
+        raceViewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(db.responseDao()))
+        classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db.responseDao()))
         proficiencyViewModel = ProficiencySelectionViewModel()
         customInfoViewModel = CustomInfoEntryViewModel()
         viewModel = CharacterCreationViewModel(db, pagesViewModel, savedCharacterListViewModel, raceViewModel,
@@ -60,8 +61,8 @@ class CharacterCreationStateFragment : Fragment() {
                 clear()
 
                 pagesViewModel = CharacterCreationPagesViewModel()
-                raceViewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(db))
-                classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db))
+                raceViewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(db.responseDao()))
+                classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db.responseDao()))
                 proficiencyViewModel = ProficiencySelectionViewModel()
                 customInfoViewModel = CustomInfoEntryViewModel()
                 viewModel = CharacterCreationViewModel(db, pagesViewModel, savedCharacterListViewModel, raceViewModel,
