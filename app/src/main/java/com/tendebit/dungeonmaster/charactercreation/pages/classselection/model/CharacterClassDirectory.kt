@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.classselection.model
 
 import com.google.gson.annotations.SerializedName
+import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
 /**
@@ -22,5 +23,11 @@ class CharacterClassDirectory : SelectableElement {
 
     override fun primaryId(): String {
         return url
+    }
+
+    override fun primaryItemActions(): List<ItemAction> {
+        return arrayListOf(
+                ItemAction.SELECT,
+                ItemAction.HIGHLIGHT)
     }
 }

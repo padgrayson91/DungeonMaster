@@ -62,5 +62,4 @@ class CharacterCreationPagerAdapter(fragmentManager: FragmentManager) : Fragment
         }
     }
 
-    // TODO: expose functionality to block page interactions temporarily
 }

@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model
 
+import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
 /**
@@ -32,4 +33,11 @@ class CharacterProficiencyDirectory : SelectableElement, Comparable<CharacterPro
     override fun compareTo(other: CharacterProficiencyDirectory): Int {
         return other.url.compareTo(url)
     }
+
+    override fun primaryItemActions(): List<ItemAction> {
+        return arrayListOf(
+                ItemAction.SELECT,
+                ItemAction.HIGHLIGHT)
+    }
+
 }

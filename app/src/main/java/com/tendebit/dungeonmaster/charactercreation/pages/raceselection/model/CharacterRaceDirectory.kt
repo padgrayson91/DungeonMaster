@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model
 
+import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
 /**
@@ -15,5 +16,11 @@ class CharacterRaceDirectory : SelectableElement {
 
     override fun primaryId(): String {
         return url
+    }
+
+    override fun primaryItemActions(): List<ItemAction> {
+        return arrayListOf(
+                ItemAction.SELECT,
+                ItemAction.HIGHLIGHT)
     }
 }
