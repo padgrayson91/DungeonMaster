@@ -4,7 +4,6 @@ import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.model.Ch
 import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.Flowable
-import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
@@ -17,7 +16,7 @@ import kotlinx.coroutines.experimental.launch
 class CharacterListViewModel(private val supplier: CharacterInfoSupplier) : SelectionViewModel<DisplayedCharacter, DisplayedCharacter> {
 
     override lateinit var options: Flowable<List<DisplayedCharacter>>
-    override val selection = BehaviorSubject.create<DisplayedCharacter>()
+    override val selection = PublishSubject.create<DisplayedCharacter>()
     private var job: Job? = null
     val newCharacterCreationStart = PublishSubject.create<Any>()
 
