@@ -19,10 +19,8 @@ import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.experimental.DefaultDispatcher
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
 
 /**
  * UI fragment for displaying the character creation workflow to the user
@@ -36,7 +34,6 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
     private lateinit var loadingDialog: LoadingDialog
     private lateinit var stateFragment: CharacterCreationStateFragment
     private lateinit var subscription: CompositeDisposable
-    private var configured = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_viewpager, container, false)
@@ -117,16 +114,15 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         adapter.update(pageCollection)
         // ... etc ...
         if (viewPager.currentItem != pageCollection.currentPageIndex) {
-            val previouslyConfigured = configured
             launch(UI) {
-                // TODO: the delay should only happen when switching to newly added pages
-                if (previouslyConfigured) withContext(DefaultDispatcher) { Thread.sleep(200) }
                 viewPager.setCurrentItem(pageCollection.currentPageIndex, true)
+                // hide the soft keyboard
+                val imm = viewPager.context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(view?.windowToken, 0)
             }
         }
 
         configureActionButtonsForPage(pageCollection)
-        configured = true
     }
 
     private fun configureActionButtonsForPage(pageCollection: CharacterCreationPageCollection) {
