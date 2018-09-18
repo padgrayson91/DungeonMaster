@@ -1,6 +1,8 @@
-package com.tendebit.dungeonmaster.core.viewmodel
+package com.tendebit.dungeonmaster.charactercreation.pages.characterlist
 
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
+import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
+import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
 class DisplayedCharacter(val storedCharacter: StoredCharacter) : SelectableElement {
 

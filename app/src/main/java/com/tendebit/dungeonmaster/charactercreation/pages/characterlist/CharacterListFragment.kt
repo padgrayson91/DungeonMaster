@@ -12,7 +12,6 @@ import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
-import com.tendebit.dungeonmaster.core.viewmodel.DisplayedCharacter
 
 /**
  * UI Fragment for the list of saved characters
