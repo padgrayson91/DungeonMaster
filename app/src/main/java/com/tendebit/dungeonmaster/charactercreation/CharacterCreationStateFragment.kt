@@ -34,7 +34,7 @@ class CharacterCreationStateFragment : Fragment() {
     private lateinit var classViewModel: ClassSelectionViewModel
     private lateinit var proficiencyViewModel: ProficiencySelectionViewModel
     private lateinit var customInfoViewModel: CustomInfoEntryViewModel
-    lateinit var db : DnDDatabase
+    private lateinit var db : DnDDatabase
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +46,7 @@ class CharacterCreationStateFragment : Fragment() {
         classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db.responseDao()))
         proficiencyViewModel = ProficiencySelectionViewModel()
         customInfoViewModel = CustomInfoEntryViewModel()
-        viewModel = CharacterCreationViewModel(db, pagesViewModel, savedCharacterListViewModel, raceViewModel,
+        viewModel = CharacterCreationViewModel(pagesViewModel, savedCharacterListViewModel, raceViewModel,
                 classViewModel, proficiencyViewModel, customInfoViewModel)
     }
 
@@ -65,7 +65,7 @@ class CharacterCreationStateFragment : Fragment() {
                 classViewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(db.responseDao()))
                 proficiencyViewModel = ProficiencySelectionViewModel()
                 customInfoViewModel = CustomInfoEntryViewModel()
-                viewModel = CharacterCreationViewModel(db, pagesViewModel, savedCharacterListViewModel, raceViewModel,
+                viewModel = CharacterCreationViewModel(pagesViewModel, savedCharacterListViewModel, raceViewModel,
                         classViewModel, proficiencyViewModel, customInfoViewModel)
                 Thread.sleep(500)
                 return@async viewModel

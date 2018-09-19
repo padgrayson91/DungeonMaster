@@ -30,12 +30,12 @@ import kotlin.collections.ArrayList
  * of the character creation workflow so that information about the state of those pages can be queried/updated
  * from anywhere
  */
-class CharacterCreationViewModel(val db: DnDDatabase, val pagesViewModel: CharacterCreationPagesViewModel,
+class CharacterCreationViewModel(val pagesViewModel: CharacterCreationPagesViewModel,
                                  val listViewModel: CharacterListViewModel, var raceViewModel: RaceSelectionViewModel,
                                  var classViewModel: ClassSelectionViewModel, var proficiencyViewModel: ProficiencySelectionViewModel,
                                  var customInfoViewModel: CustomInfoEntryViewModel) {
 
-    var job: Job? = null
+    private var job: Job? = null
     val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
