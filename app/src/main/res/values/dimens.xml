@@ -13,6 +13,7 @@
     <!-- Padding -->
     <dimen name="padding_xsmall">4dp</dimen>
     <dimen name="padding_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
     <dimen name="padding_large">24dp</dimen>
     <dimen name="spinner_padding">8dp</dimen>
     <dimen name="form_element_divider_height">2dp</dimen>
