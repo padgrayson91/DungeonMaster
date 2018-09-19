@@ -76,6 +76,6 @@ class CharacterConfirmationFragment : Fragment() {
         weightText.text = if (viewModel.customInfo.weight != null)
                 String.format(getString(R.string.character_weight_format), viewModel.customInfo.weight)
                 else null
-        adapter.update(viewModel.selectedProficiencies)
+        adapter.update(viewModel.selectedProficiencies.union(viewModel.selectedClass!!.proficiencies!!))
     }
 }

@@ -15,7 +15,7 @@ class CharacterClassInfo : SelectableElement {
     private val hitDie: Int = 0
     @SerializedName("proficiency_choices")
     lateinit var proficiencyChoices: List<CharacterProficiencyGroup>
-    private val proficiencies: List<CharacterProficiencyDirectory>? = null
+    val proficiencies: List<CharacterProficiencyDirectory>? = null
 
     override fun toString(): String {
         return ("\nInfo for class " + name + ": \n"
