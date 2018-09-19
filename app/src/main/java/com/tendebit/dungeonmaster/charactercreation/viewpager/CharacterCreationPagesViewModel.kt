@@ -27,6 +27,7 @@ class CharacterCreationPagesViewModel {
 
     fun onPageSelected(selection: Int) {
         pageCollection.currentPageIndex = selection
+        if (selection == 0) clearPagesStartingAt(1)
         notifyPagesChanged()
     }
 
