@@ -25,3 +25,7 @@ The following items are on the roadmap to include in future development
 * Unit tests
 * UI tests using Barista/Espresso
 
+### MVVM Implementation
+
+My current MVVM implementation is built from the ground up rather than levaraging the `ViewModel` from Android Architecture Components.  The main reason for this is that I have not gotten a chance to use MVVM architecture at a large scale, and I want to have a solid understanding of what a custom solution would entail before levaraging the library.  This will allow me to identify how much if any convenience is added by using the Android Architecture Components version as well as what benefits and drawbacks there are when compared to my tailored solution (e.g. are certain behaviors not achievable with the library, does the library promote better or worse code style) 
+
