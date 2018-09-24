@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputLayout
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel.Companion.ARG_VIEW_MODEL_TAG
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.CustomInfo
 
@@ -38,7 +39,14 @@ class CustomInfoEntryFragment : Fragment() {
         val addedFragment = activity!!.supportFragmentManager.findFragmentByTag(STATE_FRAGMENT_TAG)
         if (addedFragment is CharacterCreationStateFragment) {
             stateFragment = addedFragment
-            updateViewFromViewModel(stateFragment.viewModel.customInfoViewModel)
+            val viewModelTag = arguments!![ARG_VIEW_MODEL_TAG] as String
+            var viewModel: CustomInfoEntryViewModel? = stateFragment.viewModel
+                    .getChildViewModel(viewModelTag)
+            if (viewModel == null) {
+                viewModel = CustomInfoEntryViewModel()
+                stateFragment.viewModel.addCustomInfoEntry(viewModelTag, viewModel)
+            }
+            updateViewFromViewModel(viewModel)
         } else {
             throw IllegalStateException(CustomInfoEntryFragment::class.java.simpleName + " expected a state provider")
         }

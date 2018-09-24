@@ -10,6 +10,7 @@ import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.P
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.RaceSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPageDescriptor
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPagesViewModel
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
@@ -24,19 +25,30 @@ import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 /**
  * Top-level ViewModel for character creation.  Contains references to ViewModels for each individual page
  * of the character creation workflow so that information about the state of those pages can be queried/updated
  * from anywhere
  */
-class CharacterCreationViewModel(val pagesViewModel: CharacterCreationPagesViewModel,
-                                 val listViewModel: CharacterListViewModel, var raceViewModel: RaceSelectionViewModel,
-                                 var classViewModel: ClassSelectionViewModel, var proficiencyViewModel: ProficiencySelectionViewModel,
-                                 var customInfoViewModel: CustomInfoEntryViewModel) {
+class CharacterCreationViewModel {
+
+    companion object {
+        const val ARG_VIEW_MODEL_TAG = "com.tendebit.dungeonmaster.VIEW_MODEL_TAG"
+
+        const val TAG_CHARACTER_LIST = "saved_character_list"
+        const val TAG_RACE_LIST = "race_selection"
+        const val TAG_CLASS_LIST = "class_selection"
+        const val TAG_PROFICIENCY_SELECTION = "proficiency_selection"
+        const val TAG_CUSTOM_ENTRY = "custom_info_entry"
+        const val TAG_CONFIRMATION = "confirmation"
+        const val TAG_REVIEW = "review_details"
+    }
 
     private var job: Job? = null
     val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
+    var pagesViewModel = CharacterCreationPagesViewModel()
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
     var customInfo = CustomInfo()
@@ -49,11 +61,15 @@ class CharacterCreationViewModel(val pagesViewModel: CharacterCreationPagesViewM
     val completionChanges = completionSubject as Observable<Boolean>
 
     private val disposables = CompositeDisposable()
+    private val childViewModelMap = HashMap<String, Any>()
+
+    private val classNetworkCalls = PublishSubject.create<Int>()
+    private val raceNetworkCalls = PublishSubject.create<Int>()
 
     init {
         val networkCallObservables = Arrays.asList(
-                classViewModel.networkCallChanges.startWith(0),
-                raceViewModel.networkCallChanges.startWith(0)
+                classNetworkCalls.startWith(0),
+                raceNetworkCalls.startWith(0)
                 // ... etc for other pages ...
         )
 
@@ -68,17 +84,65 @@ class CharacterCreationViewModel(val pagesViewModel: CharacterCreationPagesViewM
 
         disposables.addAll(
                 activeCallCountForChildren.subscribe { onNetworkCallCountChanged(it) },
-                listViewModel.selection.subscribe { onSavedCharacterSelected(it.storedCharacter) },
-                listViewModel.newCharacterCreationStart.subscribe { onNewCharacterCreationStarted() },
-                raceViewModel.selection.subscribe { onCharacterRaceSelected(it) },
-                classViewModel.selection.subscribe { onCharacterClassSelected(it) },
-                proficiencyViewModel.selectionChanges.map { it.first }.subscribe { onProficiencySelectionChanged(it) },
-                proficiencyViewModel.completionChanges.distinctUntilChanged().subscribe { onProficiencyCompletionChanged(it) },
-                customInfoViewModel.changes.subscribe { onCustomDataChanged(it) }
-
-                // ... etc for other pages ...
-        )
+                pagesViewModel.clearedPages.subscribe { clearChildViewModels(it) }
+                )
         notifyDataChanged()
+    }
+
+    fun addCharacterList(tag: String, viewModel: CharacterListViewModel) {
+        // TODO: should warn if an existing viewmodel is being overwritten, and also clear it
+        childViewModelMap[tag] = viewModel
+        disposables.addAll(viewModel.selection.subscribe { onSavedCharacterSelected(it.storedCharacter) },
+                viewModel.newCharacterCreationStart.subscribe { onNewCharacterCreationStarted() })
+    }
+
+    fun addClassSelection(tag: String, viewModel: ClassSelectionViewModel) {
+        // TODO: should warn if an existing viewmodel is being overwritten, and also clear it
+        childViewModelMap[tag] = viewModel
+        viewModel.networkCallChanges.subscribe(classNetworkCalls)
+        disposables.add(viewModel.selection.subscribe { onCharacterClassSelected(it) })
+    }
+
+    fun addRaceSelection(tag: String, viewModel: RaceSelectionViewModel) {
+        // TODO: should warn if an existing viewmodel is being overwritten, and also clear it
+        childViewModelMap[tag] = viewModel
+        viewModel.networkCallChanges.subscribe(raceNetworkCalls)
+        disposables.add(viewModel.selection.subscribe { onCharacterRaceSelected(it) })
+
+    }
+
+    fun addProficiencySelection(tag: String, viewModel: ProficiencySelectionViewModel) {
+        childViewModelMap[tag] = viewModel
+        disposables.addAll(
+                viewModel.selectionChanges.map { it.first }
+                        .subscribe {
+                            onProficiencySelectionChanged(it)
+                        },
+                viewModel.completionChanges.distinctUntilChanged().subscribe { onProficiencyCompletionChanged(it) })
+    }
+
+    fun addCustomInfoEntry(tag: String, viewModel: CustomInfoEntryViewModel) {
+        childViewModelMap[tag] = viewModel
+        disposables.add(viewModel.changes.subscribe { onCustomDataChanged(it) })
+    }
+
+    fun <T> getChildViewModel(tag: String) : T? {
+        @Suppress("UNCHECKED_CAST")
+        return childViewModelMap[tag] as? T
+    }
+
+    private fun clearChildViewModels(descriptors: List<CharacterCreationPageDescriptor>) {
+        for (descriptor in descriptors) {
+            clearChildViewModel(descriptor.viewModelTag)
+        }
+    }
+
+    private fun clearChildViewModel(tag: String) {
+        childViewModelMap.remove(tag)?.let {
+            if (it is AttachableViewModel) {
+                it.onDetach()
+            }
+        }
     }
 
     fun saveCharacter(db : DnDDatabase) {
@@ -107,6 +171,10 @@ class CharacterCreationViewModel(val pagesViewModel: CharacterCreationPagesViewM
                 loadingSubject.onNext(false)
             }
         }
+    }
+
+    fun resetWorkflow() {
+        pagesViewModel.resetPages()
     }
 
     fun cancelAllSubscriptions() {
@@ -141,12 +209,12 @@ class CharacterCreationViewModel(val pagesViewModel: CharacterCreationPagesViewM
     private fun onCharacterClassSelected(selection: CharacterClassInfo) {
         // Only clear pages if the selection actually changed
         val isNew = selectedClass != selection
-        pagesViewModel.handleCharacterClassSelected(selection, isNew)
+        selectedClass = selection
         if (isNew) {
-            selectedClass = selection
-            proficiencyViewModel.onNewClassSelected(selection)
+            clearChildViewModel(TAG_PROFICIENCY_SELECTION)
             notifyDataChanged()
         }
+        pagesViewModel.handleCharacterClassSelected(selection, isNew)
     }
 
     private fun onCharacterRaceSelected(selection: CharacterRaceDirectory) {

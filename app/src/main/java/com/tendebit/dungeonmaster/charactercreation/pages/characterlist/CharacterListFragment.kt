@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
+import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.model.CharacterInfoSupplier
+import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 
 /**
@@ -36,17 +39,21 @@ class CharacterListFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
+        val viewModelTag = arguments!![CharacterCreationViewModel.ARG_VIEW_MODEL_TAG] as String
         if (addedFragment is CharacterCreationStateFragment) {
             stateFragment = addedFragment
+            var viewModel = stateFragment.viewModel.getChildViewModel<CharacterListViewModel>(viewModelTag)
+            if (viewModel == null) {
+                viewModel = CharacterListViewModel(CharacterInfoSupplier.Impl(
+                        DnDDatabase.getInstance(activity!!).characterDao()))
+                stateFragment.viewModel.addCharacterList(viewModelTag, viewModel)
+            }
+            adapter = SelectionElementAdapter(viewModel)
+            characterList.adapter = adapter
+            fab.setOnClickListener { viewModel.createNewCharacter() }
         } else {
             throw IllegalStateException(CharacterListFragment::class.java.simpleName + " expects a state manager to be provided")
         }
-
-
-        val viewModel = stateFragment.viewModel.listViewModel
-        adapter = SelectionElementAdapter(viewModel)
-        characterList.adapter = adapter
-        fab.setOnClickListener { viewModel.createNewCharacter() }
     }
 
     override fun onPause() {

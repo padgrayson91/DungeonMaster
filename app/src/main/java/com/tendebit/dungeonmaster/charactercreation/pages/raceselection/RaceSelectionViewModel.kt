@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.raceselection
 
 import android.util.Log
+import com.tendebit.dungeonmaster.charactercreation.AttachableViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
@@ -18,7 +19,7 @@ import kotlinx.coroutines.experimental.launch
 /**
  * ViewModel for character race selection
  */
-class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : SelectionViewModel<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState {
+class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : SelectionViewModel<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState, AttachableViewModel {
     private val optionsSubject = BehaviorSubject.create<List<CharacterRaceDirectory>>()
     override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)!!
     override val selection = BehaviorSubject.create<CharacterRaceDirectory>()
@@ -41,7 +42,7 @@ class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : 
         }
     }
 
-    override fun cancelAllCalls() {
+    override fun onDetach() {
         launch(UI) {
             job?.cancelAndJoin()
         }

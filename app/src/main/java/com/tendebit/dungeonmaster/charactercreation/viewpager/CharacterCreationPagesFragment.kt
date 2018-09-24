@@ -62,7 +62,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
                 }
             }
         })
-        adapter = CharacterCreationPagerAdapter(childFragmentManager)
+        adapter = CharacterCreationPagerAdapter(childFragmentManager, stateFragment.viewModel)
         viewPager.adapter = adapter
     }
 
@@ -114,6 +114,8 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         adapter.update(pageCollection)
         // ... etc ...
         if (viewPager.currentItem != pageCollection.currentPageIndex) {
+            // FIXME: scrolling to a page immediately after it is added to the data set causes an error.
+            // FIXME: The coroutine here avoids the problem, but really the current index shouldn't be updated until the fragment view is done being created
             launch(UI) {
                 viewPager.setCurrentItem(pageCollection.currentPageIndex, true)
                 // hide the soft keyboard

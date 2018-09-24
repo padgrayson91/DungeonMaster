@@ -43,7 +43,7 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
         }
     }
 
-    override fun cancelAllCalls() {
+    override fun onDetach() {
         launch(UI) {
             job?.cancelAndJoin()
         }

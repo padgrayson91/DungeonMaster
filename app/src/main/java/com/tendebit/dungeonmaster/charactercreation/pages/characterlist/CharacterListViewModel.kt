@@ -5,19 +5,16 @@ import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.Flowable
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
 
 /**
  * ViewModel for the character list, which exposes functionality to read/update saved characters
  */
-class CharacterListViewModel(private val supplier: CharacterInfoSupplier) : SelectionViewModel<DisplayedCharacter, DisplayedCharacter> {
+class CharacterListViewModel(private val supplier: CharacterInfoSupplier) :
+        SelectionViewModel<DisplayedCharacter, DisplayedCharacter> {
 
     override lateinit var options: Flowable<List<DisplayedCharacter>>
     override val selection = PublishSubject.create<DisplayedCharacter>()
-    private var job: Job? = null
     val newCharacterCreationStart = PublishSubject.create<Any>()
 
     init {
@@ -41,12 +38,6 @@ class CharacterListViewModel(private val supplier: CharacterInfoSupplier) : Sele
 
     private fun delete(option: DisplayedCharacter) {
         launch { supplier.delete(option.storedCharacter) }
-    }
-
-    fun cancelAllCalls() {
-        launch(UI) {
-            job?.cancelAndJoin()
-        }
     }
 
     fun createNewCharacter() {

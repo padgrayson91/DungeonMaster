@@ -10,6 +10,7 @@ import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
+import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel.Companion.ARG_VIEW_MODEL_TAG
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import io.reactivex.disposables.CompositeDisposable
@@ -56,11 +57,20 @@ class ProficiencySelectionFragment : Fragment() {
                 supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
         if (addedFragment is CharacterCreationStateFragment) {
             stateProvider = addedFragment
+            val viewModelTag = arguments!![ARG_VIEW_MODEL_TAG] as String
+            val addedViewModel : ProficiencySelectionViewModel? =
+                    stateProvider.viewModel.getChildViewModel(viewModelTag)
+            if (addedViewModel == null) {
+                viewModel = ProficiencySelectionViewModel(stateProvider.viewModel.selectedClass!!)
+                stateProvider.viewModel.addProficiencySelection(viewModelTag, viewModel)
+            } else {
+                viewModel = addedViewModel
+            }
+
         } else {
             throw IllegalStateException(ProficiencySelectionFragment::class.java.simpleName + " expects a state manager to be provided")
 
         }
-        viewModel = stateProvider.viewModel.proficiencyViewModel
         subscriptions.add(viewModel.selectionChanges.filter { it.second.size > groupId }.subscribe{updateViewForSelections(it.first, it.second)})
     }
 

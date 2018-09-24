@@ -11,11 +11,20 @@ import java.util.*
  * proficiency groups may contain the same option, and if it is selected for one group the other group needs
  * to be able to access that information
  */
-class ProficiencySelectionViewModel {
+class ProficiencySelectionViewModel(classInfo: CharacterClassInfo) {
     private val proficiencyGroups = ArrayList<ProficiencyGroupSelectionViewModel>()
     private val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     val selectionChanges = BehaviorSubject.create<Pair<Collection<CharacterProficiencyDirectory>, List<ProficiencyGroupSelectionViewModel>>>()
     val completionChanges = BehaviorSubject.create<Boolean>()
+
+    init {
+        proficiencyGroups.addAll(Observable.fromIterable(classInfo.proficiencyChoices)
+                .map { ProficiencyGroupSelectionViewModel(it) }
+                .toList()
+                .blockingGet())
+        selectionChanges.onNext(Pair(selectedProficiencies, proficiencyGroups))
+        completionChanges.onNext(false)
+    }
 
     fun isProficiencySelectableForGroup(proficiency: CharacterProficiencyDirectory, groupViewModel: ProficiencyGroupSelectionViewModel, selections: Collection<CharacterProficiencyDirectory>) : Boolean {
         return !(!groupViewModel.selectedProficiencies.contains(proficiency) && selections.contains(proficiency))
@@ -34,16 +43,5 @@ class ProficiencySelectionViewModel {
         proficiencyGroups[groupId].selectedProficiencies.remove(proficiency)
         selectionChanges.onNext(Pair(selectedProficiencies, proficiencyGroups))
         completionChanges.onNext(proficiencyGroups.asSequence().map { it.remainingChoices() }.sum() == 0)
-    }
-
-    fun onNewClassSelected(classInfo: CharacterClassInfo) {
-        proficiencyGroups.clear()
-        selectedProficiencies.clear()
-        proficiencyGroups.addAll(Observable.fromIterable(classInfo.proficiencyChoices)
-                .map { ProficiencyGroupSelectionViewModel(it) }
-                .toList()
-                .blockingGet())
-        selectionChanges.onNext(Pair(selectedProficiencies, proficiencyGroups))
-        completionChanges.onNext(false)
     }
 }

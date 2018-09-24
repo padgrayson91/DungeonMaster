@@ -1,8 +1,9 @@
 package com.tendebit.dungeonmaster.core.model
 
+import com.tendebit.dungeonmaster.charactercreation.AttachableViewModel
 import io.reactivex.subjects.Subject
 
-interface NetworkUIState {
+interface NetworkUIState : AttachableViewModel {
     var activeNetworkCalls: Int
     val networkCallChanges: Subject<Int>
 
@@ -19,6 +20,4 @@ interface NetworkUIState {
             networkCallChanges.onNext(activeNetworkCalls)
         }
     }
-
-    fun cancelAllCalls()
 }
