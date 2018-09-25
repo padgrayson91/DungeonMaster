@@ -32,6 +32,8 @@ import kotlin.collections.HashMap
  * of the character creation workflow so that information about the state of those pages can be queried/updated
  * from anywhere
  */
+const val TAG = "CHARACTER_CREATION"
+
 class CharacterCreationViewModel {
 
     companion object {
@@ -90,21 +92,30 @@ class CharacterCreationViewModel {
     }
 
     fun addCharacterList(tag: String, viewModel: CharacterListViewModel) {
-        // TODO: should warn if an existing viewmodel is being overwritten, and also clear it
+        val previouslyAdded = getChildViewModel<CharacterListViewModel>(tag)
+        if (previouslyAdded != null) Log.w(TAG, "ViewModel was already added for $tag!")
         childViewModelMap[tag] = viewModel
         disposables.addAll(viewModel.selection.subscribe { onSavedCharacterSelected(it.storedCharacter) },
                 viewModel.newCharacterCreationStart.subscribe { onNewCharacterCreationStarted() })
     }
 
     fun addClassSelection(tag: String, viewModel: ClassSelectionViewModel) {
-        // TODO: should warn if an existing viewmodel is being overwritten, and also clear it
+        val previouslyAdded = getChildViewModel<ClassSelectionViewModel>(tag)
+        if (previouslyAdded != null) {
+            Log.w(TAG, "ViewModel was already added for $tag!")
+            previouslyAdded.onDetach()
+        }
         childViewModelMap[tag] = viewModel
         viewModel.networkCallChanges.subscribe(classNetworkCalls)
         disposables.add(viewModel.selection.subscribe { onCharacterClassSelected(it) })
     }
 
     fun addRaceSelection(tag: String, viewModel: RaceSelectionViewModel) {
-        // TODO: should warn if an existing viewmodel is being overwritten, and also clear it
+        val previouslyAdded = getChildViewModel<RaceSelectionViewModel>(tag)
+        if (previouslyAdded != null) {
+            Log.w(TAG, "ViewModel was already added for $tag!")
+            previouslyAdded.onDetach()
+        }
         childViewModelMap[tag] = viewModel
         viewModel.networkCallChanges.subscribe(raceNetworkCalls)
         disposables.add(viewModel.selection.subscribe { onCharacterRaceSelected(it) })
@@ -112,6 +123,8 @@ class CharacterCreationViewModel {
     }
 
     fun addProficiencySelection(tag: String, viewModel: ProficiencySelectionViewModel) {
+        val previouslyAdded = getChildViewModel<ProficiencySelectionViewModel>(tag)
+        if (previouslyAdded != null) Log.w(TAG, "ViewModel was already added for $tag!")
         childViewModelMap[tag] = viewModel
         disposables.addAll(
                 viewModel.selectionChanges.map { it.first }
@@ -166,7 +179,7 @@ class CharacterCreationViewModel {
                 }.await()
                 completionSubject.onNext(true)
             } catch (e: Exception) {
-                Log.e("CHARACTER_CREATION", "Got an error while trying to save character", e)
+                Log.e(TAG, "Got an error while trying to save character", e)
             } finally {
                 loadingSubject.onNext(false)
             }
@@ -243,7 +256,7 @@ class CharacterCreationViewModel {
     }
 
     private fun onNetworkCallCountChanged(count: Int) {
-        Log.d("CHARACTER_CREATION", "There are now $count async calls awaiting a response")
+        Log.d(TAG, "There are now $count async calls awaiting a response")
         loadingSubject.onNext(count > 0)
     }
 

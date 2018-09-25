@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation.pages.raceselection
 
 import android.util.Log
 import com.tendebit.dungeonmaster.charactercreation.AttachableViewModel
+import com.tendebit.dungeonmaster.charactercreation.TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.core.model.NetworkUIState
@@ -34,7 +35,7 @@ class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : 
     override fun performActions(target: CharacterRaceDirectory, actions: List<ItemAction>) {
         for (action in actions) {
             when(action) {
-                ItemAction.HIGHLIGHT -> Log.d("CHARACTER_CREATION", "Highlighted race")
+                ItemAction.HIGHLIGHT -> Log.d(TAG, "Highlighted race")
                 ItemAction.SELECT -> select(target)
                 else -> throw throw RuntimeException(
                         "${this::class.java.simpleName} unable to perform action ${action.name}")
@@ -62,10 +63,10 @@ class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : 
             try {
                 onNetworkCallStart()
                 val result = async(parent = job) {  supplier.getCharacterRaces() }.await()
-                Log.d("CHARACTER_CREATION", "Got " + result.characterRaceDirectories.size + " character races. The first one is " + result.characterRaceDirectories[0].name)
+                Log.d(TAG, "Got " + result.characterRaceDirectories.size + " character races. The first one is " + result.characterRaceDirectories[0].name)
                 updateOptions(result.characterRaceDirectories)
             } catch (e: Exception) {
-                Log.e("CHARACTER_CREATION", "Got an error", e)
+                Log.e(TAG, "Got an error", e)
             } finally {
                 onNetworkCallFinish()
             }

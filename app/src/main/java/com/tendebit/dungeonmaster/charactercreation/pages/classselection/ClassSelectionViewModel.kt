@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.classselection
 
 import android.util.Log
+import com.tendebit.dungeonmaster.charactercreation.TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoSupplier
@@ -35,7 +36,7 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
     override fun performActions(target: CharacterClassDirectory, actions: List<ItemAction>) {
         for (action in actions) {
             when(action) {
-                ItemAction.HIGHLIGHT -> Log.d("CHARACTER_CREATION", "Highlighted class")
+                ItemAction.HIGHLIGHT -> Log.d(TAG, "Highlighted class")
                 ItemAction.SELECT -> select(target)
                 else -> throw throw RuntimeException(
                         "${this::class.java.simpleName} unable to perform action ${action.name}")
@@ -65,7 +66,7 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
                     previousSelection = result
                     selection.onNext(result)
                 } catch (e: Exception) {
-                    Log.e("CHARACTER_CREATION", "Got an error", e)
+                    Log.e(TAG, "Got an error", e)
                 } finally {
                     onNetworkCallFinish()
                 }
@@ -82,7 +83,7 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
                 val result = async(parent = job) {  supplier.getCharacterClasses() }.await()
                 updateOptions(result.characterClassDirectories)
             } catch (e: Exception) {
-                Log.e("CHARACTER_CREATION", "Got an error", e)
+                Log.e(TAG, "Got an error", e)
             } finally {
                 onNetworkCallFinish()
             }

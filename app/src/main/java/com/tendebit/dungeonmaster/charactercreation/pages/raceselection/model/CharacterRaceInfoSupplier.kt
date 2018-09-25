@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.annotation.CheckResult
 import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
+import com.tendebit.dungeonmaster.charactercreation.TAG
 import com.tendebit.dungeonmaster.core.model.StoredResponse
 import com.tendebit.dungeonmaster.core.model.StoredResponseDao
 import okhttp3.OkHttpClient
@@ -30,7 +31,7 @@ interface CharacterRaceInfoSupplier {
                 return it
             }
 
-            Log.d("CHARACTER_CREATION", "Loading from network")
+            Log.d(TAG, "Loading from network")
             val request = Request.Builder()
                     .url(BASE_URL + RACES_PATH)
                     .build()
