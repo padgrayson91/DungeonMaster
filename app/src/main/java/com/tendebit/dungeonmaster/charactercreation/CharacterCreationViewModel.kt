@@ -15,7 +15,6 @@ import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationP
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPagesViewModel
 import com.tendebit.dungeonmaster.core.model.AsyncViewModel
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
-import com.tendebit.dungeonmaster.core.model.StoredCharacterDao
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -36,7 +35,7 @@ import kotlin.collections.HashMap
  */
 const val TAG = "CHARACTER_CREATION"
 
-class CharacterCreationViewModel(dao: StoredCharacterDao) : AsyncViewModel {
+class CharacterCreationViewModel(private val characterSupplier: StoredCharacterSupplier) : AsyncViewModel {
 
     companion object {
         const val ARG_VIEW_MODEL_TAG = "com.tendebit.dungeonmaster.VIEW_MODEL_TAG"
@@ -59,7 +58,6 @@ class CharacterCreationViewModel(dao: StoredCharacterDao) : AsyncViewModel {
 
     override var activeAsyncCalls = 0
 
-    private val characterSupplier = StoredCharacterSupplier.Impl(dao)
     private val stateSubject = BehaviorSubject.create<CharacterCreationViewModel>()
     private val loadingSubject = BehaviorSubject.create<Boolean>()
     private val completionSubject = PublishSubject.create<Boolean>()

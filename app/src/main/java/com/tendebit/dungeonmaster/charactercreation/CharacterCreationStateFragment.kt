@@ -2,11 +2,10 @@ package com.tendebit.dungeonmaster.charactercreation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.tendebit.dungeonmaster.App
-import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import org.koin.android.ext.android.inject
 
 const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
 
@@ -19,8 +18,7 @@ const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
 class CharacterCreationStateFragment : Fragment() {
 
 
-    private val db = DnDDatabase.getInstance(App.instance.applicationContext)
-    val viewModel = CharacterCreationViewModel(db.characterDao())
+    val viewModel: CharacterCreationViewModel by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
