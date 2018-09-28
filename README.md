@@ -18,10 +18,10 @@ So far I'm focusing on the following
 * Model View ViewModel architecture (MVVM)
 * Feature-based package structure (As opposed to layer-based)
 * Use of headless fragments to maintain UI state rather than using the more traditional Bundle-based model
+* Koin Dependency Injection (this may negate the above use of headless fragments in the long term)
 
 The following items are on the roadmap to include in future development
 
-* Dependency Injection (I have worked with Dagger and Dagger2 in the past, but I am considering Koin for this project)
 * Unit tests
 * UI tests using Barista/Espresso
 
