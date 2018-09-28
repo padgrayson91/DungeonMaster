@@ -15,7 +15,6 @@ import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPageCollection
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPagerAdapter
-import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import io.reactivex.disposables.CompositeDisposable
@@ -158,7 +157,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
             forwardButton.visibility = View.VISIBLE
             forwardButton.setOnClickListener {
                 if (forwardAction == PageAction.CONFIRM)
-                    stateFragment.viewModel.saveCharacter(DnDDatabase.getInstance(activity!!))
+                    stateFragment.viewModel.saveCharacter()
                 stateFragment.viewModel.pagesViewModel.performAction(forwardAction)
             }
             forwardButton.text = getTextForAction(forwardAction)

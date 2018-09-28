@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.tendebit.dungeonmaster.App
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -18,18 +19,17 @@ const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
 class CharacterCreationStateFragment : Fragment() {
 
 
-    val viewModel = CharacterCreationViewModel()
-    private lateinit var db : DnDDatabase
+    private val db = DnDDatabase.getInstance(App.instance.applicationContext)
+    val viewModel = CharacterCreationViewModel(db.characterDao())
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         retainInstance = true
-        db = DnDDatabase.getInstance(activity!!.applicationContext)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.cancelAllSubscriptions()
+        viewModel.onDetach()
         viewModel.resetWorkflow()
     }
 

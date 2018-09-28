@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.characterlist
 
-import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.model.CharacterInfoSupplier
+import com.tendebit.dungeonmaster.charactercreation.model.StoredCharacterSupplier
 import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.Flowable
@@ -10,7 +10,7 @@ import kotlinx.coroutines.experimental.launch
 /**
  * ViewModel for the character list, which exposes functionality to read/update saved characters
  */
-class CharacterListViewModel(private val supplier: CharacterInfoSupplier) :
+class CharacterListViewModel(private val supplier: StoredCharacterSupplier) :
         SelectionViewModel<DisplayedCharacter, DisplayedCharacter> {
 
     override lateinit var options: Flowable<List<DisplayedCharacter>>
@@ -37,7 +37,7 @@ class CharacterListViewModel(private val supplier: CharacterInfoSupplier) :
     }
 
     private fun delete(option: DisplayedCharacter) {
-        launch { supplier.delete(option.storedCharacter) }
+        launch { supplier.deleteCharacter(option.storedCharacter) }
     }
 
     fun createNewCharacter() {

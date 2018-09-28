@@ -5,7 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation.TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoSupplier
-import com.tendebit.dungeonmaster.core.model.NetworkUIState
+import com.tendebit.dungeonmaster.core.model.AsyncViewModel
 import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.BackpressureStrategy
@@ -20,15 +20,15 @@ import kotlinx.coroutines.experimental.launch
 /**
  * ViewModel for character class selection. Exposes functionality to read the list of options and make a selection
  */
-class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) : SelectionViewModel<CharacterClassDirectory, CharacterClassInfo>, NetworkUIState {
+class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) : SelectionViewModel<CharacterClassDirectory, CharacterClassInfo>, AsyncViewModel {
     private var job: Job? = null
 
     private val optionsSubject = BehaviorSubject.create<List<CharacterClassDirectory>>()
     override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)!!
     override val selection = BehaviorSubject.create<CharacterClassInfo>()
     private var previousSelection: CharacterClassInfo? = null
-    override var activeNetworkCalls = 0
-    override val networkCallChanges = PublishSubject.create<Int>()
+    override var activeAsyncCalls = 0
+    override val asyncCallChanges = PublishSubject.create<Int>()
     init {
         loadClassOptions()
     }
@@ -59,7 +59,7 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
         if (option.primaryId() != previousSelection?.primaryId()) {
             job = launch(UI) {
                 try {
-                    onNetworkCallStart()
+                    onAsyncCallStart()
                     val result = async(parent = job) {
                         supplier.getClassInfo(option)
                     }.await()
@@ -68,7 +68,7 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
                 } catch (e: Exception) {
                     Log.e(TAG, "Got an error", e)
                 } finally {
-                    onNetworkCallFinish()
+                    onAsyncCallFinish()
                 }
             }
         } else {
@@ -79,13 +79,13 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
     private fun loadClassOptions() {
         job = launch(UI) {
             try {
-                onNetworkCallStart()
+                onAsyncCallStart()
                 val result = async(parent = job) {  supplier.getCharacterClasses() }.await()
                 updateOptions(result.characterClassDirectories)
             } catch (e: Exception) {
                 Log.e(TAG, "Got an error", e)
             } finally {
-                onNetworkCallFinish()
+                onAsyncCallFinish()
             }
         }
     }

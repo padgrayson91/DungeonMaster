@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tendebit.dungeonmaster.App
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
@@ -44,7 +45,7 @@ class ClassSelectionFragment : Fragment() {
                     .getChildViewModel<ClassSelectionViewModel>(viewModelTag)
             if (viewModel == null) {
                 viewModel = ClassSelectionViewModel(CharacterClassInfoSupplier.Impl(
-                        DnDDatabase.getInstance(activity!!).responseDao()))
+                        DnDDatabase.getInstance(App.instance.applicationContext).responseDao()))
                 stateProvider.viewModel.addClassSelection(viewModelTag, viewModel)
             }
             adapter = SelectionElementAdapter(viewModel)

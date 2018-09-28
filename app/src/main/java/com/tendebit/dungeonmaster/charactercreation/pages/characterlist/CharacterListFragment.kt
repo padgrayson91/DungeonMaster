@@ -8,11 +8,12 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.tendebit.dungeonmaster.App
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.model.CharacterInfoSupplier
+import com.tendebit.dungeonmaster.charactercreation.model.StoredCharacterSupplier
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 
@@ -44,8 +45,8 @@ class CharacterListFragment : Fragment() {
             stateFragment = addedFragment
             var viewModel = stateFragment.viewModel.getChildViewModel<CharacterListViewModel>(viewModelTag)
             if (viewModel == null) {
-                viewModel = CharacterListViewModel(CharacterInfoSupplier.Impl(
-                        DnDDatabase.getInstance(activity!!).characterDao()))
+                viewModel = CharacterListViewModel(StoredCharacterSupplier.Impl(
+                        DnDDatabase.getInstance(App.instance.applicationContext).characterDao()))
                 stateFragment.viewModel.addCharacterList(viewModelTag, viewModel)
             }
             adapter = SelectionElementAdapter(viewModel)

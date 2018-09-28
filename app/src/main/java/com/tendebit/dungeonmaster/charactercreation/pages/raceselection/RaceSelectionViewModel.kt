@@ -5,7 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation.AttachableViewModel
 import com.tendebit.dungeonmaster.charactercreation.TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
-import com.tendebit.dungeonmaster.core.model.NetworkUIState
+import com.tendebit.dungeonmaster.core.model.AsyncViewModel
 import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.BackpressureStrategy
@@ -20,12 +20,12 @@ import kotlinx.coroutines.experimental.launch
 /**
  * ViewModel for character race selection
  */
-class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : SelectionViewModel<CharacterRaceDirectory, CharacterRaceDirectory>, NetworkUIState, AttachableViewModel {
+class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : SelectionViewModel<CharacterRaceDirectory, CharacterRaceDirectory>, AsyncViewModel, AttachableViewModel {
     private val optionsSubject = BehaviorSubject.create<List<CharacterRaceDirectory>>()
     override val options = optionsSubject.toFlowable(BackpressureStrategy.DROP)!!
     override val selection = BehaviorSubject.create<CharacterRaceDirectory>()
-    override var activeNetworkCalls = 0
-    override val networkCallChanges = PublishSubject.create<Int>()
+    override var activeAsyncCalls = 0
+    override val asyncCallChanges = PublishSubject.create<Int>()
     private var job: Job? = null
 
     init {
@@ -61,14 +61,14 @@ class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : 
     private fun loadRaceOptions() {
         job = launch(UI) {
             try {
-                onNetworkCallStart()
+                onAsyncCallStart()
                 val result = async(parent = job) {  supplier.getCharacterRaces() }.await()
                 Log.d(TAG, "Got " + result.characterRaceDirectories.size + " character races. The first one is " + result.characterRaceDirectories[0].name)
                 updateOptions(result.characterRaceDirectories)
             } catch (e: Exception) {
                 Log.e(TAG, "Got an error", e)
             } finally {
-                onNetworkCallFinish()
+                onAsyncCallFinish()
             }
         }
     }

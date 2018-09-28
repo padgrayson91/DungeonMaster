@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation
 
 import android.util.Log
+import com.tendebit.dungeonmaster.charactercreation.model.StoredCharacterSupplier
 import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.ClassSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
@@ -12,8 +13,9 @@ import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.RaceSele
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPageDescriptor
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPagesViewModel
-import com.tendebit.dungeonmaster.core.model.DnDDatabase
+import com.tendebit.dungeonmaster.core.model.AsyncViewModel
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
+import com.tendebit.dungeonmaster.core.model.StoredCharacterDao
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -34,7 +36,7 @@ import kotlin.collections.HashMap
  */
 const val TAG = "CHARACTER_CREATION"
 
-class CharacterCreationViewModel {
+class CharacterCreationViewModel(dao: StoredCharacterDao) : AsyncViewModel {
 
     companion object {
         const val ARG_VIEW_MODEL_TAG = "com.tendebit.dungeonmaster.VIEW_MODEL_TAG"
@@ -55,6 +57,9 @@ class CharacterCreationViewModel {
     var selectedRace: CharacterRaceDirectory? = null
     var customInfo = CustomInfo()
 
+    override var activeAsyncCalls = 0
+
+    private val characterSupplier = StoredCharacterSupplier.Impl(dao)
     private val stateSubject = BehaviorSubject.create<CharacterCreationViewModel>()
     private val loadingSubject = BehaviorSubject.create<Boolean>()
     private val completionSubject = PublishSubject.create<Boolean>()
@@ -67,16 +72,20 @@ class CharacterCreationViewModel {
 
     private val classNetworkCalls = PublishSubject.create<Int>()
     private val raceNetworkCalls = PublishSubject.create<Int>()
+    override val asyncCallChanges = PublishSubject.create<Int>()
 
     init {
-        val networkCallObservables = Arrays.asList(
+        // List of everything that may be waiting on an asynchronous call
+        val asyncCallObservables = Arrays.asList(
                 classNetworkCalls.startWith(0),
-                raceNetworkCalls.startWith(0)
+                raceNetworkCalls.startWith(0),
+                asyncCallChanges.startWith(0)
                 // ... etc for other pages ...
         )
 
+        // Combine emissions from the above items and get the sum
         val activeCallCountForChildren: Observable<Int> = Observable.combineLatest(
-                networkCallObservables) { counts: Array<out Any> -> counts.map {
+                asyncCallObservables) { counts: Array<out Any> -> counts.map {
             when(it) {
                 is Int -> it
                 else -> throw IllegalStateException("Call counts should be Ints. Got ${it.javaClass.simpleName} instead")
@@ -85,7 +94,7 @@ class CharacterCreationViewModel {
         }
 
         disposables.addAll(
-                activeCallCountForChildren.subscribe { onNetworkCallCountChanged(it) },
+                activeCallCountForChildren.subscribe { onAsyncCallCountChanged(it) },
                 pagesViewModel.clearedPages.subscribe { clearChildViewModels(it) }
                 )
         notifyDataChanged()
@@ -106,7 +115,7 @@ class CharacterCreationViewModel {
             previouslyAdded.onDetach()
         }
         childViewModelMap[tag] = viewModel
-        viewModel.networkCallChanges.subscribe(classNetworkCalls)
+        viewModel.asyncCallChanges.subscribe(classNetworkCalls)
         disposables.add(viewModel.selection.subscribe { onCharacterClassSelected(it) })
     }
 
@@ -117,7 +126,7 @@ class CharacterCreationViewModel {
             previouslyAdded.onDetach()
         }
         childViewModelMap[tag] = viewModel
-        viewModel.networkCallChanges.subscribe(raceNetworkCalls)
+        viewModel.asyncCallChanges.subscribe(raceNetworkCalls)
         disposables.add(viewModel.selection.subscribe { onCharacterRaceSelected(it) })
 
     }
@@ -158,10 +167,9 @@ class CharacterCreationViewModel {
         }
     }
 
-    fun saveCharacter(db : DnDDatabase) {
-        // TODO: should probably have a separate class to handle this
+    fun saveCharacter() {
         job = launch(UI) {
-            loadingSubject.onNext(true)
+            onAsyncCallStart()
             try {
                 async(parent = job) {
                     val characterToSave = StoredCharacter(
@@ -175,13 +183,13 @@ class CharacterCreationViewModel {
                             characterClass = selectedClass!!
 
                     )
-                    db.characterDao().storeCharacter(characterToSave)
+                    characterSupplier.saveCharacter(characterToSave)
                 }.await()
                 completionSubject.onNext(true)
             } catch (e: Exception) {
                 Log.e(TAG, "Got an error while trying to save character", e)
             } finally {
-                loadingSubject.onNext(false)
+                onAsyncCallFinish()
             }
         }
     }
@@ -190,7 +198,7 @@ class CharacterCreationViewModel {
         pagesViewModel.resetPages()
     }
 
-    fun cancelAllSubscriptions() {
+    override fun onDetach() {
         disposables.dispose()
         launch(UI) {
             job?.cancelAndJoin()
@@ -255,7 +263,7 @@ class CharacterCreationViewModel {
         notifyDataChanged()
     }
 
-    private fun onNetworkCallCountChanged(count: Int) {
+    private fun onAsyncCallCountChanged(count: Int) {
         Log.d(TAG, "There are now $count async calls awaiting a response")
         loadingSubject.onNext(count > 0)
     }
