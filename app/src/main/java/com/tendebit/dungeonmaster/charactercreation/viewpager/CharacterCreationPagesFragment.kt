@@ -13,13 +13,10 @@ import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
-import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPageCollection
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPagerAdapter
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
 import org.koin.android.ext.android.inject
 
 /**
@@ -33,7 +30,8 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
     private lateinit var forwardButton: Button
     private lateinit var loadingDialog: LoadingDialog
     private lateinit var subscription: CompositeDisposable
-    private val viewModel: CharacterCreationViewModel by inject()
+    private val parentViewModel: CharacterCreationViewModel by inject()
+    private val viewModel: CharacterCreationPagesViewModel by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_viewpager, container, false)
@@ -54,15 +52,15 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                if (viewModel.pagesViewModel.pageCollection.currentPageIndex != position) {
+                if (viewModel.currentPageIndex != position) {
                     // hide the soft keyboard
                     val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
                     imm?.hideSoftInputFromWindow(view?.windowToken, 0)
-                    viewModel.pagesViewModel.onPageSelected(position)
+                    viewModel.onPageSelected(position)
                 }
             }
         })
-        adapter = CharacterCreationPagerAdapter(childFragmentManager, viewModel)
+        adapter = CharacterCreationPagerAdapter(childFragmentManager, parentViewModel)
         viewPager.adapter = adapter
     }
 
@@ -80,7 +78,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
 
     override fun onResume() {
         super.onResume()
-        registerSubscriptions(viewModel)
+        registerSubscriptions(parentViewModel)
     }
 
     override fun onPause() {
@@ -96,39 +94,38 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         return false
     }
 
-    private fun registerSubscriptions(viewModel: CharacterCreationViewModel) {
+    private fun registerSubscriptions(parentViewModel: CharacterCreationViewModel) {
         subscription = CompositeDisposable()
         subscription.addAll(
-                viewModel.loadingChanges.subscribe { updateLoadingDialog(it) },
-                viewModel.completionChanges.distinctUntilChanged().filter{it}.subscribe{ resetState() },
-                viewModel.pagesViewModel.pageChanges.subscribe { updatePagesFromViewModel(it) }
+                parentViewModel.loadingChanges.subscribe { updateLoadingDialog(it) },
+                parentViewModel.completionChanges.distinctUntilChanged().filter{it}.subscribe{ resetState() },
+                viewModel.pageChanges.subscribe { updatePagesFromViewModel(it) },
+                viewModel.indexChanges.subscribe { updatePageIndex(it) }
         )
     }
 
     private fun resetState() {
-        viewModel.resetWorkflow { updatePagesFromViewModel(it.pagesViewModel.pageCollection) }
+        viewModel.resetPages()
     }
 
-    private fun updatePagesFromViewModel(pageCollection: CharacterCreationPageCollection) {
+    private fun updatePagesFromViewModel(pageCollection: List<CharacterCreationPageDescriptor>) {
         adapter.update(pageCollection)
-        // ... etc ...
-        if (viewPager.currentItem != pageCollection.currentPageIndex) {
-            // FIXME: scrolling to a page immediately after it is added to the data set causes an error.
-            // FIXME: The coroutine here avoids the problem, but really the current index shouldn't be updated until the fragment view is done being created
-            launch(UI) {
-                viewPager.setCurrentItem(pageCollection.currentPageIndex, true)
-                // hide the soft keyboard
-                val imm = viewPager.context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
-                imm?.hideSoftInputFromWindow(view?.windowToken, 0)
-            }
-        }
-
-        configureActionButtonsForPage(pageCollection)
+        configureActionButtonsForPage(pageCollection[viewModel.currentPageIndex])
     }
 
-    private fun configureActionButtonsForPage(pageCollection: CharacterCreationPageCollection) {
+    private fun updatePageIndex(index: Int) {
+        if (viewPager.currentItem != index) {
+                viewPager.setCurrentItem(index, true)
+                // hide the soft keyboard
+                val imm = viewPager.context
+                        ?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
+                imm?.hideSoftInputFromWindow(view?.windowToken, 0)
+            configureActionButtonsForPage(viewModel.pageCollection[viewModel.currentPageIndex])
+        }
+    }
+
+    private fun configureActionButtonsForPage(currentPage: CharacterCreationPageDescriptor) {
         var backAction: PageAction? = null
-        val currentPage = pageCollection.getCurrentPage()
         if (currentPage.actions.contains(PageAction.NAVIGATE_BACK)) {
             backAction = PageAction.NAVIGATE_BACK
         }
@@ -136,7 +133,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         if (backAction != null) {
             backButton.visibility = View.VISIBLE
             backButton.isEnabled = true
-            backButton.setOnClickListener { viewModel.pagesViewModel.performAction(backAction) }
+            backButton.setOnClickListener { viewModel.performAction(backAction) }
             backButton.text = getTextForAction(backAction)
         } else {
             backButton.visibility = View.INVISIBLE
@@ -157,13 +154,13 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
             forwardButton.visibility = View.VISIBLE
             forwardButton.setOnClickListener {
                 if (forwardAction == PageAction.CONFIRM)
-                    viewModel.saveCharacter()
-                viewModel.pagesViewModel.performAction(forwardAction)
+                    parentViewModel.saveCharacter()
+                viewModel.performAction(forwardAction)
             }
             forwardButton.text = getTextForAction(forwardAction)
             // TODO: the enabled state should be part of the action object
             forwardButton.isEnabled = forwardAction == PageAction.CONFIRM ||
-                    pageCollection.currentPageIndex < pageCollection.size - 1
+                    viewModel.currentPageIndex < viewModel.pageCollection.size - 1
         } else {
             forwardButton.visibility = View.INVISIBLE
             forwardButton.isEnabled = false

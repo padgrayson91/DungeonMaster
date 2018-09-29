@@ -2,9 +2,6 @@ package com.tendebit.dungeonmaster.charactercreation
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
 import org.koin.android.ext.android.inject
 
 const val STATE_FRAGMENT_TAG = "character_creation_state_fragment"
@@ -28,7 +25,7 @@ class CharacterCreationStateFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onDetach()
-        viewModel.resetWorkflow {}
+        viewModel.resetWorkflow ()
     }
 
 }

@@ -15,10 +15,10 @@ import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.RaceSele
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPageDescriptor
 
 class CharacterCreationPagerAdapter(fragmentManager: FragmentManager, private val viewModel: CharacterCreationViewModel) : FragmentStatePagerAdapter(fragmentManager) {
-    private var pageCollection = CharacterCreationPageCollection(ArrayList())
+    private var pageCollection = ArrayList<CharacterCreationPageDescriptor>()
 
     override fun getItem(position: Int): Fragment {
-        return getPageForDescriptor(pageCollection.pages[position])
+        return getPageForDescriptor(pageCollection[position])
     }
 
     override fun getCount(): Int {
@@ -28,16 +28,17 @@ class CharacterCreationPagerAdapter(fragmentManager: FragmentManager, private va
     override fun getItemPosition(`object`: Any): Int {
         val descriptor = getDescriptorForPage(`object` as Fragment)
         // if the page is not available, or if the page no longer has a viewmodel, let the adapter know it must be created
-        return if (!pageCollection.pages.contains(descriptor) || viewModel.getChildViewModel<Any>(descriptor?.viewModelTag ?: "") == null) {
+        return if (!pageCollection.contains(descriptor) || viewModel.getChildViewModel<Any>(descriptor?.viewModelTag ?: "") == null) {
             PagerAdapter.POSITION_NONE
         } else {
-            pageCollection.pages.indexOf(descriptor)
+            pageCollection.indexOf(descriptor)
         }
     }
 
-    fun update(updatedCollection: CharacterCreationPageCollection) {
+    fun update(updatedCollection: List<CharacterCreationPageDescriptor>) {
         if (updatedCollection != pageCollection) {
-            pageCollection = updatedCollection
+            pageCollection.clear()
+            pageCollection.addAll(updatedCollection)
             notifyDataSetChanged()
         }
     }

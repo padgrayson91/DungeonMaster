@@ -20,9 +20,11 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.android.UI
-import java.lang.IllegalArgumentException
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.cancelAndJoin
+import kotlinx.coroutines.experimental.launch
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -34,7 +36,7 @@ import kotlin.collections.HashMap
  */
 const val TAG = "CHARACTER_CREATION"
 
-class CharacterCreationViewModel(private val characterSupplier: StoredCharacterSupplier) : AsyncViewModel, ViewModelParent {
+class CharacterCreationViewModel(private val characterSupplier: StoredCharacterSupplier, private val pagesViewModel: CharacterCreationPagesViewModel) : AsyncViewModel, ViewModelParent {
 
     companion object {
         const val ARG_VIEW_MODEL_TAG = "com.tendebit.dungeonmaster.VIEW_MODEL_TAG"
@@ -50,7 +52,6 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
 
     private var job: Job? = null
     val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
-    val pagesViewModel = CharacterCreationPagesViewModel()
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
     var customInfo = CustomInfo()
@@ -76,7 +77,8 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
         val asyncCallObservables = Arrays.asList(
                 classNetworkCalls.startWith(0),
                 raceNetworkCalls.startWith(0),
-                asyncCallChanges.startWith(0)
+                asyncCallChanges.startWith(0),
+                pagesViewModel.asyncCallChanges.startWith(0)
                 // ... etc for other pages ...
         )
 
@@ -186,16 +188,8 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
         }
     }
 
-    fun resetWorkflow(onComplete: (vm: CharacterCreationViewModel) -> Unit) {
-        launch(UI) {
-            onAsyncCallStart()
-            withContext(DefaultDispatcher) {
-                pagesViewModel.resetPages()
-                Thread.sleep(500)
-            }
-            onComplete(this@CharacterCreationViewModel)
-            onAsyncCallFinish()
-        }
+    fun resetWorkflow() {
+        pagesViewModel.resetPages()
     }
 
     override fun onDetach() {

@@ -10,15 +10,19 @@ import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel.C
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel.Companion.TAG_REVIEW
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.CustomInfoEntryViewModel
-import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPageCollection
+import com.tendebit.dungeonmaster.core.model.AsyncViewModel
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.experimental.DefaultDispatcher
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 
 /**
- * ViewModel for the current state of the workflow page progression.  Contains a [CharacterCreationPageCollection]
- * which provides specific details about pages and workflow progress
+ * ViewModel for the current state of the workflow page progression.  Contains a list of [CharacterCreationPageDescriptor]
+ * which provides specific details about pages and an index of the currently selected page
  */
-class CharacterCreationPagesViewModel {
+class CharacterCreationPagesViewModel : AsyncViewModel {
 
     private companion object {
 
@@ -27,31 +31,42 @@ class CharacterCreationPagesViewModel {
                 emptyList(), viewModelTag = TAG_CHARACTER_LIST)
     }
 
-    var pageCollection = CharacterCreationPageCollection(arrayListOf(DEFAULT_FIRST_PAGE))
-    val pageChanges = BehaviorSubject.create<CharacterCreationPageCollection>()
+    var currentPageIndex = 0
+    override var activeAsyncCalls = 0
+    val pageCollection = arrayListOf(DEFAULT_FIRST_PAGE)
+    val indexChanges = BehaviorSubject.create<Int>()
+    val pageChanges = BehaviorSubject.create<List<CharacterCreationPageDescriptor>>()
     val clearedPages = PublishSubject.create<List<CharacterCreationPageDescriptor>>()
+    override val asyncCallChanges = PublishSubject.create<Int>()
 
     init {
         notifyPagesChanged()
+        notifyIndexChangedImmediate()
     }
 
+    override fun onDetach() {}
+
     fun onPageSelected(selection: Int) {
-        pageCollection.currentPageIndex = selection
+        currentPageIndex = selection
         // When we return to the beginning of the workflow, clear the rest (there is definitely a better way to do this)
-        if (selection == 0) clearPagesStartingAt(1)
-        notifyPagesChanged()
+        if (selection == 0) {
+            clearPagesStartingAt(1)
+            notifyPagesChanged()
+        }
+        notifyIndexChangedImmediate()
     }
 
     fun performAction(action: PageAction) {
         when(action) {
-            PageAction.NAVIGATE_BACK -> onPageSelected(pageCollection.currentPageIndex - 1)
-            PageAction.NAVIGATE_FORWARD -> onPageSelected(pageCollection.currentPageIndex + 1)
+            PageAction.NAVIGATE_BACK -> onPageSelected(currentPageIndex - 1)
+            PageAction.NAVIGATE_FORWARD -> onPageSelected(currentPageIndex + 1)
             PageAction.CONFIRM -> Log.d("CHARACTER_C", "User selected save character") // TODO
         }
     }
 
     fun resetPages() {
-        clearPagesStartingAt(pageCollection.pages.indexOf(DEFAULT_FIRST_PAGE) + 1)
+        clearPagesStartingAt(pageCollection.indexOf(DEFAULT_FIRST_PAGE) + 1, false)
+        notifyPagesChanged()
     }
 
     fun startNewCharacterCreation() {
@@ -59,8 +74,9 @@ class CharacterCreationPagesViewModel {
         val actions = arrayListOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_FORWARD)
         addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.RACE_SELECTION, actions,
                 viewModelTag = TAG_RACE_LIST))
-        pageCollection.currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.RACE_SELECTION)
+        currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.RACE_SELECTION)
         notifyPagesChanged()
+        notifyIndexChangeDelayed()
     }
 
     fun switchToSavedCharacterPage() {
@@ -68,8 +84,9 @@ class CharacterCreationPagesViewModel {
         val actions = arrayListOf(PageAction.NAVIGATE_BACK)
         addPage(CharacterCreationPageDescriptor(CharacterCreationPageDescriptor.PageType.CONFIRMATION, actions,
                 viewModelTag = TAG_REVIEW))
-        pageCollection.currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CONFIRMATION)
+        currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CONFIRMATION)
         notifyPagesChanged()
+        notifyIndexChangedImmediate()
     }
 
     fun handleProficiencyStatusChange(isComplete: Boolean, isCustomInfoComplete: Boolean) {
@@ -94,7 +111,7 @@ class CharacterCreationPagesViewModel {
     }
 
     fun handleCustomDataChanged(viewModel: CustomInfoEntryViewModel) {
-        if (viewModel.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
+        if (viewModel.isEntryComplete() && pageCollection[pageCollection.size - 1].type
                 != CharacterCreationPageDescriptor.PageType.CONFIRMATION) {
             val actions = arrayListOf(PageAction.NAVIGATE_BACK, PageAction.CONFIRM)
             addPage(
@@ -102,7 +119,7 @@ class CharacterCreationPagesViewModel {
                             actions, viewModelTag = TAG_CONFIRMATION)
             )
             notifyPagesChanged()
-        } else if(!viewModel.isEntryComplete() && pageCollection.pages[pageCollection.size - 1].type
+        } else if(!viewModel.isEntryComplete() && pageCollection[pageCollection.size - 1].type
                 == CharacterCreationPageDescriptor.PageType.CONFIRMATION) {
             clearPagesStartingAt(pageCollection.size - 1)
             notifyPagesChanged()
@@ -122,38 +139,61 @@ class CharacterCreationPagesViewModel {
                                 TAG_PROFICIENCY_SELECTION))
             }
         }
-        pageCollection.currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION)
+        currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.PROFICIENCY_SELECTION)
         notifyPagesChanged()
+        notifyIndexChangedImmediate()
     }
 
     fun handleCharacterRaceSelected(isNew: Boolean) {
-        if (isNew) {
-            if (findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION) == -1) {
+        if (isNew && findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION) == -1) {
                 val actions = arrayListOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_FORWARD)
                 addPage(
                         CharacterCreationPageDescriptor(
                                 CharacterCreationPageDescriptor.PageType.CLASS_SELECTION, actions,
                                 viewModelTag = TAG_CLASS_LIST))
-            }
+                currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
+                notifyPagesChanged()
+                notifyIndexChangeDelayed()
+        } else {
+            currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
+            notifyPagesChanged()
+            notifyIndexChangedImmediate()
         }
-        pageCollection.currentPageIndex = findStartOfGroup(CharacterCreationPageDescriptor.PageType.CLASS_SELECTION)
-        notifyPagesChanged()
     }
 
     private fun notifyPagesChanged() {
         pageChanges.onNext(pageCollection)
     }
 
-    private fun clearPagesStartingAt(index: Int) {
+    private fun notifyIndexChangedImmediate()  {
+        indexChanges.onNext(currentPageIndex)
+    }
+
+    private fun notifyIndexChangeDelayed() {
+        launch(UI) {
+            onAsyncCallStart()
+            // TODO: rather than a fixed delay, this should be waiting on a callback indicating the
+            // target page is added to the viewpager
+            withContext(DefaultDispatcher) { Thread.sleep(500) }
+            indexChanges.onNext(currentPageIndex)
+            onAsyncCallFinish()
+        }
+    }
+
+    private fun clearPagesStartingAt(index: Int, shouldDelayIndexChange: Boolean = false) {
         if (index >= pageCollection.size || index < 0) return
-        val pagesToKeep = pageCollection.pages.subList(0, index)
-        val discardedPages = pageCollection.pages.subList(index, pageCollection.size)
+        val pagesToKeep =
+                ArrayList(pageCollection.subList(0, index))
+        val discardedPages =
+                ArrayList(pageCollection.subList(index, pageCollection.size))
         clearedPages.onNext(discardedPages)
-        val previousIndex = pageCollection.currentPageIndex
-        pageCollection = CharacterCreationPageCollection(pagesToKeep)
-        pageCollection.currentPageIndex = if (previousIndex >= pageCollection.size) {
-            pageCollection.size
-        } else previousIndex
+        pageCollection.clear()
+        pageCollection.addAll(pagesToKeep)
+        if (currentPageIndex >= pageCollection.size) {
+            currentPageIndex = pageCollection.size - 1
+            if (shouldDelayIndexChange) notifyIndexChangeDelayed()
+            else notifyIndexChangedImmediate()
+        }
     }
 
     private fun clearPagesAfter(pageType: CharacterCreationPageDescriptor.PageType) {
@@ -161,7 +201,7 @@ class CharacterCreationPagesViewModel {
         var index = -1
         if (startIndex >= 0) {
             for (i in startIndex until pageCollection.size) {
-                if (pageCollection.pages[i].type != pageType) {
+                if (pageCollection[i].type != pageType) {
                     index = i
                     break
                 }
@@ -173,7 +213,7 @@ class CharacterCreationPagesViewModel {
     private fun findStartOfGroup(pageType: CharacterCreationPageDescriptor.PageType) : Int {
         var index = -1
         for (i in 0 until pageCollection.size) {
-            if (pageCollection.pages[i].type == pageType) {
+            if (pageCollection[i].type == pageType) {
                 index = i
                 break
             }
@@ -182,10 +222,6 @@ class CharacterCreationPagesViewModel {
     }
 
     private fun addPage(pageDescriptor: CharacterCreationPageDescriptor) {
-        val updatedPages = ArrayList(pageCollection.pages)
-        updatedPages.add(pageDescriptor)
-        val previousIndex = pageCollection.currentPageIndex
-        pageCollection = CharacterCreationPageCollection(updatedPages)
-        pageCollection.currentPageIndex = previousIndex
+        pageCollection.add(pageDescriptor)
     }
 }

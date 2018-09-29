@@ -11,6 +11,7 @@ import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.Custom
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.ProficiencySelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.RaceSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
+import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPagesViewModel
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.viewmodel.ViewModelParent
 import com.tendebit.dungeonmaster.core.viewmodel.ViewModels
@@ -39,7 +40,8 @@ class App : Application() {
 
         module("CharacterCreation") {
             // ViewModels
-            single { CharacterCreationViewModel(get()) } bind (ViewModelParent::class)
+            single { CharacterCreationPagesViewModel() }
+            single { CharacterCreationViewModel(get(), get()) } bind (ViewModelParent::class)
 
             // TODO: the below might be possible with scoped singles
             factory("newInstance") { CharacterListViewModel(get()) }
