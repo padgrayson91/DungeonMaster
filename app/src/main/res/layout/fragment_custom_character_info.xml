@@ -31,6 +31,41 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
+            android:id="@+id/weight_entry_label_txt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_large"
+            android:layout_marginTop="@dimen/padding_small"
+            android:layout_marginEnd="@dimen/padding_large"
+            android:text="@string/character_weight_label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/name_entry" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/weight_entry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_large"
+            android:layout_marginTop="@dimen/padding_small"
+            android:layout_marginEnd="@dimen/padding_large"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/weight_entry_label_txt">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lines="1"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:hint="@string/character_weight_hint"
+                android:inputType="number"
+                android:paddingStart="@dimen/padding_small"
+                android:paddingEnd="@dimen/padding_large" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <TextView
             android:id="@+id/height_entry_label_txt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -40,7 +75,7 @@
             android:text="@string/character_height_label"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/name_entry" />
+            app:layout_constraintTop_toBottomOf="@+id/weight_entry" />
 
         <NumberPicker
             android:id="@+id/height_entry_feet"
@@ -80,41 +115,6 @@
             app:layout_constraintStart_toEndOf="@+id/height_entry_inches"
             app:layout_constraintEnd_toEndOf="parent"
             android:text="@string/character_height_in_hint"/>
-
-        <TextView
-            android:id="@+id/weight_entry_label_txt"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_large"
-            android:layout_marginTop="@dimen/padding_small"
-            android:layout_marginEnd="@dimen/padding_large"
-            android:text="@string/character_weight_label"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/height_entry_feet" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/weight_entry"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_large"
-            android:layout_marginTop="@dimen/padding_small"
-            android:layout_marginEnd="@dimen/padding_large"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weight_entry_label_txt">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:lines="1"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:hint="@string/character_weight_hint"
-                android:inputType="number"
-                android:paddingStart="@dimen/padding_small"
-                android:paddingEnd="@dimen/padding_large" />
-        </com.google.android.material.textfield.TextInputLayout>
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
