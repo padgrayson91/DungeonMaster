@@ -9,12 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
-import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import com.tendebit.dungeonmaster.core.view.adapter.SimpleElementAdapter
 import io.reactivex.disposables.CompositeDisposable
+import org.koin.android.ext.android.inject
 
 /**
  * UI Fragment for character confirmation/review
@@ -27,7 +26,7 @@ class CharacterConfirmationFragment : Fragment() {
     private lateinit var weightText: TextView
     private lateinit var disposable : CompositeDisposable
     private val adapter = SimpleElementAdapter<CharacterProficiencyDirectory>()
-    private var stateFragment: CharacterCreationStateFragment? = null
+    private val viewModel: CharacterCreationViewModel by inject()
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -41,24 +40,16 @@ class CharacterConfirmationFragment : Fragment() {
         val recycler = root.findViewById<RecyclerView>(R.id.proficiency_list)
         recycler.layoutManager = LinearLayoutManager(activity)
         recycler.adapter = adapter
-        val addedFragment = activity!!.
-                supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG) as? CharacterCreationStateFragment
-        if (addedFragment != null) {
-            stateFragment = addedFragment
-            updateViewFromState(stateFragment?.viewModel ?: return root)
-        }
-
+        updateViewFromState(viewModel)
         return root
     }
 
     override fun onResume() {
         super.onResume()
         disposable = CompositeDisposable()
-        stateFragment?.let {
-            disposable.addAll(it.viewModel.changes.subscribe { vm ->
+        disposable.add(viewModel.changes.subscribe { vm ->
                 updateViewFromState(vm)
             })
-        }
     }
 
     override fun onPause() {
