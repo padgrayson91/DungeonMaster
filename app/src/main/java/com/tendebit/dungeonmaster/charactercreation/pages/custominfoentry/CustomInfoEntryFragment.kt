@@ -10,10 +10,9 @@ import android.widget.NumberPicker
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputLayout
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel.Companion.ARG_VIEW_MODEL_TAG
-import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model.CustomInfo
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * UI Fragment for enter character biographical information
@@ -23,7 +22,7 @@ class CustomInfoEntryFragment : Fragment() {
     private lateinit var heightFeetEntry: NumberPicker
     private lateinit var heightInchesEntry: NumberPicker
     private lateinit var weightEntry: TextInputLayout
-    private lateinit var stateFragment: CharacterCreationStateFragment
+    private val viewModel: CustomInfoEntryViewModel by inject("newOrExisting") { parametersOf(this) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_custom_character_info, container, false)
@@ -36,20 +35,7 @@ class CustomInfoEntryFragment : Fragment() {
         heightInchesEntry.minValue = CustomInfo.MIN_HEIGHT_INCHES
         weightEntry = root.findViewById(R.id.weight_entry)
 
-        val addedFragment = activity!!.supportFragmentManager.findFragmentByTag(STATE_FRAGMENT_TAG)
-        if (addedFragment is CharacterCreationStateFragment) {
-            stateFragment = addedFragment
-            val viewModelTag = arguments!![ARG_VIEW_MODEL_TAG] as String
-            var viewModel: CustomInfoEntryViewModel? = stateFragment.viewModel
-                    .getChildViewModel(viewModelTag)
-            if (viewModel == null) {
-                viewModel = CustomInfoEntryViewModel()
-                stateFragment.viewModel.addCustomInfoEntry(viewModelTag, viewModel)
-            }
-            updateViewFromViewModel(viewModel)
-        } else {
-            throw IllegalStateException(CustomInfoEntryFragment::class.java.simpleName + " expected a state provider")
-        }
+        updateViewFromViewModel(viewModel)
         return root
     }
 

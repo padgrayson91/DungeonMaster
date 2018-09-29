@@ -15,6 +15,8 @@ import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.Ch
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceInfoSupplier
 import com.tendebit.dungeonmaster.core.model.DnDDatabase
 import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 
 /**
  * UI Fragment for character race selection
@@ -22,8 +24,8 @@ import com.tendebit.dungeonmaster.core.view.adapter.SelectionElementAdapter
 class RaceSelectionFragment : Fragment() {
 
     private lateinit var recycler: RecyclerView
-    private lateinit var stateProvider: CharacterCreationStateFragment
     private lateinit var adapter: SelectionElementAdapter<CharacterRaceDirectory, CharacterRaceDirectory>
+    private val viewModel: RaceSelectionViewModel by inject("newOrExisting") { parametersOf(this) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_list, container, false)
@@ -35,21 +37,8 @@ class RaceSelectionFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        val addedFragment = activity?.supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
-        if (addedFragment is CharacterCreationStateFragment) {
-            stateProvider = addedFragment
-            val viewmodelTag = arguments!![ARG_VIEW_MODEL_TAG] as String
-            var viewModel = stateProvider.viewModel.getChildViewModel<RaceSelectionViewModel>(viewmodelTag)
-            if (viewModel == null) {
-                viewModel = RaceSelectionViewModel(CharacterRaceInfoSupplier.Impl(DnDDatabase.getInstance(activity!!).responseDao()))
-                stateProvider.viewModel.addRaceSelection(viewmodelTag, viewModel)
-            }
-            adapter = SelectionElementAdapter(viewModel)
-            recycler.adapter = adapter
-        } else {
-            throw IllegalStateException(RaceSelectionFragment::class.java.simpleName + " expects a state manager to be provided")
-
-        }
+        adapter = SelectionElementAdapter(viewModel)
+        recycler.adapter = adapter
     }
 
     override fun onPause() {

@@ -15,6 +15,7 @@ import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationP
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPagesViewModel
 import com.tendebit.dungeonmaster.core.model.AsyncViewModel
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
+import com.tendebit.dungeonmaster.core.viewmodel.ViewModelParent
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
@@ -24,6 +25,7 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.cancelAndJoin
 import kotlinx.coroutines.experimental.launch
+import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -35,7 +37,7 @@ import kotlin.collections.HashMap
  */
 const val TAG = "CHARACTER_CREATION"
 
-class CharacterCreationViewModel(private val characterSupplier: StoredCharacterSupplier) : AsyncViewModel {
+class CharacterCreationViewModel(private val characterSupplier: StoredCharacterSupplier) : AsyncViewModel, ViewModelParent {
 
     companion object {
         const val ARG_VIEW_MODEL_TAG = "com.tendebit.dungeonmaster.VIEW_MODEL_TAG"
@@ -51,7 +53,7 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
 
     private var job: Job? = null
     val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
-    var pagesViewModel = CharacterCreationPagesViewModel()
+    val pagesViewModel = CharacterCreationPagesViewModel()
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
     var customInfo = CustomInfo()
@@ -98,41 +100,22 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
         notifyDataChanged()
     }
 
-    fun addCharacterList(tag: String, viewModel: CharacterListViewModel) {
-        val previouslyAdded = getChildViewModel<CharacterListViewModel>(tag)
-        if (previouslyAdded != null) Log.w(TAG, "ViewModel was already added for $tag!")
-        childViewModelMap[tag] = viewModel
+    private fun addCharacterList(viewModel: CharacterListViewModel) {
         disposables.addAll(viewModel.selection.subscribe { onSavedCharacterSelected(it.storedCharacter) },
                 viewModel.newCharacterCreationStart.subscribe { onNewCharacterCreationStarted() })
     }
 
-    fun addClassSelection(tag: String, viewModel: ClassSelectionViewModel) {
-        val previouslyAdded = getChildViewModel<ClassSelectionViewModel>(tag)
-        if (previouslyAdded != null) {
-            Log.w(TAG, "ViewModel was already added for $tag!")
-            previouslyAdded.onDetach()
-        }
-        childViewModelMap[tag] = viewModel
+    private fun addClassSelection(viewModel: ClassSelectionViewModel) {
         viewModel.asyncCallChanges.subscribe(classNetworkCalls)
         disposables.add(viewModel.selection.subscribe { onCharacterClassSelected(it) })
     }
 
-    fun addRaceSelection(tag: String, viewModel: RaceSelectionViewModel) {
-        val previouslyAdded = getChildViewModel<RaceSelectionViewModel>(tag)
-        if (previouslyAdded != null) {
-            Log.w(TAG, "ViewModel was already added for $tag!")
-            previouslyAdded.onDetach()
-        }
-        childViewModelMap[tag] = viewModel
+    private fun addRaceSelection(viewModel: RaceSelectionViewModel) {
         viewModel.asyncCallChanges.subscribe(raceNetworkCalls)
         disposables.add(viewModel.selection.subscribe { onCharacterRaceSelected(it) })
-
     }
 
-    fun addProficiencySelection(tag: String, viewModel: ProficiencySelectionViewModel) {
-        val previouslyAdded = getChildViewModel<ProficiencySelectionViewModel>(tag)
-        if (previouslyAdded != null) Log.w(TAG, "ViewModel was already added for $tag!")
-        childViewModelMap[tag] = viewModel
+    private fun addProficiencySelection(viewModel: ProficiencySelectionViewModel) {
         disposables.addAll(
                 viewModel.selectionChanges.map { it.first }
                         .subscribe {
@@ -141,14 +124,28 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
                 viewModel.completionChanges.distinctUntilChanged().subscribe { onProficiencyCompletionChanged(it) })
     }
 
-    fun addCustomInfoEntry(tag: String, viewModel: CustomInfoEntryViewModel) {
-        childViewModelMap[tag] = viewModel
+    private fun addCustomInfoEntry(viewModel: CustomInfoEntryViewModel) {
         disposables.add(viewModel.changes.subscribe { onCustomDataChanged(it) })
     }
 
-    fun <T> getChildViewModel(tag: String) : T? {
+    override fun <T> getChildViewModel(tag: String) : T? {
         @Suppress("UNCHECKED_CAST")
         return childViewModelMap[tag] as? T
+    }
+
+    override fun addChildViewModel(tag: String, child: Any) {
+        val previouslyAdded = getChildViewModel<Any>(tag)
+        if (previouslyAdded != null) Log.w(TAG, "ViewModel was already added for $tag!")
+        childViewModelMap[tag] = child
+        when(child) {
+            is CharacterListViewModel -> addCharacterList(child)
+            is RaceSelectionViewModel -> addRaceSelection(child)
+            is ClassSelectionViewModel -> addClassSelection(child)
+            is ProficiencySelectionViewModel -> addProficiencySelection(child)
+            is CustomInfoEntryViewModel -> addCustomInfoEntry(child)
+            else -> throw IllegalArgumentException("${this.javaClass.simpleName} " +
+                    "does not expect a child of type ${child.javaClass.simpleName}")
+        }
     }
 
     private fun clearChildViewModels(descriptors: List<CharacterCreationPageDescriptor>) {
@@ -157,7 +154,7 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
         }
     }
 
-    private fun clearChildViewModel(tag: String) {
+    override fun clearChildViewModel(tag: String) {
         childViewModelMap.remove(tag)?.let {
             if (it is AttachableViewModel) {
                 it.onDetach()

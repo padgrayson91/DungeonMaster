@@ -18,7 +18,7 @@ import org.koin.core.parameter.parametersOf
  */
 class CharacterListFragment : Fragment() {
 
-    private val viewModel: CharacterListViewModel by inject { parametersOf(this) }
+    private val viewModel: CharacterListViewModel by inject("newOrExisting") { parametersOf(this) }
 
     private lateinit var characterList: RecyclerView
     private lateinit var fab: FloatingActionButton

@@ -9,11 +9,10 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragment
-import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel.Companion.ARG_VIEW_MODEL_TAG
-import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.pages.proficiencyselection.model.CharacterProficiencyDirectory
 import io.reactivex.disposables.CompositeDisposable
+import org.koin.android.ext.android.inject
+import org.koin.core.parameter.parametersOf
 import java.text.MessageFormat
 
 /**
@@ -24,8 +23,7 @@ class ProficiencySelectionFragment : Fragment() {
     private lateinit var subscriptions: CompositeDisposable
     private lateinit var chipGroup: ChipGroup
     private lateinit var instructions: TextView
-    private lateinit var stateProvider: CharacterCreationStateFragment
-    private lateinit var viewModel: ProficiencySelectionViewModel
+    private val viewModel: ProficiencySelectionViewModel by inject("newOrExisting") { parametersOf(this) }
     private var groupId = 0
 
     companion object {
@@ -53,24 +51,6 @@ class ProficiencySelectionFragment : Fragment() {
         super.onResume()
         groupId = arguments!!.getInt(KEY_PAGE_ID)
         subscriptions = CompositeDisposable()
-        val addedFragment = activity?.
-                supportFragmentManager?.findFragmentByTag(STATE_FRAGMENT_TAG)
-        if (addedFragment is CharacterCreationStateFragment) {
-            stateProvider = addedFragment
-            val viewModelTag = arguments!![ARG_VIEW_MODEL_TAG] as String
-            val addedViewModel : ProficiencySelectionViewModel? =
-                    stateProvider.viewModel.getChildViewModel(viewModelTag)
-            if (addedViewModel == null) {
-                viewModel = ProficiencySelectionViewModel(stateProvider.viewModel.selectedClass!!)
-                stateProvider.viewModel.addProficiencySelection(viewModelTag, viewModel)
-            } else {
-                viewModel = addedViewModel
-            }
-
-        } else {
-            throw IllegalStateException(ProficiencySelectionFragment::class.java.simpleName + " expects a state manager to be provided")
-
-        }
         subscriptions.add(viewModel.selectionChanges.filter { it.second.size > groupId }.subscribe{updateViewForSelections(it.first, it.second)})
     }
 
@@ -96,6 +76,7 @@ class ProficiencySelectionFragment : Fragment() {
             chip.text = proficiency.name
             chipGroup.addView(chip)
         }
-        instructions.text = MessageFormat.format(getText(R.string.proficiency_selection).toString(), localState.remainingChoices())
+        instructions.text = MessageFormat.format(getText(R.string.proficiency_selection).toString(),
+                localState.remainingChoices())
     }
 }
