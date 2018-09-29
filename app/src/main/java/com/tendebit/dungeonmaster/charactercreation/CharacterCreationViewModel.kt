@@ -20,11 +20,8 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.*
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.cancelAndJoin
-import kotlinx.coroutines.experimental.launch
 import java.lang.IllegalArgumentException
 import java.util.*
 import kotlin.collections.ArrayList
@@ -189,8 +186,16 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
         }
     }
 
-    fun resetWorkflow() {
-        pagesViewModel.resetPages()
+    fun resetWorkflow(onComplete: (vm: CharacterCreationViewModel) -> Unit) {
+        launch(UI) {
+            onAsyncCallStart()
+            withContext(DefaultDispatcher) {
+                pagesViewModel.resetPages()
+                Thread.sleep(500)
+            }
+            onComplete(this@CharacterCreationViewModel)
+            onAsyncCallFinish()
+        }
     }
 
     override fun onDetach() {

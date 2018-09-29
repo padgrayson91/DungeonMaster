@@ -20,6 +20,7 @@ import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import io.reactivex.disposables.CompositeDisposable
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
+import org.koin.android.ext.android.inject
 
 /**
  * UI fragment for displaying the character creation workflow to the user
@@ -31,12 +32,12 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
     private lateinit var backButton: Button
     private lateinit var forwardButton: Button
     private lateinit var loadingDialog: LoadingDialog
-    private lateinit var stateFragment: CharacterCreationStateFragment
     private lateinit var subscription: CompositeDisposable
+    private val viewModel: CharacterCreationViewModel by inject()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val root = inflater.inflate(R.layout.fragment_generic_viewpager, container, false)
-        stateFragment = addFragmentIfMissing(CharacterCreationStateFragment(), STATE_FRAGMENT_TAG)
+        addFragmentIfMissing(CharacterCreationStateFragment(), STATE_FRAGMENT_TAG)
         initializeViews(root)
 
 
@@ -53,15 +54,15 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         viewPager.addOnPageChangeListener(object : ViewPager.SimpleOnPageChangeListener() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                if (stateFragment.viewModel.pagesViewModel.pageCollection.currentPageIndex != position) {
+                if (viewModel.pagesViewModel.pageCollection.currentPageIndex != position) {
                     // hide the soft keyboard
                     val imm = context?.getSystemService(Activity.INPUT_METHOD_SERVICE) as? InputMethodManager
                     imm?.hideSoftInputFromWindow(view?.windowToken, 0)
-                    stateFragment.viewModel.pagesViewModel.onPageSelected(position)
+                    viewModel.pagesViewModel.onPageSelected(position)
                 }
             }
         })
-        adapter = CharacterCreationPagerAdapter(childFragmentManager, stateFragment.viewModel)
+        adapter = CharacterCreationPagerAdapter(childFragmentManager, viewModel)
         viewPager.adapter = adapter
     }
 
@@ -79,7 +80,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
 
     override fun onResume() {
         super.onResume()
-        registerSubscriptions(stateFragment.viewModel)
+        registerSubscriptions(viewModel)
     }
 
     override fun onPause() {
@@ -105,8 +106,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
     }
 
     private fun resetState() {
-        subscription.dispose()
-        stateFragment.reset {registerSubscriptions(it)}
+        viewModel.resetWorkflow { updatePagesFromViewModel(it.pagesViewModel.pageCollection) }
     }
 
     private fun updatePagesFromViewModel(pageCollection: CharacterCreationPageCollection) {
@@ -136,7 +136,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
         if (backAction != null) {
             backButton.visibility = View.VISIBLE
             backButton.isEnabled = true
-            backButton.setOnClickListener { stateFragment.viewModel.pagesViewModel.performAction(backAction) }
+            backButton.setOnClickListener { viewModel.pagesViewModel.performAction(backAction) }
             backButton.text = getTextForAction(backAction)
         } else {
             backButton.visibility = View.INVISIBLE
@@ -157,8 +157,8 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
             forwardButton.visibility = View.VISIBLE
             forwardButton.setOnClickListener {
                 if (forwardAction == PageAction.CONFIRM)
-                    stateFragment.viewModel.saveCharacter()
-                stateFragment.viewModel.pagesViewModel.performAction(forwardAction)
+                    viewModel.saveCharacter()
+                viewModel.pagesViewModel.performAction(forwardAction)
             }
             forwardButton.text = getTextForAction(forwardAction)
             // TODO: the enabled state should be part of the action object

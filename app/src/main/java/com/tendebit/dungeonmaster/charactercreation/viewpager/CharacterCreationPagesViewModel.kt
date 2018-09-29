@@ -51,8 +51,7 @@ class CharacterCreationPagesViewModel {
     }
 
     fun resetPages() {
-        clearPagesAfter(CharacterCreationPageDescriptor.PageType.CHARACTER_LIST)
-        notifyPagesChanged()
+        clearPagesStartingAt(pageCollection.pages.indexOf(DEFAULT_FIRST_PAGE) + 1)
     }
 
     fun startNewCharacterCreation() {

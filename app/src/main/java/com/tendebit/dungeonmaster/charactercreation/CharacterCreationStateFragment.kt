@@ -28,18 +28,7 @@ class CharacterCreationStateFragment : Fragment() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onDetach()
-        viewModel.resetWorkflow()
-    }
-
-    fun reset(onComplete: (vm: CharacterCreationViewModel) -> Unit) {
-        launch(UI) {
-            val result = async {
-                viewModel.resetWorkflow()
-                Thread.sleep(500)
-                return@async viewModel
-            }.await()
-            onComplete(result)
-        }
+        viewModel.resetWorkflow {}
     }
 
 }
