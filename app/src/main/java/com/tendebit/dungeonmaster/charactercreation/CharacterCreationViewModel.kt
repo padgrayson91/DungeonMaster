@@ -20,11 +20,11 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.cancelAndJoin
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -50,7 +50,8 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
         const val TAG_REVIEW = "review_details"
     }
 
-    private var job: Job? = null
+    private val job: Job = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + job)
     val selectedProficiencies = TreeSet<CharacterProficiencyDirectory>()
     var selectedClass: CharacterClassInfo? = null
     var selectedRace: CharacterRaceDirectory? = null
@@ -162,10 +163,10 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
     }
 
     fun saveCharacter() {
-        job = launch(UI) {
+        uiScope.launch {
             onAsyncCallStart()
             try {
-                async(parent = job) {
+                async {
                     val characterToSave = StoredCharacter(
                             id = UUID.randomUUID().toString(),
                             name = customInfo.name!!.toString(),
@@ -194,9 +195,7 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
 
     override fun onDetach() {
         disposables.dispose()
-        launch(UI) {
-            job?.cancelAndJoin()
-        }
+        uiScope.launch { job.cancel() }
     }
 
     private fun onNewCharacterCreationStarted() {

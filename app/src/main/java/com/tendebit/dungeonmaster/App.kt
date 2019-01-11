@@ -19,6 +19,7 @@ import org.koin.android.ext.android.startKoin
 import org.koin.dsl.module.Module
 import org.koin.dsl.module.module
 
+@Suppress("Unused")
 class App : Application() {
     companion object {
         @JvmStatic

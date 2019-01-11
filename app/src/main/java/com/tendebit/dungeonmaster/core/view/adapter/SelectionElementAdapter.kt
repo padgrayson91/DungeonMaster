@@ -7,13 +7,15 @@ import com.tendebit.dungeonmaster.core.view.SelectableCardViewHolder
 import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableElement>(val viewModel: SelectionViewModel<T, SelectedType>) : RecyclerView.Adapter<SelectableCardViewHolder<T>>() {
     private val disposable = CompositeDisposable()
     private val options = ArrayList<T>()
     private var selection: SelectedType? = null
+    private val uiScope = CoroutineScope(Dispatchers.Main)
 
     init {
         disposable.add(viewModel.options.subscribe { updateOptions(it) })
@@ -23,7 +25,7 @@ class SelectionElementAdapter<T : SelectableElement, SelectedType : SelectableEl
     private fun updateOptions(options: List<T>) {
         this.options.clear()
         this.options.addAll(options)
-        launch(UI) { notifyDataSetChanged() }
+        uiScope.launch { notifyDataSetChanged() }
     }
 
     private fun updateSelection(selection: SelectedType?) {

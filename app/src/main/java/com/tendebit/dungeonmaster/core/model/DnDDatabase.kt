@@ -20,7 +20,7 @@ abstract class DnDDatabase : RoomDatabase() {
             if (INSTANCE == null) {
                 synchronized(DnDDatabase::class) {
                     INSTANCE = Room.databaseBuilder(context.applicationContext,
-                            DnDDatabase::class.java, "dnd5eresponses.db")
+                            DnDDatabase::class.java, "dnd5e_responses.db")
                             .build()
                 }
             }

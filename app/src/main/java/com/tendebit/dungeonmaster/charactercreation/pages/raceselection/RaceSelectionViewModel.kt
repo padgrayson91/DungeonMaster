@@ -11,11 +11,11 @@ import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.experimental.Job
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.cancelAndJoin
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel for character race selection
@@ -26,7 +26,8 @@ class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : 
     override val selection = BehaviorSubject.create<CharacterRaceDirectory>()
     override var activeAsyncCalls = 0
     override val asyncCallChanges = PublishSubject.create<Int>()
-    private var job: Job? = null
+    private val job = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + job)
 
     init {
         loadRaceOptions()
@@ -44,8 +45,8 @@ class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : 
     }
 
     override fun onDetach() {
-        launch(UI) {
-            job?.cancelAndJoin()
+        uiScope.launch {
+            job.cancel()
         }
     }
 
@@ -59,10 +60,10 @@ class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : 
     }
 
     private fun loadRaceOptions() {
-        job = launch(UI) {
+        uiScope.launch {
             try {
                 onAsyncCallStart()
-                val result = async(parent = job) {  supplier.getCharacterRaces() }.await()
+                val result = async {  supplier.getCharacterRaces() }.await()
                 Log.d(TAG, "Got " + result.characterRaceDirectories.size + " character races. The first one is " + result.characterRaceDirectories[0].name)
                 updateOptions(result.characterRaceDirectories)
             } catch (e: Exception) {

@@ -1,7 +1,5 @@
 <resources>
     <string name="app_name">Dungeon Master</string>
-    <string name="class_selection">Choose Class</string>
-    <string name="proficiency_placeholder">No Proficiencies Chosen</string>
     <string name="native_proficiencies">Native Proficiencies: %s</string>
     <string name="character_name_placeholder">Your Character</string>
     <string name="proficiency_list_label">Proficient In:</string>

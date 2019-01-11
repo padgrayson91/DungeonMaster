@@ -5,10 +5,10 @@ package com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.model
  */
 class CustomInfo {
     companion object {
-        val MIN_HEIGHT_FEET = 1
-        val MAX_HEIGHT_FEET = 9
-        val MIN_HEIGHT_INCHES = 0
-        val MAX_HEIGHT_INCHES = 11
+        const val MIN_HEIGHT_FEET = 1
+        const val MAX_HEIGHT_FEET = 9
+        const val MIN_HEIGHT_INCHES = 0
+        const val MAX_HEIGHT_INCHES = 11
     }
 
     var name: CharSequence? = null

@@ -13,10 +13,11 @@ import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.Custom
 import com.tendebit.dungeonmaster.core.model.AsyncViewModel
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 /**
  * ViewModel for the current state of the workflow page progression.  Contains a list of [CharacterCreationPageDescriptor]
@@ -37,6 +38,8 @@ class CharacterCreationPagesViewModel : AsyncViewModel {
     val indexChanges = BehaviorSubject.create<Int>()
     val pageChanges = BehaviorSubject.create<List<CharacterCreationPageDescriptor>>()
     val clearedPages = PublishSubject.create<List<CharacterCreationPageDescriptor>>()
+    private val delayJob = Job()
+    private val uiScope = CoroutineScope(Dispatchers.Main + delayJob)
     override val asyncCallChanges = PublishSubject.create<Int>()
 
     init {
@@ -170,11 +173,11 @@ class CharacterCreationPagesViewModel : AsyncViewModel {
     }
 
     private fun notifyIndexChangeDelayed() {
-        launch(UI) {
+        uiScope.launch {
             onAsyncCallStart()
             // TODO: rather than a fixed delay, this should be waiting on a callback indicating the
             // target page is added to the viewpager
-            withContext(DefaultDispatcher) { Thread.sleep(500) }
+            runBlocking { Thread.sleep(500) }
             indexChanges.onNext(currentPageIndex)
             onAsyncCallFinish()
         }
