@@ -14,8 +14,8 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * ViewModel for character race selection
@@ -63,7 +63,7 @@ class RaceSelectionViewModel(private val supplier: CharacterRaceInfoSupplier) : 
         uiScope.launch {
             try {
                 onAsyncCallStart()
-                val result = async {  supplier.getCharacterRaces() }.await()
+                val result = withContext(Dispatchers.Default) {  supplier.getCharacterRaces() }
                 Log.d(TAG, "Got " + result.characterRaceDirectories.size + " character races. The first one is " + result.characterRaceDirectories[0].name)
                 updateOptions(result.characterRaceDirectories)
             } catch (e: Exception) {

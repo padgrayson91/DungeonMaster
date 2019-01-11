@@ -14,8 +14,8 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 /**
  * ViewModel for character class selection. Exposes functionality to read the list of options and make a selection
@@ -61,9 +61,9 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
             uiScope.launch {
                 try {
                     onAsyncCallStart()
-                    val result = async {
+                    val result = withContext(Dispatchers.Default) {
                         supplier.getClassInfo(option)
-                    }.await()
+                    }
                     previousSelection = result
                     selection.onNext(result)
                 } catch (e: Exception) {
@@ -81,7 +81,7 @@ class ClassSelectionViewModel(private val supplier: CharacterClassInfoSupplier) 
         uiScope.launch {
             try {
                 onAsyncCallStart()
-                val result = async {  supplier.getCharacterClasses() }.await()
+                val result = withContext(Dispatchers.Default) {  supplier.getCharacterClasses() }
                 updateOptions(result.characterClassDirectories)
             } catch (e: Exception) {
                 Log.e(TAG, "Got an error", e)

@@ -23,8 +23,8 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
@@ -166,7 +166,7 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
         uiScope.launch {
             onAsyncCallStart()
             try {
-                async {
+                withContext(Dispatchers.Default) {
                     val characterToSave = StoredCharacter(
                             id = UUID.randomUUID().toString(),
                             name = customInfo.name!!.toString(),
@@ -179,7 +179,7 @@ class CharacterCreationViewModel(private val characterSupplier: StoredCharacterS
 
                     )
                     characterSupplier.saveCharacter(characterToSave)
-                }.await()
+                }
                 completionSubject.onNext(true)
             } catch (e: Exception) {
                 Log.e(TAG, "Got an error while trying to save character", e)
