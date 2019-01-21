@@ -4,7 +4,7 @@ import com.tendebit.dungeonmaster.core.model.StoredCharacter
 import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectableElement
 
-class DisplayedCharacter(val storedCharacter: StoredCharacter) : SelectableElement {
+data class DisplayedCharacter(val storedCharacter: StoredCharacter) : SelectableElement {
 
     override fun primaryId(): String {
         return storedCharacter.id
@@ -12,15 +12,6 @@ class DisplayedCharacter(val storedCharacter: StoredCharacter) : SelectableEleme
 
     override fun primaryText(): String {
         return storedCharacter.name
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return other is DisplayedCharacter &&
-                other.storedCharacter == storedCharacter
-    }
-
-    override fun hashCode(): Int {
-        return storedCharacter.hashCode()
     }
 
     override fun primaryItemActions(): List<ItemAction> {
