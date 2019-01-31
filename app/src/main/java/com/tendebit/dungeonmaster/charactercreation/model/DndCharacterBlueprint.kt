@@ -17,7 +17,7 @@ class DndCharacterBlueprint {
 	private val state = DndCharacterCreationState()
 	private val stateChanges = PublishSubject.create<DndCharacterCreationState>()
 
-	private val examiners  = listOf(
+	private val examiners = listOf(
 			CharacterPrerequisiteExaminer(),
 			CharacterClassExaminer(),
 			CharacterRaceExaminer(),
