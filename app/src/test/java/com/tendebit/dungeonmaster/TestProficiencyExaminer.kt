@@ -6,7 +6,6 @@ import com.tendebit.dungeonmaster.charactercreation.model.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.model.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.model.examiner.CharacterProficiencyExaminer
 import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.Requirement
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import org.junit.Test
 

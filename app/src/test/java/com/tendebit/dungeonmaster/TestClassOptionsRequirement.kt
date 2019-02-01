@@ -11,7 +11,7 @@ class TestClassOptionsRequirement {
 
 	@Test
 	fun testNoStatusChangeWhenEmpty() {
-		val toTest = DndClassOptionsRequirement()
+		val toTest = DndClassOptionsRequirement(emptyList())
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
@@ -23,7 +23,7 @@ class TestClassOptionsRequirement {
 		val testOptions = listOf(
 				DndClass("Rogue", "example.com/rogue"),
 				DndClass("Wizard", "example.com/wizard"))
-		val toTest = DndClassOptionsRequirement()
+		val toTest = DndClassOptionsRequirement(emptyList())
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
@@ -37,7 +37,7 @@ class TestClassOptionsRequirement {
 		val testOptions = listOf(
 				DndClass("Rogue", "example.com/rogue"),
 				DndClass("Wizard", "example.com/wizard"))
-		val toTest = DndClassOptionsRequirement()
+		val toTest = DndClassOptionsRequirement(emptyList())
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
@@ -51,7 +51,7 @@ class TestClassOptionsRequirement {
 
 	@Test
 	fun testStatusNotFulfilledWithEmptyList() {
-		val toTest = DndClassOptionsRequirement()
+		val toTest = DndClassOptionsRequirement(emptyList())
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 		toTest.update(emptyList())
@@ -65,14 +65,14 @@ class TestClassOptionsRequirement {
 		val testOptions = listOf(
 				DndClass("Rogue", "example.com/rogue"),
 				DndClass("Wizard", "example.com/wizard"))
-		val toTest: Requirement<*> = DndClassOptionsRequirement().initialize(testOptions)
+		val toTest = DndClassOptionsRequirement(testOptions)
 
 		assert(toTest.status == Requirement.Status.FULFILLED)
 	}
 
 	@Test
 	fun testStatusNotFulfilledWithInitialEmptyList() {
-		val toTest: Requirement<*> = DndClassOptionsRequirement().initialize(emptyList())
+		val toTest = DndClassOptionsRequirement(emptyList())
 
 		assert(toTest.status == Requirement.Status.NOT_FULFILLED)
 	}

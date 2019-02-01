@@ -5,17 +5,17 @@ import com.tendebit.dungeonmaster.charactercreation.model.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.model.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 
-class DndClassRequirement(val choices: List<DndClass>): SimpleRequirement<DndClass>()
+class DndClassRequirement(initialValue: DndClass?, val choices: List<DndClass>): SimpleRequirement<DndClass>(initialValue)
 
-class DndClassOptionsRequirement: ListRequirement<DndClass>()
+class DndClassOptionsRequirement(initialValue: List<DndClass>): ListRequirement<DndClass>(initialValue)
 
-class DndRaceOptionsRequirement: ListRequirement<CharacterRaceDirectory>()
+class DndRaceOptionsRequirement(initialValue: List<CharacterRaceDirectory>): ListRequirement<CharacterRaceDirectory>(initialValue)
 
-class DndRaceRequirement(val choices: List<CharacterRaceDirectory>): SimpleRequirement<CharacterRaceDirectory>()
+class DndRaceRequirement(initialValue: CharacterRaceDirectory?, val choices: List<CharacterRaceDirectory>): SimpleRequirement<CharacterRaceDirectory>(initialValue)
 
-class DndProficiencyOptionsRequirement: SimpleRequirement<List<DndProficiencyGroup>>()
+class DndProficiencyOptionsRequirement(initialValue: List<DndProficiencyGroup>): SimpleRequirement<List<DndProficiencyGroup>>(initialValue)
 
-class DndProficiencyRequirement(val fromGroup: DndProficiencyGroup): SimpleRequirement<DndProficiency>() {
+class DndProficiencyRequirement(initialValue: DndProficiency?, val fromGroup: DndProficiencyGroup): SimpleRequirement<DndProficiency>(initialValue) {
 
 	override fun isItemValid(item: DndProficiency): Boolean = super.isItemValid(item) && fromGroup.availableOptions.contains(item)
 

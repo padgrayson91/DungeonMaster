@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation.model.requirement
 
-open class ListRequirement<ItemType>: BaseRequirement<List<ItemType>>() {
+open class ListRequirement<ItemType>(initialValue: List<ItemType>): BaseRequirement<List<ItemType>>(initialValue) {
 
-	final override val item = ArrayList<ItemType>()
+	final override val item = ArrayList<ItemType>(initialValue)
 
 	final override fun onUpdate(item: List<ItemType>?) {
 		this.item.clear()

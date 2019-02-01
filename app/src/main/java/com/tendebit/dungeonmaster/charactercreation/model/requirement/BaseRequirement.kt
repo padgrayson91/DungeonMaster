@@ -3,34 +3,29 @@ package com.tendebit.dungeonmaster.charactercreation.model.requirement
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
-abstract class BaseRequirement<ItemType>: Requirement<ItemType> {
+abstract class BaseRequirement<ItemType>(initialValue: ItemType?): Requirement<ItemType> {
 
-	private val internalStatus = PublishSubject.create<Requirement.Status>()
-	override val item: ItemType? = null
+	private val internalStatusChanges = PublishSubject.create<Requirement.Status>()
+	private var internalStatus: Requirement.Status = Requirement.Status.NOT_SET
+	override val item: ItemType? = initialValue
 
-	override val statusChanges = internalStatus as Observable<Requirement.Status>
-	final override var status = Requirement.Status.NOT_SET
-		private set
-
-	final override fun <T : Requirement<ItemType>> initialize(item: ItemType?): T {
-		this.status = statusForItem(item)
-		onUpdate(item)
-		@Suppress("UNCHECKED_CAST")
-		return this as T
-	}
+	final override val statusChanges = internalStatusChanges as Observable<Requirement.Status>
+	final override var status: Requirement.Status
+		private set(value) { internalStatus = value }
+		get() { return if (internalStatus == Requirement.Status.NOT_SET) { statusForItem(item)} else { internalStatus } }
 
 	final override fun update(item: ItemType) {
 		if (isItemValid(item)) {
 			onUpdate(item)
 			status = statusForItem(this.item)
-			internalStatus.onNext(status)
+			internalStatusChanges.onNext(status)
 		}
 	}
 
 	final override fun revoke() {
 		onRevoke()
 		status = Requirement.Status.NOT_FULFILLED
-		internalStatus.onNext(status)
+		internalStatusChanges.onNext(status)
 	}
 
 	protected open fun isItemValid(item: ItemType): Boolean = true

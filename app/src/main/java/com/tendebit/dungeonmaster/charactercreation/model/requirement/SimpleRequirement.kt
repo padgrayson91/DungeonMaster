@@ -1,8 +1,9 @@
 package com.tendebit.dungeonmaster.charactercreation.model.requirement
 
-open class SimpleRequirement<ItemType>: BaseRequirement<ItemType>() {
+open class SimpleRequirement<ItemType>(initialValue: ItemType?): BaseRequirement<ItemType>(initialValue) {
 
-	final override var item: ItemType? = null
+	final override var item: ItemType? = initialValue
+		private set
 
 	override fun onUpdate(item: ItemType?) {
 		this.item = item

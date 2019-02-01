@@ -18,6 +18,4 @@ interface Requirement<ItemType> {
 
 	fun revoke()
 
-	fun <T : Requirement<ItemType>> initialize(item: ItemType?): T
-
 }
