@@ -14,17 +14,7 @@ class TestProficiencyExaminer {
 	@Test
 	fun testExaminerYieldsNothingWhenNothingIsProvided() {
 		val toTest = CharacterProficiencyExaminer()
-		assert(toTest.getFulfillmentsForState(DndCharacterCreationState()).isEmpty())
-	}
-
-	@Test
-	fun testExaminerYieldsNothingIfNoClassIsSelected() {
-		val toTest = CharacterProficiencyExaminer()
-		val testState = DndCharacterCreationState()
-		testState.character.race = CharacterRaceDirectory()
-		testState.proficiencyOptions.add(DndProficiencyGroup(listOf(DndProficiency("Athletics", "example.com")), ArrayList(), 1))
-
-		assert(toTest.getFulfillmentsForState(testState).isEmpty())
+		assert(toTest.examine(DndCharacterCreationState()).isEmpty())
 	}
 
 	@Test
@@ -38,7 +28,7 @@ class TestProficiencyExaminer {
 				DndProficiency("Brewer's Supplies", "another.com"),
 				DndProficiency("Stealth", "athird.com")), ArrayList(), 2))
 
-		assert(toTest.getFulfillmentsForState(testState).size == 2)
+		assert(toTest.examine(testState).size == 2)
 	}
 
 	@Test
@@ -60,8 +50,8 @@ class TestProficiencyExaminer {
 		testState.proficiencyOptions.add(testGroupB)
 
 
-		assert(toTest.getFulfillmentsForState(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupA }.size == 2)
-		assert(toTest.getFulfillmentsForState(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupB }.size == 2)
+		assert(toTest.examine(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupA }.size == 2)
+		assert(toTest.examine(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupB }.size == 2)
 
 
 	}
@@ -84,10 +74,10 @@ class TestProficiencyExaminer {
 		testState.proficiencyOptions.add(testGroupA)
 		testState.proficiencyOptions.add(testGroupB)
 
-		val groupBFulfillment = toTest.getFulfillmentsForState(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupB }
+		val groupBFulfillment = toTest.examine(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupB }
 		// mark the one requirement with an item as fulfilled
 		groupBFulfillment.find { it.requirement.item != null }?.applyToState(testState)
-		val groupAFulfillment = toTest.getFulfillmentsForState(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupA }
+		val groupAFulfillment = toTest.examine(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupA }
 
 		assert(testState.character.proficiencies.size == 1)
 		assert(groupBFulfillment.size == 2) {

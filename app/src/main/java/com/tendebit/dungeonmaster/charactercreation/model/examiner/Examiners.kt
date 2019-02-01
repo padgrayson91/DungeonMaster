@@ -14,51 +14,56 @@ import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProfici
 import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProficiencyRequirement
 import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndRaceOptionsRequirement
 import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndRaceRequirement
+import com.tendebit.dungeonmaster.charactercreation.model.requirement.Requirement
 
-abstract class DndCharacterCreationExaminer: BaseExaminer<DndCharacterCreationState>()
+// FIXME: These examiners blindly assume that current selections are valid so long as pre-requisites are met, but this is not necessarily the case
+// FIXME: For example, if the list of available classes changes to no longer include the user's selection, that requirement should be recreated with no value
+
+abstract class DndCharacterCreationExaminer: Examiner<DndCharacterCreationState>
 
 class CharacterPrerequisiteExaminer: DndCharacterCreationExaminer() {
 
-	override fun getFulfillmentsForState(state: DndCharacterCreationState): List<Fulfillment<*, DndCharacterCreationState>> {
+	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		val requirements = ArrayList<Fulfillment<*, DndCharacterCreationState>>()
 		requirements.add(DndClassOptionsFulfillment(DndClassOptionsRequirement(state.classOptions)))
 		requirements.add(DndRaceOptionsFulfillment(DndRaceOptionsRequirement(state.raceOptions)))
-		return requirements
+		return Examination(requirements, requirements.all { it.requirement.status == Requirement.Status.NOT_FULFILLED })
 	}
 
 }
 
 class CharacterClassExaminer: DndCharacterCreationExaminer() {
 
-	override fun getFulfillmentsForState(state: DndCharacterCreationState): List<Fulfillment<*, DndCharacterCreationState>> {
+	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		val availableClasses = state.classOptions
-		return listOf(DndClassFulfillment(DndClassRequirement(state.character.characterClass, availableClasses)))
+		return Examination(
+				listOf(DndClassFulfillment(DndClassRequirement(state.character.characterClass, availableClasses))),
+				availableClasses.isEmpty())
 	}
 
 }
 
 class CharacterRaceExaminer: DndCharacterCreationExaminer() {
 
-	override fun getFulfillmentsForState(state: DndCharacterCreationState): List<Fulfillment<*, DndCharacterCreationState>> {
-		if (state.raceOptions.isEmpty()) return emptyList()
-		return listOf(DndRaceFulfillment(DndRaceRequirement(state.character.race, state.raceOptions)))
+	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
+		if (state.raceOptions.isEmpty()) return Examination(emptyList(), true)
+		return Examination(listOf(DndRaceFulfillment(DndRaceRequirement(state.character.race, state.raceOptions))), state.character.race == null)
 	}
 
 }
 
 class CharacterProficiencyOptionsExaminer: DndCharacterCreationExaminer() {
 
-	override fun getFulfillmentsForState(state: DndCharacterCreationState): List<Fulfillment<*, DndCharacterCreationState>> {
-		state.character.characterClass ?: return emptyList()
-		return listOf(DndProficiencyOptionsFulfillment(DndProficiencyOptionsRequirement(state.proficiencyOptions)))
+	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
+		state.character.characterClass ?: return Examination(emptyList(), true)
+		return Examination(listOf(DndProficiencyOptionsFulfillment(DndProficiencyOptionsRequirement(state.proficiencyOptions))), state.proficiencyOptions.isEmpty())
 	}
 
 }
 
 class CharacterProficiencyExaminer: DndCharacterCreationExaminer() {
 
-	override fun getFulfillmentsForState(state: DndCharacterCreationState): List<Fulfillment<*, DndCharacterCreationState>> {
-		state.character.characterClass ?: return emptyList()
+	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		val availableProficiencies = state.proficiencyOptions
 		val fulfillmentList = ArrayList<DndProficiencyFulfillment>()
 		for (group in availableProficiencies) {
@@ -78,7 +83,8 @@ class CharacterProficiencyExaminer: DndCharacterCreationExaminer() {
 			}
 		}
 
-		return fulfillmentList
+		// If any proficiency selection is not complete, further requirements should not be queried
+		return Examination(fulfillmentList, fulfillmentList.isNotEmpty() && fulfillmentList.find { it.requirement.status == Requirement.Status.NOT_FULFILLED } != null)
 	}
 
 }
