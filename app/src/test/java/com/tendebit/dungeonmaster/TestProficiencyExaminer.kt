@@ -87,10 +87,7 @@ class TestProficiencyExaminer {
 
 		val groupBFulfillment = toTest.getFulfillmentsForState(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupB }
 		// mark the one requirement with an item as fulfilled
-		groupBFulfillment.find { it.requirement.item != null }?.let {
-			it.requirement.status = Requirement.Status.FULFILLED
-			it.applyToState(testState)
-		}
+		groupBFulfillment.find { it.requirement.item != null }?.applyToState(testState)
 		val groupAFulfillment = toTest.getFulfillmentsForState(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupA }
 
 		assert(testState.character.proficiencies.size == 1)

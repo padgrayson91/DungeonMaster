@@ -1,19 +1,19 @@
 package com.tendebit.dungeonmaster.charactercreation.model.requirement
 
-abstract class SimpleRequirement<ItemType>(initialValue: ItemType?): BaseRequirement<ItemType>() {
+open class SimpleRequirement<ItemType>: BaseRequirement<ItemType>() {
 
-	override var item = initialValue
+	final override var item: ItemType? = null
 
-	override fun update(item: ItemType) {
+	override fun onUpdate(item: ItemType?) {
 		this.item = item
-		status = Requirement.Status.FULFILLED
-		internalStatus.onNext(status)
 	}
 
-	override fun revoke() {
+	override fun onRevoke() {
 		this.item = null
-		status = Requirement.Status.NOT_FULFILLED
-		internalStatus.onNext(status)
+	}
+
+	override fun statusForItem(item: ItemType?): Requirement.Status {
+		return if (item == null) { Requirement.Status.NOT_FULFILLED } else { Requirement.Status.FULFILLED }
 	}
 
 }

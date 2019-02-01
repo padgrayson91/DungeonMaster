@@ -1,26 +1,22 @@
 package com.tendebit.dungeonmaster.charactercreation.model.requirement
 
-abstract class ListRequirement<ItemType>(initialValue: List<ItemType>): BaseRequirement<List<ItemType>>() {
+open class ListRequirement<ItemType>: BaseRequirement<List<ItemType>>() {
 
-	final override val item: List<ItemType> = ArrayList(initialValue)
-	private val internalItem = item as MutableList<ItemType>
+	final override val item = ArrayList<ItemType>()
 
-	override fun update(item: List<ItemType>) {
-		if (item.isEmpty()) {
-			revoke()
+	final override fun onUpdate(item: List<ItemType>?) {
+		this.item.clear()
+		if (item.isNullOrEmpty()) {
 			return
 		}
 
-		internalItem.clear()
-		internalItem.addAll(item)
-		status = Requirement.Status.FULFILLED
-		internalStatus.onNext(status)
+		this.item.addAll(item)
 	}
 
-	override fun revoke() {
-		internalItem.clear()
-		status = Requirement.Status.NOT_FULFILLED
-		internalStatus.onNext(status)
+	override fun onRevoke() = this.item.clear()
+
+	final override fun statusForItem(item: List<ItemType>?): Requirement.Status {
+		return if (item.isNullOrEmpty()) { Requirement.Status.NOT_FULFILLED } else { Requirement.Status.FULFILLED }
 	}
 
 }

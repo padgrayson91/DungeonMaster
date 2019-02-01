@@ -12,10 +12,12 @@ interface Requirement<ItemType> {
 
 	val statusChanges: Observable<Status>
 	val item: ItemType?
-	var status: Status
+	val status: Status
 
 	fun update(item: ItemType)
 
 	fun revoke()
+
+	fun <T : Requirement<ItemType>> initialize(item: ItemType?): T
 
 }

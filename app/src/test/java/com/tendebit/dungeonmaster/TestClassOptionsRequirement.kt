@@ -11,7 +11,7 @@ class TestClassOptionsRequirement {
 
 	@Test
 	fun testNoStatusChangeWhenEmpty() {
-		val toTest = DndClassOptionsRequirement(emptyList())
+		val toTest = DndClassOptionsRequirement()
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
@@ -23,7 +23,7 @@ class TestClassOptionsRequirement {
 		val testOptions = listOf(
 				DndClass("Rogue", "example.com/rogue"),
 				DndClass("Wizard", "example.com/wizard"))
-		val toTest = DndClassOptionsRequirement(emptyList())
+		val toTest = DndClassOptionsRequirement()
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
@@ -37,7 +37,7 @@ class TestClassOptionsRequirement {
 		val testOptions = listOf(
 				DndClass("Rogue", "example.com/rogue"),
 				DndClass("Wizard", "example.com/wizard"))
-		val toTest = DndClassOptionsRequirement(emptyList())
+		val toTest = DndClassOptionsRequirement()
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
@@ -51,13 +51,30 @@ class TestClassOptionsRequirement {
 
 	@Test
 	fun testStatusNotFulfilledWithEmptyList() {
-		val toTest = DndClassOptionsRequirement(emptyList())
+		val toTest = DndClassOptionsRequirement()
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 		toTest.update(emptyList())
 
 		testObserver.assertValueCount(1)
-		testObserver.assertValue(Requirement.Status.NOT_FULFILLED)
+		testObserver.assertValueAt(testObserver.valueCount() - 1) { it == Requirement.Status.NOT_FULFILLED }
+	}
+
+	@Test
+	fun testStatusFulfilledWithInitialNonEmptyList() {
+		val testOptions = listOf(
+				DndClass("Rogue", "example.com/rogue"),
+				DndClass("Wizard", "example.com/wizard"))
+		val toTest: Requirement<*> = DndClassOptionsRequirement().initialize(testOptions)
+
+		assert(toTest.status == Requirement.Status.FULFILLED)
+	}
+
+	@Test
+	fun testStatusNotFulfilledWithInitialEmptyList() {
+		val toTest: Requirement<*> = DndClassOptionsRequirement().initialize(emptyList())
+
+		assert(toTest.status == Requirement.Status.NOT_FULFILLED)
 	}
 
 }

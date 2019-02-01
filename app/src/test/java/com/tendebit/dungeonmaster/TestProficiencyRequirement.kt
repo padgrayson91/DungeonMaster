@@ -15,12 +15,13 @@ class TestProficiencyRequirement {
 				DndProficiency("Athletics", "example.com/athletics"),
 				DndProficiency("Brewer's Supplies", "example.com/brewers_supplies"))
 		val testGroup = DndProficiencyGroup(testOptions, ArrayList(), 1)
-		val toTest = DndProficiencyRequirement(null, testGroup)
+		val toTest = DndProficiencyRequirement(testGroup)
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
 		toTest.update(DndProficiency("Athletics", "example.com/athletics"))
 
+		testObserver.assertNoErrors()
 		testObserver.assertValue(Requirement.Status.FULFILLED)
 	}
 
@@ -30,12 +31,13 @@ class TestProficiencyRequirement {
 				DndProficiency("Athletics", "example.com/athletics"),
 				DndProficiency("Brewer's Supplies", "example.com/brewers_supplies"))
 		val testGroup = DndProficiencyGroup(testOptions, ArrayList(), 1)
-		val toTest = DndProficiencyRequirement(null, testGroup)
+		val toTest = DndProficiencyRequirement(testGroup)
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
 		toTest.update(DndProficiency("Frumpus", "example.com/bleh"))
 
+		testObserver.assertNoErrors()
 		testObserver.assertEmpty()
 	}
 
@@ -45,15 +47,16 @@ class TestProficiencyRequirement {
 				DndProficiency("Athletics", "example.com/athletics"),
 				DndProficiency("Brewer's Supplies", "example.com/brewers_supplies"))
 		val testGroup = DndProficiencyGroup(testOptions, ArrayList(), 1)
-		val toTest = DndProficiencyRequirement(null, testGroup)
+		val toTest = DndProficiencyRequirement(testGroup)
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
 		toTest.update(DndProficiency("Athletics", "example.com/athletics"))
 		toTest.revoke()
 
+		testObserver.assertNoErrors()
 		testObserver.assertValueCount(2)
-		testObserver.assertValueAt(1) { it == Requirement.Status.NOT_FULFILLED }
+		testObserver.assertValueAt(testObserver.valueCount() - 1) { it == Requirement.Status.NOT_FULFILLED }
 	}
 
 	@Test
@@ -62,7 +65,7 @@ class TestProficiencyRequirement {
 				DndProficiency("Athletics", "example.com/athletics"),
 				DndProficiency("Brewer's Supplies", "example.com/brewers_supplies"))
 		val testGroup = DndProficiencyGroup(testOptions, ArrayList(), 1)
-		val toTest = DndProficiencyRequirement(null, testGroup)
+		val toTest = DndProficiencyRequirement(testGroup)
 
 		toTest.update(DndProficiency("Athletics", "example.com/athletics"))
 		toTest.revoke()
