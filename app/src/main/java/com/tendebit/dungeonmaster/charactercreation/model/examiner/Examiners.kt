@@ -31,7 +31,7 @@ class CharacterPrerequisiteExaminer: DndCharacterCreationExaminer() {
 class CharacterClassExaminer: DndCharacterCreationExaminer() {
 
 	override fun getFulfillmentsForState(state: DndCharacterCreationState): List<Fulfillment<*, DndCharacterCreationState>> {
-		val availableClasses = state.classOptions?.characterClassDirectories ?: return emptyList()
+		val availableClasses = state.classOptions
 		return listOf(DndClassFulfillment(DndClassRequirement(state.character.characterClass, availableClasses)))
 	}
 
@@ -40,8 +40,6 @@ class CharacterClassExaminer: DndCharacterCreationExaminer() {
 class CharacterRaceExaminer: DndCharacterCreationExaminer() {
 
 	override fun getFulfillmentsForState(state: DndCharacterCreationState): List<Fulfillment<*, DndCharacterCreationState>> {
-		// Don't let them select race until we have the class list
-		state.classOptions?.characterClassDirectories ?: return emptyList()
 		if (state.raceOptions.isEmpty()) return emptyList()
 		return listOf(DndRaceFulfillment(DndRaceRequirement(state.character.race, state.raceOptions)))
 	}

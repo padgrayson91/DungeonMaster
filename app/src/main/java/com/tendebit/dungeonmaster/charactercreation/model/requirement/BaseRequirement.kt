@@ -8,7 +8,7 @@ abstract class BaseRequirement<ItemType>: Requirement<ItemType> {
 	protected val internalStatus = PublishSubject.create<Requirement.Status>()
 
 	override val statusChanges = internalStatus as Observable<Requirement.Status>
-	override var item: ItemType? = null
-	override var status = Requirement.Status.INVALID
+	override val item: ItemType? = null
+	override var status = Requirement.Status.NOT_SET
 
 }

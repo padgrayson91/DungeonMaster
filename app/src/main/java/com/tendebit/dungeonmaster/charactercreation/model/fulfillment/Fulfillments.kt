@@ -1,17 +1,16 @@
 package com.tendebit.dungeonmaster.charactercreation.model.fulfillment
 
 import com.tendebit.dungeonmaster.charactercreation.model.DndCharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.model.DndClass
 import com.tendebit.dungeonmaster.charactercreation.model.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.model.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProficiencyRequirement
 import com.tendebit.dungeonmaster.charactercreation.model.requirement.Requirement
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassManifest
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 
 abstract class DndCharacterFulfillment<T>(requirement: Requirement<T>): BaseFulfillment<T, DndCharacterCreationState>(requirement)
 
-class DndClassFulfillment(requirement: Requirement<CharacterClassDirectory>): DndCharacterFulfillment<CharacterClassDirectory>(requirement) {
+class DndClassFulfillment(requirement: Requirement<DndClass>): DndCharacterFulfillment<DndClass>(requirement) {
 
 	override fun applyToState(state: DndCharacterCreationState): Boolean {
 		if (state.character.characterClass == requirement.item) return false
@@ -21,17 +20,20 @@ class DndClassFulfillment(requirement: Requirement<CharacterClassDirectory>): Dn
 
 }
 
-class DndClassOptionsFulfillment(requirement: Requirement<CharacterClassManifest>): DndCharacterFulfillment<CharacterClassManifest>(requirement) {
+class DndClassOptionsFulfillment(requirement: Requirement<List<DndClass>>): DndCharacterFulfillment<List<DndClass>>(requirement) {
 
 	override fun applyToState(state: DndCharacterCreationState): Boolean {
 		if (state.classOptions == requirement.item) return false
-		state.classOptions = requirement.item
+		state.classOptions.clear()
+		requirement.item?.let {
+			state.classOptions.addAll(it)
+		}
 		return true
 	}
 
 }
 
-class DndRaceOptionsFulfillment(requirement: Requirement<Iterable<CharacterRaceDirectory>>): DndCharacterFulfillment<Iterable<CharacterRaceDirectory>>(requirement) {
+class DndRaceOptionsFulfillment(requirement: Requirement<List<CharacterRaceDirectory>>): DndCharacterFulfillment<List<CharacterRaceDirectory>>(requirement) {
 
 	override fun applyToState(state: DndCharacterCreationState): Boolean {
 		if (state.raceOptions == requirement.item) return false

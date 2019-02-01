@@ -1,12 +1,12 @@
 package com.tendebit.dungeonmaster
 
 import com.tendebit.dungeonmaster.charactercreation.model.DndCharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.model.DndClass
 import com.tendebit.dungeonmaster.charactercreation.model.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.model.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.model.examiner.CharacterProficiencyExaminer
 import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProficiencyRequirement
 import com.tendebit.dungeonmaster.charactercreation.model.requirement.Requirement
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassDirectory
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import org.junit.Test
 
@@ -32,7 +32,7 @@ class TestProficiencyExaminer {
 	fun testExaminerYieldsCorrectNumberOfFulfillmentForSingleGroup() {
 		val toTest = CharacterProficiencyExaminer()
 		val testState = DndCharacterCreationState()
-		testState.character.characterClass = CharacterClassDirectory()
+		testState.character.characterClass = DndClass("Monk", "example.com/monk")
 		testState.character.race = CharacterRaceDirectory()
 		testState.proficiencyOptions.add(DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
@@ -55,7 +55,7 @@ class TestProficiencyExaminer {
 				DndProficiency("Brewer's Supplies", "another.com"),
 				DndProficiency("Stealth", "athird.com")), ArrayList(), 2)
 
-		testState.character.characterClass = CharacterClassDirectory()
+		testState.character.characterClass = DndClass("Barbarian", "example.com/barbarian")
 		testState.character.race = CharacterRaceDirectory()
 		testState.proficiencyOptions.add(testGroupA)
 		testState.proficiencyOptions.add(testGroupB)
@@ -80,7 +80,7 @@ class TestProficiencyExaminer {
 				DndProficiency("Brewer's Supplies", "another.com"),
 				DndProficiency("Stealth", "athird.com")), arrayListOf(DndProficiency("Brewer's Supplies", "another.com")), 2)
 
-		testState.character.characterClass = CharacterClassDirectory()
+		testState.character.characterClass = DndClass("Wizard", "example.com/wizard")
 		testState.character.race = CharacterRaceDirectory()
 		testState.proficiencyOptions.add(testGroupA)
 		testState.proficiencyOptions.add(testGroupB)

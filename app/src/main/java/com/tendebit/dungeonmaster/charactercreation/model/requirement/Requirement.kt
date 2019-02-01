@@ -7,11 +7,11 @@ interface Requirement<ItemType> {
 	enum class Status {
 		FULFILLED,
 		NOT_FULFILLED,
-		INVALID
+		NOT_SET
 	}
 
 	val statusChanges: Observable<Status>
-	var item: ItemType?
+	val item: ItemType?
 	var status: Status
 
 	fun update(item: ItemType)
