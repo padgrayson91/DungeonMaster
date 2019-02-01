@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.model.requirement
+package com.tendebit.dungeonmaster.charactercreation.feature.requirement
 
 open class SimpleRequirement<ItemType>(initialValue: ItemType?): BaseRequirement<ItemType>(initialValue) {
 

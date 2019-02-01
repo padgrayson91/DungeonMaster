@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.model
+package com.tendebit.dungeonmaster.charactercreation.feature
 
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 

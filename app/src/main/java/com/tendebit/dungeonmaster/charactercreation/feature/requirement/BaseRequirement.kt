@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.model.requirement
+package com.tendebit.dungeonmaster.charactercreation.feature.requirement
 
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject

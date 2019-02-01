@@ -1,20 +1,20 @@
-package com.tendebit.dungeonmaster.charactercreation.model.examiner
+package com.tendebit.dungeonmaster.charactercreation.feature.examiner
 
-import com.tendebit.dungeonmaster.charactercreation.model.DndCharacterCreationState
-import com.tendebit.dungeonmaster.charactercreation.model.fulfillment.DndClassFulfillment
-import com.tendebit.dungeonmaster.charactercreation.model.fulfillment.DndClassOptionsFulfillment
-import com.tendebit.dungeonmaster.charactercreation.model.fulfillment.DndProficiencyFulfillment
-import com.tendebit.dungeonmaster.charactercreation.model.fulfillment.DndProficiencyOptionsFulfillment
-import com.tendebit.dungeonmaster.charactercreation.model.fulfillment.DndRaceFulfillment
-import com.tendebit.dungeonmaster.charactercreation.model.fulfillment.DndRaceOptionsFulfillment
-import com.tendebit.dungeonmaster.charactercreation.model.fulfillment.Fulfillment
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndClassOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndClassRequirement
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProficiencyOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndRaceOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndRaceRequirement
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.Requirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndClassFulfillment
+import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndClassOptionsFulfillment
+import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndProficiencyFulfillment
+import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndProficiencyOptionsFulfillment
+import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndRaceFulfillment
+import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndRaceOptionsFulfillment
+import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.Fulfillment
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 
 // FIXME: These examiners blindly assume that current selections are valid so long as pre-requisites are met, but this is not necessarily the case
 // FIXME: For example, if the list of available classes changes to no longer include the user's selection, that requirement should be recreated with no value

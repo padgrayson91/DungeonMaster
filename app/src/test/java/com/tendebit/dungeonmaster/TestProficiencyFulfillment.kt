@@ -1,11 +1,11 @@
 package com.tendebit.dungeonmaster
 
-import com.tendebit.dungeonmaster.charactercreation.model.DndCharacterCreationState
-import com.tendebit.dungeonmaster.charactercreation.model.DndProficiency
-import com.tendebit.dungeonmaster.charactercreation.model.DndProficiencyGroup
-import com.tendebit.dungeonmaster.charactercreation.model.fulfillment.DndProficiencyFulfillment
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.Requirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndProficiencyFulfillment
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when` as whenever

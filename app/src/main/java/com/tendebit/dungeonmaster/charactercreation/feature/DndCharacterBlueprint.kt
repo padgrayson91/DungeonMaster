@@ -1,11 +1,11 @@
-package com.tendebit.dungeonmaster.charactercreation.model
+package com.tendebit.dungeonmaster.charactercreation.feature
 
-import com.tendebit.dungeonmaster.charactercreation.model.examiner.CharacterClassExaminer
-import com.tendebit.dungeonmaster.charactercreation.model.examiner.CharacterPrerequisiteExaminer
-import com.tendebit.dungeonmaster.charactercreation.model.examiner.CharacterProficiencyExaminer
-import com.tendebit.dungeonmaster.charactercreation.model.examiner.CharacterProficiencyOptionsExaminer
-import com.tendebit.dungeonmaster.charactercreation.model.examiner.CharacterRaceExaminer
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.Requirement
+import com.tendebit.dungeonmaster.charactercreation.feature.examiner.CharacterClassExaminer
+import com.tendebit.dungeonmaster.charactercreation.feature.examiner.CharacterPrerequisiteExaminer
+import com.tendebit.dungeonmaster.charactercreation.feature.examiner.CharacterProficiencyExaminer
+import com.tendebit.dungeonmaster.charactercreation.feature.examiner.CharacterProficiencyOptionsExaminer
+import com.tendebit.dungeonmaster.charactercreation.feature.examiner.CharacterRaceExaminer
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable

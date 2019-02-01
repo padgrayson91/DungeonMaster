@@ -1,11 +1,11 @@
-package com.tendebit.dungeonmaster.charactercreation.model.fulfillment
+package com.tendebit.dungeonmaster.charactercreation.feature.fulfillment
 
-import com.tendebit.dungeonmaster.charactercreation.model.DndCharacterCreationState
-import com.tendebit.dungeonmaster.charactercreation.model.DndClass
-import com.tendebit.dungeonmaster.charactercreation.model.DndProficiency
-import com.tendebit.dungeonmaster.charactercreation.model.DndProficiencyGroup
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.Requirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 
 abstract class DndCharacterFulfillment<T>(requirement: Requirement<T>): BaseFulfillment<T, DndCharacterCreationState>(requirement)

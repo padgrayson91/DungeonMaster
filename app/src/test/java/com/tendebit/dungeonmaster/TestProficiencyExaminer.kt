@@ -1,11 +1,11 @@
 package com.tendebit.dungeonmaster
 
-import com.tendebit.dungeonmaster.charactercreation.model.DndCharacterCreationState
-import com.tendebit.dungeonmaster.charactercreation.model.DndClass
-import com.tendebit.dungeonmaster.charactercreation.model.DndProficiency
-import com.tendebit.dungeonmaster.charactercreation.model.DndProficiencyGroup
-import com.tendebit.dungeonmaster.charactercreation.model.examiner.CharacterProficiencyExaminer
-import com.tendebit.dungeonmaster.charactercreation.model.requirement.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.examiner.CharacterProficiencyExaminer
+import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import org.junit.Test
 

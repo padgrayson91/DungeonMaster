@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.pages.characterlist
 
-import com.tendebit.dungeonmaster.charactercreation.model.StoredCharacterSupplier
+import com.tendebit.dungeonmaster.charactercreation.feature.StoredCharacterSupplier
 import com.tendebit.dungeonmaster.core.viewmodel.ItemAction
 import com.tendebit.dungeonmaster.core.viewmodel.SelectionViewModel
 import io.reactivex.Flowable

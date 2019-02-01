@@ -3,7 +3,7 @@ package com.tendebit.dungeonmaster
 import android.app.Application
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
-import com.tendebit.dungeonmaster.charactercreation.model.StoredCharacterSupplier
+import com.tendebit.dungeonmaster.charactercreation.feature.StoredCharacterSupplier
 import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.ClassSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfoSupplier

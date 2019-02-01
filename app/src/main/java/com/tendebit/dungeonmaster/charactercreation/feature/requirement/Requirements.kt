@@ -1,8 +1,8 @@
-package com.tendebit.dungeonmaster.charactercreation.model.requirement
+package com.tendebit.dungeonmaster.charactercreation.feature.requirement
 
-import com.tendebit.dungeonmaster.charactercreation.model.DndClass
-import com.tendebit.dungeonmaster.charactercreation.model.DndProficiency
-import com.tendebit.dungeonmaster.charactercreation.model.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 
 class DndClassRequirement(initialValue: DndClass?, val choices: List<DndClass>): SimpleRequirement<DndClass>(initialValue)
