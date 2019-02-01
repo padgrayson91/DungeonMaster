@@ -4,9 +4,9 @@ import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreation
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
-import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 
 abstract class DndCharacterFulfillment<T>(requirement: Requirement<T>): BaseFulfillment<T, DndCharacterCreationState>(requirement)
 
@@ -33,7 +33,7 @@ class DndClassOptionsFulfillment(requirement: Requirement<List<DndClass>>): DndC
 
 }
 
-class DndRaceOptionsFulfillment(requirement: Requirement<List<CharacterRaceDirectory>>): DndCharacterFulfillment<List<CharacterRaceDirectory>>(requirement) {
+class DndRaceOptionsFulfillment(requirement: Requirement<List<DndRace>>): DndCharacterFulfillment<List<DndRace>>(requirement) {
 
 	override fun applyToState(state: DndCharacterCreationState): Boolean {
 		if (state.raceOptions == requirement.item) return false
@@ -46,7 +46,7 @@ class DndRaceOptionsFulfillment(requirement: Requirement<List<CharacterRaceDirec
 
 }
 
-class DndRaceFulfillment(requirement: Requirement<CharacterRaceDirectory>): DndCharacterFulfillment<CharacterRaceDirectory>(requirement) {
+class DndRaceFulfillment(requirement: Requirement<DndRace>): DndCharacterFulfillment<DndRace>(requirement) {
 
 	override fun applyToState(state: DndCharacterCreationState): Boolean {
 		if (state.character.race == requirement.item) return false

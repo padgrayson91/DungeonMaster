@@ -4,9 +4,9 @@ import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreation
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
 import com.tendebit.dungeonmaster.charactercreation.feature.examiner.CharacterProficiencyExaminer
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation.pages.raceselection.model.CharacterRaceDirectory
 import org.junit.Test
 
 class TestProficiencyExaminer {
@@ -22,7 +22,7 @@ class TestProficiencyExaminer {
 		val toTest = CharacterProficiencyExaminer()
 		val testState = DndCharacterCreationState()
 		testState.character.characterClass = DndClass("Monk", "example.com/monk")
-		testState.character.race = CharacterRaceDirectory()
+		testState.character.race = DndRace("Halfling", "example.com/halfling")
 		testState.proficiencyOptions.add(DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
 				DndProficiency("Brewer's Supplies", "another.com"),
@@ -45,7 +45,7 @@ class TestProficiencyExaminer {
 				DndProficiency("Stealth", "third.com")), ArrayList(), 2)
 
 		testState.character.characterClass = DndClass("Barbarian", "example.com/barbarian")
-		testState.character.race = CharacterRaceDirectory()
+		testState.character.race = DndRace("Halfling", "example.com/halfling")
 		testState.proficiencyOptions.add(testGroupA)
 		testState.proficiencyOptions.add(testGroupB)
 
@@ -70,7 +70,7 @@ class TestProficiencyExaminer {
 				DndProficiency("Stealth", "third.com")), arrayListOf(DndProficiency("Brewer's Supplies", "another.com")), 2)
 
 		testState.character.characterClass = DndClass("Wizard", "example.com/wizard")
-		testState.character.race = CharacterRaceDirectory()
+		testState.character.race = DndRace("Halfling", "example.com/halfling")
 		testState.proficiencyOptions.add(testGroupA)
 		testState.proficiencyOptions.add(testGroupB)
 
