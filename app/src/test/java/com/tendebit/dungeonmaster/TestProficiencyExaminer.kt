@@ -26,7 +26,7 @@ class TestProficiencyExaminer {
 		testState.proficiencyOptions.add(DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
 				DndProficiency("Brewer's Supplies", "another.com"),
-				DndProficiency("Stealth", "athird.com")), ArrayList(), 2))
+				DndProficiency("Stealth", "third.com")), ArrayList(), 2))
 
 		assert(toTest.examine(testState).size == 2)
 	}
@@ -38,11 +38,11 @@ class TestProficiencyExaminer {
 		val testGroupA = DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
 				DndProficiency("Brewer's Supplies", "another.com"),
-				DndProficiency("Stealth", "athird.com")), ArrayList(), 2)
+				DndProficiency("Stealth", "third.com")), ArrayList(), 2)
 		val testGroupB = DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
 				DndProficiency("Brewer's Supplies", "another.com"),
-				DndProficiency("Stealth", "athird.com")), ArrayList(), 2)
+				DndProficiency("Stealth", "third.com")), ArrayList(), 2)
 
 		testState.character.characterClass = DndClass("Barbarian", "example.com/barbarian")
 		testState.character.race = CharacterRaceDirectory()
@@ -63,11 +63,11 @@ class TestProficiencyExaminer {
 		val testGroupA = DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
 				DndProficiency("Brewer's Supplies", "another.com"),
-				DndProficiency("Stealth", "athird.com")), ArrayList(), 2)
+				DndProficiency("Stealth", "third.com")), ArrayList(), 2)
 		val testGroupB = DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
 				DndProficiency("Brewer's Supplies", "another.com"),
-				DndProficiency("Stealth", "athird.com")), arrayListOf(DndProficiency("Brewer's Supplies", "another.com")), 2)
+				DndProficiency("Stealth", "third.com")), arrayListOf(DndProficiency("Brewer's Supplies", "another.com")), 2)
 
 		testState.character.characterClass = DndClass("Wizard", "example.com/wizard")
 		testState.character.race = CharacterRaceDirectory()

@@ -23,4 +23,15 @@ class TestDndCharacterBlueprint {
 		}
 	}
 
+	@Test
+	fun testStopsEmittingWhenDestroyed() {
+		val toTest = DndCharacterBlueprint()
+		val testObserver = TestObserver<List<Requirement<*>>>()
+		toTest.requirements.subscribe(testObserver)
+
+		toTest.destroy()
+
+		testObserver.assertTerminated()
+	}
+
 }

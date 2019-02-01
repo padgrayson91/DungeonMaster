@@ -35,6 +35,7 @@ class DndCharacterBlueprint {
 	}
 
 	fun destroy() {
+		internalRequirements.onComplete()
 		mainDisposable?.dispose()
 		stateDisposable.dispose()
 	}

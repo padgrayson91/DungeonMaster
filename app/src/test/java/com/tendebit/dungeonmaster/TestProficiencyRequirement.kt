@@ -35,7 +35,7 @@ class TestProficiencyRequirement {
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
-		toTest.update(DndProficiency("Frumpus", "example.com/bleh"))
+		toTest.update(DndProficiency("Lute", "example.com/lute"))
 
 		testObserver.assertNoErrors()
 		testObserver.assertEmpty()
