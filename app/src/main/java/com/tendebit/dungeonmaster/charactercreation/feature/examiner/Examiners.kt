@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation.feature.examiner
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndClassFulfillment
 import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndClassOptionsFulfillment
 import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndProficiencyFulfillment
@@ -69,10 +70,10 @@ class CharacterProficiencyExaminer: DndCharacterCreationExaminer() {
 		for (group in availableProficiencies) {
 			for (selectedOption in group.selectedOptions) {
 				// requirement that options selected in the group display as selected
-				fulfillmentList.add(DndProficiencyFulfillment(DndProficiencyRequirement(selectedOption, group)))
+				fulfillmentList.add(DndProficiencyFulfillment(DndProficiencyRequirement(DndProficiencySelection(selectedOption, group), group)))
 			}
 
-			for (selectedOption in state.character.proficiencies.filter { it in group.availableOptions }.filter { it !in group.selectedOptions }) {
+			for (selectedOption in state.character.proficiencies.filter { it.proficiency in group.availableOptions }.filter { it.group != group }) {
 				// requirement that an option from this group which was selected for a different group display as selected
 				fulfillmentList.add(DndProficiencyFulfillment(DndProficiencyRequirement(selectedOption, group)))
 			}

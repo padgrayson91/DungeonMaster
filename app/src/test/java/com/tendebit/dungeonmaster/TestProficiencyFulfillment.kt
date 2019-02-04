@@ -3,6 +3,7 @@ package com.tendebit.dungeonmaster
 import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndProficiencyFulfillment
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
@@ -15,23 +16,28 @@ class TestProficiencyFulfillment {
 	@Test
 	fun testStateUpdatedOnFulfilled() {
 		val testState = DndCharacterCreationState()
+		val mockedGroup = Mockito.mock(DndProficiencyGroup::class.java)
 		val mockedRequirement = Mockito.mock(DndProficiencyRequirement::class.java)
 		val testProficiency = DndProficiency("Athletics", "example.com/athletics")
-		whenever(mockedRequirement.item).thenReturn(testProficiency)
+		val testSelection = DndProficiencySelection(testProficiency, mockedGroup)
+		whenever(mockedGroup.availableOptions).thenReturn(listOf(testProficiency))
+		whenever(mockedRequirement.item).thenReturn(testSelection)
 		whenever(mockedRequirement.status).thenReturn(Requirement.Status.FULFILLED)
 		val toTest = DndProficiencyFulfillment(mockedRequirement)
 
 		toTest.applyToState(testState)
 
-		assert(testState.character.proficiencies.contains(testProficiency))
+		assert(testState.character.proficiencies.contains(testSelection))
 	}
 
 	@Test
 	fun testStateEmptyBeforeFulfilled() {
 		val testState = DndCharacterCreationState()
+		val mockedGroup = Mockito.mock(DndProficiencyGroup::class.java)
 		val mockedRequirement = Mockito.mock(DndProficiencyRequirement::class.java)
 		val testProficiency = DndProficiency("Athletics", "example.com/athletics")
-		whenever(mockedRequirement.item).thenReturn(testProficiency)
+		val testSelection = DndProficiencySelection(testProficiency, mockedGroup)
+		whenever(mockedRequirement.item).thenReturn(testSelection)
 		val toTest = DndProficiencyFulfillment(mockedRequirement)
 
 		toTest.applyToState(testState)
@@ -45,7 +51,8 @@ class TestProficiencyFulfillment {
 		val mockedRequirement = Mockito.mock(DndProficiencyRequirement::class.java)
 		val mockedGroup = Mockito.mock(DndProficiencyGroup::class.java)
 		val testProficiency = DndProficiency("Athletics", "example.com/athletics")
-		whenever(mockedRequirement.item).thenReturn(testProficiency)
+		val testSelection = DndProficiencySelection(testProficiency, mockedGroup)
+		whenever(mockedRequirement.item).thenReturn(testSelection)
 		whenever(mockedGroup.availableOptions).thenReturn(listOf(testProficiency))
 		whenever(mockedRequirement.fromGroup).thenReturn(mockedGroup)
 		val toTest = DndProficiencyFulfillment(mockedRequirement)

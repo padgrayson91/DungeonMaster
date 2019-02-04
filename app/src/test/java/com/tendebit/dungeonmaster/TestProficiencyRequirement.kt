@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 import io.reactivex.observers.TestObserver
@@ -16,10 +17,11 @@ class TestProficiencyRequirement {
 				DndProficiency("Brewer's Supplies", "example.com/brewers_supplies"))
 		val testGroup = DndProficiencyGroup(testOptions, ArrayList(), 1)
 		val toTest = DndProficiencyRequirement(null, testGroup)
+		val testSelection = DndProficiencySelection(testOptions[0], testGroup)
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
-		toTest.update(DndProficiency("Athletics", "example.com/athletics"))
+		toTest.update(testSelection)
 
 		testObserver.assertNoErrors()
 		testObserver.assertValue(Requirement.Status.FULFILLED)
@@ -35,7 +37,7 @@ class TestProficiencyRequirement {
 		val testObserver = TestObserver<Requirement.Status>()
 		toTest.statusChanges.subscribe(testObserver)
 
-		toTest.update(DndProficiency("Lute", "example.com/lute"))
+		toTest.update(DndProficiencySelection(DndProficiency("Lute", "example.com/lute"), testGroup))
 
 		testObserver.assertNoErrors()
 		testObserver.assertEmpty()
@@ -49,9 +51,10 @@ class TestProficiencyRequirement {
 		val testGroup = DndProficiencyGroup(testOptions, ArrayList(), 1)
 		val toTest = DndProficiencyRequirement(null, testGroup)
 		val testObserver = TestObserver<Requirement.Status>()
+		val testSelection = DndProficiencySelection(testOptions[0], testGroup)
 		toTest.statusChanges.subscribe(testObserver)
 
-		toTest.update(DndProficiency("Athletics", "example.com/athletics"))
+		toTest.update(testSelection)
 		toTest.revoke()
 
 		testObserver.assertNoErrors()
@@ -66,11 +69,12 @@ class TestProficiencyRequirement {
 				DndProficiency("Brewer's Supplies", "example.com/brewers_supplies"))
 		val testGroup = DndProficiencyGroup(testOptions, ArrayList(), 1)
 		val toTest = DndProficiencyRequirement(null, testGroup)
+		val testSelection = DndProficiencySelection(testOptions[0], testGroup)
 
-		toTest.update(DndProficiency("Athletics", "example.com/athletics"))
+		toTest.update(testSelection)
 		toTest.revoke()
 
-		assert(toTest.item == DndProficiency("Athletics", "example.com/athletics"))
+		assert(toTest.item?.proficiency == testOptions[0])
 	}
 
 }

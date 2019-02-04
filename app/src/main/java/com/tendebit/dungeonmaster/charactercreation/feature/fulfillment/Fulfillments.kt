@@ -2,10 +2,9 @@ package com.tendebit.dungeonmaster.charactercreation.feature.fulfillment
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
-import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 
 abstract class DndCharacterFulfillment<T>(requirement: Requirement<T>): BaseFulfillment<T, DndCharacterCreationState>(requirement)
@@ -69,20 +68,20 @@ class DndProficiencyOptionsFulfillment(requirement: Requirement<List<DndProficie
 
 }
 
-class DndProficiencyFulfillment(override val requirement: DndProficiencyRequirement): DndCharacterFulfillment<DndProficiency>(requirement) {
+class DndProficiencyFulfillment(override val requirement: Requirement<DndProficiencySelection>): DndCharacterFulfillment<DndProficiencySelection>(requirement) {
 
 	override fun applyToState(state: DndCharacterCreationState): Boolean {
-			requirement.item?.let { proficiency ->
+			requirement.item?.let { proficiencySelection ->
 				if (requirement.status == Requirement.Status.NOT_FULFILLED) {
-					requirement.fromGroup.selectedOptions.remove(proficiency)
+					proficiencySelection.group.selectedOptions.remove(proficiencySelection.proficiency)
 					// state was updated if we were able to remove this proficiency
-					return state.character.proficiencies.remove(proficiency)
+					return state.character.proficiencies.remove(proficiencySelection)
 				}
 
-				if (requirement.status == Requirement.Status.FULFILLED && !state.character.proficiencies.contains(proficiency)) {
+				if (requirement.status == Requirement.Status.FULFILLED && !state.character.proficiencies.contains(proficiencySelection)) {
 					// state was updated if the proficiency provided was not already in the list
-					state.character.proficiencies.add(proficiency)
-					requirement.fromGroup.selectedOptions.add(proficiency)
+					state.character.proficiencies.add(proficiencySelection)
+					proficiencySelection.group.selectedOptions.add(proficiencySelection.proficiency)
 					return true
 				}
 			}
