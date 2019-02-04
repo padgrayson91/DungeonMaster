@@ -24,8 +24,8 @@ class DndCharacterBlueprint {
 
 	private val examiners = listOf(
 			CharacterPrerequisiteExaminer(),
-			CharacterClassExaminer(),
 			CharacterRaceExaminer(),
+			CharacterClassExaminer(),
 			CharacterProficiencyOptionsExaminer(),
 			CharacterProficiencyExaminer())
 
