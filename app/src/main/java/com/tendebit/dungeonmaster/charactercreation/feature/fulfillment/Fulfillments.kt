@@ -82,6 +82,7 @@ class DndProficiencyFulfillment(override val requirement: DndProficiencyRequirem
 				if (requirement.status == Requirement.Status.FULFILLED && !state.character.proficiencies.contains(proficiency)) {
 					// state was updated if the proficiency provided was not already in the list
 					state.character.proficiencies.add(proficiency)
+					requirement.fromGroup.selectedOptions.add(proficiency)
 					return true
 				}
 			}
