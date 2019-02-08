@@ -40,6 +40,11 @@ class DndCharacterBlueprint {
 		stateDisposable.dispose()
 	}
 
+	fun clear() {
+		state.clear()
+		stateChanges.onNext(state)
+	}
+
 	private fun subscribeExaminers() {
 		mainDisposable = stateChanges.subscribe {
 			stateDisposable.dispose()

@@ -7,4 +7,11 @@ class DndCharacterCreationState {
 	val raceOptions = ArrayList<DndRace>()
 	val proficiencyOptions = ArrayList<DndProficiencyGroup>()
 
+	fun clear() {
+		character.clear()
+		classOptions.clear()
+		raceOptions.clear()
+		proficiencyOptions.clear()
+	}
+
 }
