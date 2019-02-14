@@ -1,25 +1,48 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterBlueprint
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassRequirement
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.ClassSelectionViewModel2
+import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.subjects.ReplaySubject
 import java.util.LinkedList
 import java.util.concurrent.TimeUnit
 
-class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint) {
+class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, private val packager: Packager) {
 
-	enum class Pages {
+	enum class PageType {
 		CLASS_SELECTION,
 		RACE_SELECTION,
 		PROFICIENCY_SELECTION
 	}
 
-	data class PageRange(val start: Int, val end: Int)
+	enum class PageAction {
+		NAVIGATE_BACK,
+		NAVIGATE_FORWARD
+	}
 
+	interface Packager {
+
+		fun pageFor(requirement: Requirement<*>): Page?
+
+		fun applyData(pageid: String, viewModel: Any)
+
+	}
+
+	interface PageChange {
+		val page: Page
+	}
+
+	data class Page(val type: PageType, val id: String)
+	data class PageInsertion(override val page: Page, val index: Int): PageChange
+	data class PageRemoval(override val page: Page): PageChange
+
+	private val pageChanges = ReplaySubject.createWithSize<PageChange>(5)
+	val pageAdditions: Observable<PageInsertion> = pageChanges.ofType(PageInsertion::class.java)
+	val pageRemovals: Observable<PageRemoval> = pageChanges.ofType(PageRemoval::class.java)
+	val pages = LinkedList<Page>()
 	private var mainDisposable = CompositeDisposable()
-	private val children = LinkedList<Any>()
+	val children = HashMap<String, Any>()
 
 
 	init {
@@ -40,48 +63,62 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint) 
 		mainDisposable.dispose()
 	}
 
+	fun handleChildCreated(child: Any, id: String) {
+		children[id] = child
+		packager.applyData(id, child)
+	}
+
+	fun getActionsForPage(id: String): Collection<PageAction> {
+		TODO(id)
+	}
+
 	private fun processRequirements(requirements: List<Requirement<*>>) {
 		// FIXME: there is almost certainly a pretty kotlin/RxJava way to do this
 
-		var i = 0
-		// Iterate over the requirements until we find one for which we have no child ViewModel
-		while (i < requirements.size && i < children.size) {
-			val requirement = requirements[i]
-			val viewmodel = children[i]
-			val result = when (requirement) {
-				is DndClassRequirement -> processClassRequirement(requirement, viewmodel as? ClassSelectionViewModel2)
-				// TODO: others
-				else -> throw IllegalArgumentException("Unable to process requirement of type ${requirement.javaClass.simpleName}")
+		var requirementIndex = 0
+		var pageIndex = 0
+		// Send requirements to packager to figure out what pages need to be inserted/removed
+		while (requirementIndex < requirements.size) {
+			val requirement = requirements[requirementIndex]
+			val outOfPages = pageIndex >= pages.size
+			val pageAtIndex = if (!outOfPages) pages[pageIndex] else null
+			val pageForRequirement = packager.pageFor(requirement)
+
+			if (pageForRequirement != null) {
+				if (pageAtIndex == pageForRequirement) {
+					// Check if ViewModel is already around
+					val existingViewModel = children[pageAtIndex.id]
+					if (existingViewModel != null) {
+						packager.applyData(pageAtIndex.id, existingViewModel)
+					}
+				} else if (pages.contains(pageForRequirement)) {
+					val indexOfTargetPage = pages.indexOf(pageForRequirement)
+					// We had this page already, but some pages in between weren't needed, drop them
+					for (page in pages.subList(pageIndex, indexOfTargetPage)) {
+						pageChanges.onNext(PageRemoval(page))
+					}
+
+					pages.subList(pageIndex, indexOfTargetPage).clear()
+				} else {
+					// This page wasn't present at all, need to insert it
+					pageChanges.onNext(PageInsertion(pageForRequirement, pageIndex))
+					if (outOfPages) pages.add(pageForRequirement) else pages.add(pageIndex, pageForRequirement)
+				}
+
+				pageIndex++
 			}
-			if (!result) {
-				break
+
+			requirementIndex++
+		}
+
+		// Got to the end of the requirements but still have leftover pages; drop them
+		if (pageIndex < pages.size) {
+			for (page in pages.subList(pageIndex, pages.size)) {
+				pageChanges.onNext(PageRemoval(page))
 			}
-			i++
-		}
 
-		// Remove any child ViewModels which occur after the one which was missing; in theory we might be able to
-		// recycle some, but computing which ones might not be worth it. Assume they are all invalid. New ones will
-		// be created by whatever component is consuming this ViewModel
-		if (i < children.size) {
-			children.subList(i, children.size).clear()
-			// TODO: notify UI that a page range has to be removed
+			pages.subList(pageIndex, pages.size).clear()
 		}
-
-		// For the remaining requirements, which do not have corresponding ViewModels, emit a request that such a ViewModel
-		// be created. In practice, this will happen indirectly by creating the View, which will be injected with the ViewModel
-		while (i < requirements.size) {
-			// TODO: map the remaining requirements to a list of Pages items which represent Views/ViewModels which must be created
-			i++
-		}
-	}
-
-	private fun processClassRequirement(requirement: DndClassRequirement, viewModel: ClassSelectionViewModel2?): Boolean {
-		if (viewModel == null) {
-			return false
-		}
-
-		viewModel.requirement = requirement
-		return true
 	}
 
 }

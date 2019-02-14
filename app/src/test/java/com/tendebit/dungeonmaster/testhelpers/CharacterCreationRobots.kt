@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.testhelpers
 
+import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterBlueprint
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
@@ -29,6 +30,20 @@ object CharacterCreationRobots {
 		} as? ValueRobot<T>
 		if (robot != null) {
 			requirement.update(robot.getItem(testingLevel))
+		}
+	}
+
+	fun runUntil(requirementType: Class<Any>, blueprint: DndCharacterBlueprint) {
+		blueprint.requirements.subscribe {
+			for (requirement in it) {
+				if (requirement::class == requirementType) {
+					blueprint.destroy()
+					break
+				}
+				if (requirement.status != Requirement.Status.FULFILLED) {
+					CharacterCreationRobots.runRobotForRequirement(requirement, ValueRobot.TestingLevel.STANDARD)
+				}
+			}
 		}
 	}
 
