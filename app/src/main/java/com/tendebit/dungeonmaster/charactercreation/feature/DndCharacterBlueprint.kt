@@ -47,6 +47,7 @@ class DndCharacterBlueprint {
 
 	private fun subscribeExaminers() {
 		mainDisposable = stateChanges.subscribe {
+			// TODO: should be doing all of this on a background thread
 			stateDisposable.dispose()
 			stateDisposable = CompositeDisposable()
 

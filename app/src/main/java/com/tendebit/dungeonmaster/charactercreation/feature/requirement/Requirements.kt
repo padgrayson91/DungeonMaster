@@ -6,13 +6,13 @@ import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
 
-class DndClassRequirement(initialValue: DndClass?, val choices: List<DndClass>): SimpleRequirement<DndClass>(initialValue)
+class DndClassRequirement(initialValue: DndClass?, choices: List<DndClass>): SelectionRequirement<DndClass>(choices, initialValue)
 
 class DndClassOptionsRequirement(initialValue: List<DndClass>): ListRequirement<DndClass>(initialValue)
 
 class DndRaceOptionsRequirement(initialValue: List<DndRace>): ListRequirement<DndRace>(initialValue)
 
-class DndRaceRequirement(initialValue: DndRace?, val choices: List<DndRace>): SimpleRequirement<DndRace>(initialValue)
+class DndRaceRequirement(initialValue: DndRace?, choices: List<DndRace>): SelectionRequirement<DndRace>(choices, initialValue)
 
 class DndProficiencyOptionsRequirement(initialValue: List<DndProficiencyGroup>): SimpleRequirement<List<DndProficiencyGroup>>(initialValue)
 
