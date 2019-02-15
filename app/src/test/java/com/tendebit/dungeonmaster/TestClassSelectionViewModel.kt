@@ -20,6 +20,45 @@ class TestClassSelectionViewModel {
 	}
 
 	@Test
+	fun testViewModelIsLoadingWithNullRequirement() {
+		val testObserver = TestObserver<Boolean>()
+		val toTest = ClassSelectionViewModel2(null)
+
+		toTest.loadingChanges.subscribe(testObserver)
+
+		testObserver.assertValueCount(1)
+		testObserver.assertValueAt(0) { it }
+	}
+
+	@Test
+	fun testViewModelStopsLoadingWhenNonNullRequirementIsProvided() {
+		val testObserver = TestObserver<Boolean>()
+		val toTest = ClassSelectionViewModel2(null)
+
+		toTest.loadingChanges.subscribe(testObserver)
+		toTest.selectionRequirement = DndClassRequirement(null, emptyList())
+
+		testObserver.assertValueCount(2)
+		testObserver.assertValueAt(0) { it }
+		testObserver.assertValueAt(1) { !it }
+	}
+
+	@Test
+	fun testViewModelStartsLoadingAgainIfRequirementBecomesNull() {
+		val testObserver = TestObserver<Boolean>()
+		val toTest = ClassSelectionViewModel2(null)
+
+		toTest.loadingChanges.subscribe(testObserver)
+		toTest.selectionRequirement = DndClassRequirement(null, emptyList())
+		toTest.selectionRequirement = null
+
+		testObserver.assertValueCount(3)
+		testObserver.assertValueAt(0) { it }
+		testObserver.assertValueAt(1) { !it }
+		testObserver.assertValueAt(2) { it }
+	}
+
+	@Test
 	fun testViewModelEmitsInitialSelectionFromRequirement() {
 		val testObserver = TestObserver<DndClass>()
 		val testClass = DndClass("Rogue", "example.com/rogue")
@@ -75,7 +114,7 @@ class TestClassSelectionViewModel {
 		val toTest = ClassSelectionViewModel2(testRequirement)
 
 		toTest.optionChanges.subscribe(testObserver)
-		toTest.requirement = otherRequirement
+		toTest.selectionRequirement = otherRequirement
 
 		testObserver.assertValueCount(2)
 		testObserver.assertValueAt(1) { it == otherOptions }
@@ -95,7 +134,7 @@ class TestClassSelectionViewModel {
 		val toTest = ClassSelectionViewModel2(testRequirement)
 
 		toTest.optionChanges.subscribe(testObserver)
-		toTest.requirement = otherRequirement
+		toTest.selectionRequirement = otherRequirement
 
 		testObserver.assertValueCount(1)
 	}
@@ -110,7 +149,7 @@ class TestClassSelectionViewModel {
 		val toTest = ClassSelectionViewModel2(testRequirement)
 
 		toTest.selectionChanges.subscribe(testObserver)
-		toTest.requirement = otherRequirement
+		toTest.selectionRequirement = otherRequirement
 
 		testObserver.assertValueCount(2)
 		testObserver.assertValueAt(1) { it == otherClass }
@@ -126,7 +165,7 @@ class TestClassSelectionViewModel {
 		val toTest = ClassSelectionViewModel2(testRequirement)
 
 		toTest.selectionChanges.subscribe(testObserver)
-		toTest.requirement = otherRequirement
+		toTest.selectionRequirement = otherRequirement
 
 		testObserver.assertValueCount(1)
 	}

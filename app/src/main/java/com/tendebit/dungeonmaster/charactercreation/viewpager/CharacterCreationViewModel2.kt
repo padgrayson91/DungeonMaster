@@ -4,7 +4,8 @@ import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterBlueprin
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.subjects.ReplaySubject
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 import java.util.LinkedList
 import java.util.concurrent.TimeUnit
 
@@ -37,10 +38,23 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 	data class PageInsertion(override val page: Page, val index: Int): PageChange
 	data class PageRemoval(override val page: Page): PageChange
 
-	private val pageChanges = ReplaySubject.createWithSize<PageChange>(5)
+	// Private Subjects for publishing data
+	private val pageChanges = PublishSubject.create<PageChange>()
+	private val internalLoadingChanges = BehaviorSubject.create<Boolean>()
+
+	// Public Observables
+	val loadingChanges = internalLoadingChanges as Observable<Boolean>
 	val pageAdditions: Observable<PageInsertion> = pageChanges.ofType(PageInsertion::class.java)
 	val pageRemovals: Observable<PageRemoval> = pageChanges.ofType(PageRemoval::class.java)
+
+	// Private data at rest
+	private var internalLoading = true
+
+
 	val pages = LinkedList<Page>()
+	var isLoading
+		get() = internalLoading
+		private set(value) { internalLoading = value; internalLoadingChanges.onNext(value) }
 	private var mainDisposable = CompositeDisposable()
 	val children = HashMap<String, Any>()
 
@@ -50,6 +64,7 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 				.subscribe {
 					processRequirements(it)
 				})
+		internalLoadingChanges.onNext(isLoading)
 	}
 
 	fun clear() {

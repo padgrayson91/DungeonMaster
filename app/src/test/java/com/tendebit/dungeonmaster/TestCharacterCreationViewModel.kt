@@ -40,7 +40,7 @@ class TestCharacterCreationViewModel {
 	}
 
 	@Test
-	fun testHasOnePageWhenClassRequirementEmitted() {
+	fun testHasOnePageWhenPackagerEmitsOnePage() {
 		val testBlueprint = Mockito.mock(DndCharacterBlueprint::class.java)
 		val packager = Mockito.mock(CharacterCreationViewModel2.Packager::class.java)
 		val testRequirement = DndClassRequirement(null, emptyList())
@@ -54,13 +54,18 @@ class TestCharacterCreationViewModel {
 	}
 
 	@Test
-	fun testHasTwoPagesWhenClassAndRaceRequirementEmitted() {
+	fun testHasTwoPagesWhenPackagerEmitsTwoPages() {
 		val testBlueprint = Mockito.mock(DndCharacterBlueprint::class.java)
 		val packager = Mockito.mock(CharacterCreationViewModel2.Packager::class.java)
+		val testRequirement = DndClassRequirement(null, emptyList())
+		val otherRequirement = DndRaceRequirement(null, emptyList())
 		whenever(testBlueprint.requirements).thenReturn(Observable.fromArray(listOf(
-				DndClassRequirement(null, emptyList()),
-				DndRaceRequirement(null, emptyList())
-																				   )))
+				testRequirement,
+				otherRequirement)))
+		whenever(packager.pageFor(testRequirement)).thenReturn(CharacterCreationViewModel2.Page(CharacterCreationViewModel2.PageType.CLASS_SELECTION, "class_selection"))
+		whenever(packager.pageFor(otherRequirement)).thenReturn(CharacterCreationViewModel2.Page(CharacterCreationViewModel2.PageType.RACE_SELECTION, "race_selection"))
+
+
 		val toTest = CharacterCreationViewModel2(testBlueprint, packager)
 
 
@@ -70,7 +75,7 @@ class TestCharacterCreationViewModel {
 	}
 
 	@Test
-	fun testHasPagesForEachProficiencyGroup() {
+	fun testHasPagesForEachProficiencyGroupEmittedByPackager() {
 		val testBlueprint = Mockito.mock(DndCharacterBlueprint::class.java)
 		val packager = Mockito.mock(CharacterCreationViewModel2.Packager::class.java)
 		val mockGroup1 = Mockito.mock(DndProficiencyGroup::class.java)
@@ -80,7 +85,10 @@ class TestCharacterCreationViewModel {
 		val testRequirements = arrayListOf<DndProficiencyRequirement>()
 		testGroups.forEach {
 			for (i in 0 until it.remainingChoices()) {
-				testRequirements.add(DndProficiencyRequirement(null, it))
+				val requirement = DndProficiencyRequirement(null, it)
+				testRequirements.add(requirement)
+				whenever(packager.pageFor(requirement))
+						.thenReturn(CharacterCreationViewModel2.Page(CharacterCreationViewModel2.PageType.PROFICIENCY_SELECTION, "proficiency_selection_$i"))
 			}
 		}
 		whenever(testBlueprint.requirements).thenReturn(Observable.fromIterable(listOf(testRequirements)))

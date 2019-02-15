@@ -18,7 +18,7 @@ import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceR
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 
 // FIXME: These examiners blindly assume that current selections are valid so long as pre-requisites are met, but this is not necessarily the case
-// FIXME: For example, if the list of available classes changes to no longer include the user's selection, that requirement should be recreated with no value
+// FIXME: For example, if the list of available classes changes to no longer include the user's selection, that selectionRequirement should be recreated with no value
 
 abstract class DndCharacterCreationExaminer: Examiner<DndCharacterCreationState>
 
@@ -69,17 +69,17 @@ class CharacterProficiencyExaminer: DndCharacterCreationExaminer() {
 		val fulfillmentList = ArrayList<DndProficiencyFulfillment>()
 		for (group in availableProficiencies) {
 			for (selectedOption in group.selectedOptions) {
-				// requirement that options selected in the group display as selected
+				// selectionRequirement that options selected in the group display as selected
 				fulfillmentList.add(DndProficiencyFulfillment(DndProficiencyRequirement(DndProficiencySelection(selectedOption, group), group)))
 			}
 
 			for (selectedOption in state.character.proficiencies.filter { it.proficiency in group.availableOptions }.filter { it.group != group }) {
-				// requirement that an option from this group which was selected for a different group display as selected
+				// selectionRequirement that an option from this group which was selected for a different group display as selected
 				fulfillmentList.add(DndProficiencyFulfillment(DndProficiencyRequirement(selectedOption, group)))
 			}
 
 			for (i in 0 until group.remainingChoices()) {
-				// requirement for the remaining choices that a value be provided
+				// selectionRequirement for the remaining choices that a value be provided
 				fulfillmentList.add(DndProficiencyFulfillment(DndProficiencyRequirement(null, group)))
 			}
 		}
