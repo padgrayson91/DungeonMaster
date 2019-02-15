@@ -9,7 +9,7 @@ import io.reactivex.subjects.PublishSubject
 import java.util.LinkedList
 import java.util.concurrent.TimeUnit
 
-class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, private val packager: Packager) {
+class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, private val pageFactory: PageFactory) {
 
 	enum class PageType {
 		CLASS_SELECTION,
@@ -22,7 +22,7 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 		NAVIGATE_FORWARD
 	}
 
-	interface Packager {
+	interface PageFactory {
 
 		fun pageFor(requirement: Requirement<*>): Page?
 
@@ -80,7 +80,7 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 
 	fun handleChildCreated(child: Any, id: String) {
 		children[id] = child
-		packager.applyData(id, child)
+		pageFactory.applyData(id, child)
 	}
 
 	fun getActionsForPage(id: String): Collection<PageAction> {
@@ -92,19 +92,19 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 
 		var requirementIndex = 0
 		var pageIndex = 0
-		// Send requirements to packager to figure out what pages need to be inserted/removed
+		// Send requirements to pageFactory to figure out what pages need to be inserted/removed
 		while (requirementIndex < requirements.size) {
 			val requirement = requirements[requirementIndex]
 			val outOfPages = pageIndex >= pages.size
 			val pageAtIndex = if (!outOfPages) pages[pageIndex] else null
-			val pageForRequirement = packager.pageFor(requirement)
+			val pageForRequirement = pageFactory.pageFor(requirement)
 
 			if (pageForRequirement != null) {
 				if (pageAtIndex == pageForRequirement) {
 					// Check if ViewModel is already around
 					val existingViewModel = children[pageAtIndex.id]
 					if (existingViewModel != null) {
-						packager.applyData(pageAtIndex.id, existingViewModel)
+						pageFactory.applyData(pageAtIndex.id, existingViewModel)
 					}
 				} else if (pages.contains(pageForRequirement)) {
 					val indexOfTargetPage = pages.indexOf(pageForRequirement)

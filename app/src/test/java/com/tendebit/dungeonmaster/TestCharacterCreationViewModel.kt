@@ -17,7 +17,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testInitialStateHasNoPages() {
 		val testBlueprint = DndCharacterBlueprint()
-		val packager = Mockito.mock(CharacterCreationViewModel2.Packager::class.java)
+		val packager = Mockito.mock(CharacterCreationViewModel2.PageFactory::class.java)
 		val toTest = CharacterCreationViewModel2(testBlueprint, packager)
 		val testObserver = TestObserver<CharacterCreationViewModel2.PageInsertion>()
 
@@ -30,7 +30,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testInitialStateHasNoPageRemovals() {
 		val testBlueprint = DndCharacterBlueprint()
-		val packager = Mockito.mock(CharacterCreationViewModel2.Packager::class.java)
+		val packager = Mockito.mock(CharacterCreationViewModel2.PageFactory::class.java)
 		val toTest = CharacterCreationViewModel2(testBlueprint, packager)
 		val testObserver = TestObserver<CharacterCreationViewModel2.PageRemoval>()
 
@@ -42,7 +42,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testHasOnePageWhenPackagerEmitsOnePage() {
 		val testBlueprint = Mockito.mock(DndCharacterBlueprint::class.java)
-		val packager = Mockito.mock(CharacterCreationViewModel2.Packager::class.java)
+		val packager = Mockito.mock(CharacterCreationViewModel2.PageFactory::class.java)
 		val testRequirement = DndClassRequirement(null, emptyList())
 		whenever(packager.pageFor(testRequirement)).thenReturn(CharacterCreationViewModel2.Page(CharacterCreationViewModel2.PageType.CLASS_SELECTION, "class_selection"))
 		whenever(testBlueprint.requirements).thenReturn(Observable.fromArray(listOf(testRequirement)))
@@ -56,7 +56,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testHasTwoPagesWhenPackagerEmitsTwoPages() {
 		val testBlueprint = Mockito.mock(DndCharacterBlueprint::class.java)
-		val packager = Mockito.mock(CharacterCreationViewModel2.Packager::class.java)
+		val packager = Mockito.mock(CharacterCreationViewModel2.PageFactory::class.java)
 		val testRequirement = DndClassRequirement(null, emptyList())
 		val otherRequirement = DndRaceRequirement(null, emptyList())
 		whenever(testBlueprint.requirements).thenReturn(Observable.fromArray(listOf(
@@ -77,7 +77,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testHasPagesForEachProficiencyGroupEmittedByPackager() {
 		val testBlueprint = Mockito.mock(DndCharacterBlueprint::class.java)
-		val packager = Mockito.mock(CharacterCreationViewModel2.Packager::class.java)
+		val packager = Mockito.mock(CharacterCreationViewModel2.PageFactory::class.java)
 		val mockGroup1 = Mockito.mock(DndProficiencyGroup::class.java)
 		val mockGroup2 = Mockito.mock(DndProficiencyGroup::class.java)
 		val mockGroup3 = Mockito.mock(DndProficiencyGroup::class.java)
