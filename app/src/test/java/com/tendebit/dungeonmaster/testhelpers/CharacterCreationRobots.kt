@@ -15,16 +15,19 @@ import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirem
 
 object CharacterCreationRobots {
 
+	val standardClassList = listOf(DndClass("Barbarian", "example.com/barbarian"))
+	val standardRaceList = listOf(DndRace("Orc", "example.com/orc"))
+	val standardProficiencyList = listOf(DndProficiency("Stealth", "example.com/stealth"))
+	val standardProficiencyGroupList = listOf(DndProficiencyGroup(standardProficiencyList, arrayListOf(), 1))
+
 	@Suppress("UNCHECKED_CAST")
 	fun <T> runRobotForRequirement(requirement: Requirement<T>, testingLevel: ValueRobot.TestingLevel) {
 		val robot = when(requirement) {
-			is DndRaceOptionsRequirement -> SimpleRobot(listOf(DndRace("Orc", "example.com/orc")))
-			is DndClassOptionsRequirement -> SimpleRobot(listOf(DndClass("Barbarian", "example.com/barbarian")))
-			is DndRaceRequirement -> SimpleRobot(DndRace("Orc", "example.com/orc"))
-			is DndClassRequirement -> SimpleRobot(DndClass("Barbarian", "example.com/barbarian"))
-			is DndProficiencyOptionsRequirement -> SimpleRobot(listOf(
-					DndProficiencyGroup(listOf(DndProficiency("Stealth", "example.com/stealth")), arrayListOf(), 1)
-																	 ))
+			is DndRaceOptionsRequirement -> SimpleRobot(standardRaceList)
+			is DndClassOptionsRequirement -> SimpleRobot(standardClassList)
+			is DndRaceRequirement -> SimpleRobot(standardRaceList[0])
+			is DndClassRequirement -> SimpleRobot(standardClassList[0])
+			is DndProficiencyOptionsRequirement -> SimpleRobot(standardProficiencyGroupList)
 			is DndProficiencyRequirement -> SimpleRobot(requirement.fromGroup.availableOptions[0])
 			else -> null
 		} as? ValueRobot<T>

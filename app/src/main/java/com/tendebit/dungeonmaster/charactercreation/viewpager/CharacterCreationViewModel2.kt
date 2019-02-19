@@ -60,7 +60,7 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 
 
 	init {
-		mainDisposable.add(blueprint.requirements.debounce(50, TimeUnit.MILLISECONDS)
+		mainDisposable.add(blueprint.requirements.debounce(10, TimeUnit.MILLISECONDS)
 				.subscribe {
 					processRequirements(it)
 				})
@@ -108,12 +108,19 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 					}
 				} else if (pages.contains(pageForRequirement)) {
 					val indexOfTargetPage = pages.indexOf(pageForRequirement)
-					// We had this page already, but some pages in between weren't needed, drop them
-					for (page in pages.subList(pageIndex, indexOfTargetPage)) {
-						pageChanges.onNext(PageRemoval(page))
+					if (indexOfTargetPage > pageIndex) {
+						// We had this page already, but some pages in between weren't needed, drop them
+						for (page in pages.subList(pageIndex, indexOfTargetPage)) {
+							pageChanges.onNext(PageRemoval(page))
+						}
+
+						pages.subList(pageIndex, indexOfTargetPage).clear()
 					}
 
-					pages.subList(pageIndex, indexOfTargetPage).clear()
+					val existingViewModel = children[pageForRequirement.id]
+					if (existingViewModel != null) {
+						pageFactory.applyData(pageForRequirement.id, existingViewModel)
+					}
 				} else {
 					// This page wasn't present at all, need to insert it
 					pageChanges.onNext(PageInsertion(pageForRequirement, pageIndex))
