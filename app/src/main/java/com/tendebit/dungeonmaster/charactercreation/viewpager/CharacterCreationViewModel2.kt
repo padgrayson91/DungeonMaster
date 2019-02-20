@@ -22,22 +22,6 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 		NAVIGATE_FORWARD
 	}
 
-	interface PageFactory {
-
-		fun pageFor(requirement: Requirement<*>): Page?
-
-		fun applyData(pageid: String, viewModel: Any)
-
-	}
-
-	interface PageChange {
-		val page: Page
-	}
-
-	data class Page(val type: PageType, val id: String)
-	data class PageInsertion(override val page: Page, val index: Int): PageChange
-	data class PageRemoval(override val page: Page): PageChange
-
 	// Private Subjects for publishing data
 	private val pageChanges = PublishSubject.create<PageChange>()
 	private val internalLoadingChanges = BehaviorSubject.create<Boolean>()

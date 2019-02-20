@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster
 
+import com.tendebit.dungeonmaster.charactercreation.SelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassRequirement
-import com.tendebit.dungeonmaster.charactercreation.pages.classselection.ClassSelectionViewModel2
 import io.reactivex.observers.TestObserver
 import org.junit.Test
 
@@ -11,8 +11,7 @@ class TestClassSelectionViewModel {
 	@Test
 	fun testViewModelHasNoSelectionWithEmptyRequirement() {
 		val testObserver = TestObserver<Any>()
-		val testRequirement = DndClassRequirement(null, emptyList())
-		val toTest = ClassSelectionViewModel2(testRequirement)
+		val toTest = SelectionViewModel<DndClass>()
 
 		toTest.selectionChanges.subscribe(testObserver)
 
@@ -22,7 +21,7 @@ class TestClassSelectionViewModel {
 	@Test
 	fun testViewModelIsLoadingWithNullRequirement() {
 		val testObserver = TestObserver<Boolean>()
-		val toTest = ClassSelectionViewModel2(null)
+		val toTest = SelectionViewModel<DndClass>()
 
 		toTest.loadingChanges.subscribe(testObserver)
 
@@ -33,7 +32,7 @@ class TestClassSelectionViewModel {
 	@Test
 	fun testViewModelStopsLoadingWhenNonNullRequirementIsProvided() {
 		val testObserver = TestObserver<Boolean>()
-		val toTest = ClassSelectionViewModel2(null)
+		val toTest = SelectionViewModel<DndClass>()
 
 		toTest.loadingChanges.subscribe(testObserver)
 		toTest.selectionRequirement = DndClassRequirement(null, emptyList())
@@ -46,7 +45,7 @@ class TestClassSelectionViewModel {
 	@Test
 	fun testViewModelStartsLoadingAgainIfRequirementBecomesNull() {
 		val testObserver = TestObserver<Boolean>()
-		val toTest = ClassSelectionViewModel2(null)
+		val toTest = SelectionViewModel<DndClass>()
 
 		toTest.loadingChanges.subscribe(testObserver)
 		toTest.selectionRequirement = DndClassRequirement(null, emptyList())
@@ -63,7 +62,8 @@ class TestClassSelectionViewModel {
 		val testObserver = TestObserver<DndClass>()
 		val testClass = DndClass("Rogue", "example.com/rogue")
 		val testRequirement = DndClassRequirement(testClass, listOf(testClass))
-		val toTest = ClassSelectionViewModel2(testRequirement)
+		val toTest = SelectionViewModel<DndClass>()
+		toTest.selectionRequirement = testRequirement
 
 		toTest.selectionChanges.subscribe(testObserver)
 
@@ -76,7 +76,8 @@ class TestClassSelectionViewModel {
 		val testObserver = TestObserver<DndClass>()
 		val testClass = DndClass("Rogue", "example.com/rogue")
 		val testRequirement = DndClassRequirement(null, listOf(testClass))
-		val toTest = ClassSelectionViewModel2(testRequirement)
+		val toTest = SelectionViewModel<DndClass>()
+		toTest.selectionRequirement = testRequirement
 
 		toTest.selectionChanges.subscribe(testObserver)
 		toTest.select(testClass)
@@ -91,7 +92,8 @@ class TestClassSelectionViewModel {
 		val testClass = DndClass("Rogue", "example.com/rogue")
 		val invalidClass = DndClass("God", "example.com/god")
 		val testRequirement = DndClassRequirement(null, listOf(testClass))
-		val toTest = ClassSelectionViewModel2(testRequirement)
+		val toTest = SelectionViewModel<DndClass>()
+		toTest.selectionRequirement = testRequirement
 
 		toTest.selectionChanges.subscribe(testObserver)
 		toTest.select(invalidClass)
@@ -111,7 +113,8 @@ class TestClassSelectionViewModel {
 								 )
 		val testRequirement = DndClassRequirement(null, testOptions)
 		val otherRequirement = DndClassRequirement(null, otherOptions)
-		val toTest = ClassSelectionViewModel2(testRequirement)
+		val toTest = SelectionViewModel<DndClass>()
+		toTest.selectionRequirement = testRequirement
 
 		toTest.optionChanges.subscribe(testObserver)
 		toTest.selectionRequirement = otherRequirement
@@ -131,7 +134,8 @@ class TestClassSelectionViewModel {
 				DndClass("Barbarian", "example.com/barbarian"))
 		val testRequirement = DndClassRequirement(null, testOptions)
 		val otherRequirement = DndClassRequirement(null, otherOptions)
-		val toTest = ClassSelectionViewModel2(testRequirement)
+		val toTest = SelectionViewModel<DndClass>()
+		toTest.selectionRequirement = testRequirement
 
 		toTest.optionChanges.subscribe(testObserver)
 		toTest.selectionRequirement = otherRequirement
@@ -146,7 +150,8 @@ class TestClassSelectionViewModel {
 		val otherClass = DndClass("Wizard", "example.com/wizard")
 		val testRequirement = DndClassRequirement(testClass, listOf(testClass))
 		val otherRequirement = DndClassRequirement(otherClass, listOf(otherClass))
-		val toTest = ClassSelectionViewModel2(testRequirement)
+		val toTest = SelectionViewModel<DndClass>()
+		toTest.selectionRequirement = testRequirement
 
 		toTest.selectionChanges.subscribe(testObserver)
 		toTest.selectionRequirement = otherRequirement
@@ -162,7 +167,8 @@ class TestClassSelectionViewModel {
 		val otherClass = DndClass("Rogue", "example.com/rogue")
 		val testRequirement = DndClassRequirement(testClass, listOf(testClass))
 		val otherRequirement = DndClassRequirement(otherClass, listOf(otherClass))
-		val toTest = ClassSelectionViewModel2(testRequirement)
+		val toTest = SelectionViewModel<DndClass>()
+		toTest.selectionRequirement = testRequirement
 
 		toTest.selectionChanges.subscribe(testObserver)
 		toTest.selectionRequirement = otherRequirement
