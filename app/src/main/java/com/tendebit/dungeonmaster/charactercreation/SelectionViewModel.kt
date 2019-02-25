@@ -6,7 +6,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 
-open class SelectionViewModel<T> {
+class SelectionViewModel<T> {
 
 	private var internalSelectionRequirement: SelectionRequirement<T>? = null
 	var selectionRequirement
