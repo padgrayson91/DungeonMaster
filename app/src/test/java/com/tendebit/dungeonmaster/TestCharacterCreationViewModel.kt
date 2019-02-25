@@ -14,6 +14,7 @@ import com.tendebit.dungeonmaster.charactercreation.viewpager.Page
 import com.tendebit.dungeonmaster.charactercreation.viewpager.PageFactory
 import com.tendebit.dungeonmaster.charactercreation.viewpager.PageInsertion
 import com.tendebit.dungeonmaster.charactercreation.viewpager.PageRemoval
+import com.tendebit.dungeonmaster.charactercreation.viewpager.ViewModel
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
@@ -23,12 +24,13 @@ import org.mockito.Mockito
 import java.util.concurrent.TimeUnit
 import org.mockito.Mockito.`when` as whenever
 
+@Suppress("UNCHECKED_CAST")
 class TestCharacterCreationViewModel {
 
 	@Test
 	fun testInitialStateHasNoPages() {
 		val testBlueprint = DndCharacterBlueprint()
-		val packager = Mockito.mock(PageFactory::class.java)
+		val packager = Mockito.mock(PageFactory::class.java) as PageFactory<ViewModel>
 		val toTest = CharacterCreationViewModel2(testBlueprint, packager)
 		val testObserver = TestObserver<PageInsertion>()
 
@@ -41,7 +43,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testInitialStateIsLoading() {
 		val testBlueprint = DndCharacterBlueprint()
-		val packager = Mockito.mock(PageFactory::class.java)
+		val packager = Mockito.mock(PageFactory::class.java) as PageFactory<ViewModel>
 		val toTest = CharacterCreationViewModel2(testBlueprint, packager)
 
 		assert(toTest.isLoading)
@@ -50,7 +52,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testInitialStateHasNoPageRemovals() {
 		val testBlueprint = DndCharacterBlueprint()
-		val packager = Mockito.mock(PageFactory::class.java)
+		val packager = Mockito.mock(PageFactory::class.java) as PageFactory<ViewModel>
 		val toTest = CharacterCreationViewModel2(testBlueprint, packager)
 		val testObserver = TestObserver<PageRemoval>()
 
@@ -62,7 +64,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testHasOnePageWhenPackagerEmitsOnePage() {
 		val testBlueprint = Mockito.mock(DndCharacterBlueprint::class.java)
-		val packager = Mockito.mock(PageFactory::class.java)
+		val packager = Mockito.mock(PageFactory::class.java) as PageFactory<ViewModel>
 		val testRequirement = DndClassRequirement(null, emptyList())
 		whenever(packager.pageFor(testRequirement)).thenReturn(Page(CharacterCreationViewModel2.PageType.CLASS_SELECTION, "class_selection"))
 		whenever(testBlueprint.requirements).thenReturn(Observable.fromArray(listOf(testRequirement)))
@@ -76,7 +78,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testHasTwoPagesWhenPackagerEmitsTwoPages() {
 		val testBlueprint = Mockito.mock(DndCharacterBlueprint::class.java)
-		val packager = Mockito.mock(PageFactory::class.java)
+		val packager = Mockito.mock(PageFactory::class.java) as PageFactory<ViewModel>
 		val testRequirement = DndClassRequirement(null, emptyList())
 		val otherRequirement = DndRaceRequirement(null, emptyList())
 		whenever(testBlueprint.requirements).thenReturn(Observable.fromArray(listOf(
@@ -97,7 +99,7 @@ class TestCharacterCreationViewModel {
 	@Test
 	fun testHasPagesForEachProficiencyGroupEmittedByPackager() {
 		val testBlueprint = Mockito.mock(DndCharacterBlueprint::class.java)
-		val packager = Mockito.mock(PageFactory::class.java)
+		val packager = Mockito.mock(PageFactory::class.java) as PageFactory<ViewModel>
 		val mockGroup1 = Mockito.mock(DndProficiencyGroup::class.java)
 		val mockGroup2 = Mockito.mock(DndProficiencyGroup::class.java)
 		val mockGroup3 = Mockito.mock(DndProficiencyGroup::class.java)
@@ -133,7 +135,7 @@ class TestCharacterCreationViewModel {
 		val testProficiencyOptionsRequirement = DndProficiencyOptionsRequirement(CharacterCreationRobots.standardProficiencyGroupList)
 		val testProficiencyRequirement = DndProficiencyRequirement(null, CharacterCreationRobots.standardProficiencyGroupList[0])
 
-		val packager = Mockito.mock(PageFactory::class.java)
+		val packager = Mockito.mock(PageFactory::class.java) as PageFactory<ViewModel>
 		whenever(packager.pageFor(testClassOptionsRequirement)).thenReturn(Page(CharacterCreationViewModel2.PageType.CLASS_SELECTION, "class_selection"))
 		whenever(packager.pageFor(testClassRequirement)).thenReturn(Page(CharacterCreationViewModel2.PageType.CLASS_SELECTION, "class_selection"))
 		whenever(packager.pageFor(testRaceOptionsRequirement)).thenReturn(Page(CharacterCreationViewModel2.PageType.RACE_SELECTION, "race_selection"))
@@ -155,7 +157,6 @@ class TestCharacterCreationViewModel {
 				testProficiencyOptionsRequirement,
 				testProficiencyRequirement))
 
-		testObserver.await(30, TimeUnit.MILLISECONDS)
 		testObserver.assertValueCount(3)
 
 	}

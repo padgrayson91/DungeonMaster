@@ -46,10 +46,11 @@ class TestDndClassSelectionPageFactory {
 	fun testAppliesDataToViewModel() {
 		val testRequirement = DndClassRequirement(CharacterCreationRobots.standardClassList[0], CharacterCreationRobots.standardClassList)
 		val toTest = DndClassSelectionPageFactory()
-		val viewModel = SelectionViewModel<DndClass>()
 
 		val page = toTest.pageFor(testRequirement)
-		toTest.applyData(page!!.id, viewModel)
+		val viewModel = SelectionViewModel<DndClass>(page!!.id)
+
+		toTest.applyData(viewModel)
 
 		assert(viewModel.options == testRequirement.choices)
 		assert(viewModel.selection == testRequirement.item)

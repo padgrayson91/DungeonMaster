@@ -7,7 +7,7 @@ import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceR
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 import java.util.UUID
 
-class DndRaceSelectionPageFactory: PageFactory {
+class DndRaceSelectionPageFactory: PageFactory<SelectionViewModel<DndRace>> {
 
 	private val ID = UUID.randomUUID().toString()
 
@@ -28,10 +28,9 @@ class DndRaceSelectionPageFactory: PageFactory {
 		return null
 	}
 
-	@Suppress("UNCHECKED_CAST")
-	override fun applyData(pageid: String, viewModel: Any) {
-		if (pageid == ID) {
-			(viewModel as? SelectionViewModel<DndRace>)?.selectionRequirement = raceReq
+	override fun applyData(viewModel: SelectionViewModel<DndRace>) {
+		if (viewModel.id == ID) {
+			viewModel.selectionRequirement = raceReq
 		}
 	}
 

@@ -2,11 +2,12 @@ package com.tendebit.dungeonmaster.charactercreation
 
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
 import com.tendebit.dungeonmaster.charactercreation.feature.requirement.SelectionRequirement
+import com.tendebit.dungeonmaster.charactercreation.viewpager.ViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 
-class SelectionViewModel<T> {
+class SelectionViewModel<T>(override val id: String): ViewModel {
 
 	private var internalSelectionRequirement: SelectionRequirement<T>? = null
 	var selectionRequirement

@@ -7,9 +7,8 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import java.util.LinkedList
-import java.util.concurrent.TimeUnit
 
-class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, private val pageFactory: PageFactory) {
+class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, private val pageFactory: PageFactory<ViewModel>): ViewModel {
 
 	enum class PageType {
 		CLASS_SELECTION,
@@ -22,14 +21,18 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 		NAVIGATE_FORWARD
 	}
 
+	override val id = CharacterCreationViewModel2::class.java.name
+
 	// Private Subjects for publishing data
 	private val pageChanges = PublishSubject.create<PageChange>()
 	private val internalLoadingChanges = BehaviorSubject.create<Boolean>()
+	private val internalChildCreation = PublishSubject.create<ViewModel>()
 
 	// Public Observables
 	val loadingChanges = internalLoadingChanges as Observable<Boolean>
 	val pageAdditions: Observable<PageInsertion> = pageChanges.ofType(PageInsertion::class.java)
 	val pageRemovals: Observable<PageRemoval> = pageChanges.ofType(PageRemoval::class.java)
+	val childCreation = internalChildCreation as Observable<ViewModel>
 
 	// Private data at rest
 	private var internalLoading = true
@@ -40,11 +43,11 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 		get() = internalLoading
 		private set(value) { internalLoading = value; internalLoadingChanges.onNext(value) }
 	private var mainDisposable = CompositeDisposable()
-	val children = HashMap<String, Any>()
+	val children = HashMap<String, ViewModel>()
 
 
 	init {
-		mainDisposable.add(blueprint.requirements.debounce(10, TimeUnit.MILLISECONDS)
+		mainDisposable.add(blueprint.requirements
 				.subscribe {
 					processRequirements(it)
 				})
@@ -62,9 +65,9 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 		mainDisposable.dispose()
 	}
 
-	fun handleChildCreated(child: Any, id: String) {
+	fun handleChildCreated(child: ViewModel, id: String) {
 		children[id] = child
-		pageFactory.applyData(id, child)
+		pageFactory.applyData(child)
 	}
 
 	fun getActionsForPage(id: String): Collection<PageAction> {
@@ -88,7 +91,7 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 					// Check if ViewModel is already around
 					val existingViewModel = children[pageAtIndex.id]
 					if (existingViewModel != null) {
-						pageFactory.applyData(pageAtIndex.id, existingViewModel)
+						pageFactory.applyData(existingViewModel)
 					}
 				} else if (pages.contains(pageForRequirement)) {
 					val indexOfTargetPage = pages.indexOf(pageForRequirement)
@@ -103,7 +106,7 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 
 					val existingViewModel = children[pageForRequirement.id]
 					if (existingViewModel != null) {
-						pageFactory.applyData(pageForRequirement.id, existingViewModel)
+						pageFactory.applyData(existingViewModel)
 					}
 				} else {
 					// This page wasn't present at all, need to insert it
