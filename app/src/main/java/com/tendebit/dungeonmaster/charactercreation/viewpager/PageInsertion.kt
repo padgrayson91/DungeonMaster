@@ -1,3 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
-data class PageInsertion(override val page: Page, val index: Int): PageChange
+import java.lang.IllegalArgumentException
+
+data class PageInsertion(override val range: IntRange, val pages: List<ViewModel>): PageChange {
+
+	init {
+		if (range.count() != pages.size) throw IllegalArgumentException("Invalid instruction to insert ${range.count()} pages but only ${pages.count()} were provided")
+	}
+
+}

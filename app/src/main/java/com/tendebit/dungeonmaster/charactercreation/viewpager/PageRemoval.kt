@@ -1,3 +1,3 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
-data class PageRemoval(override val page: Page): PageChange
+data class PageRemoval(override val range: IntRange): PageChange

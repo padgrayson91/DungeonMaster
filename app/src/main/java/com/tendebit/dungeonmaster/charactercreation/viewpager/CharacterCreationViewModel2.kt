@@ -5,16 +5,9 @@ import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirem
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
-import java.util.LinkedList
 
-class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, private val pageFactory: PageFactory<ViewModel>): ViewModel {
-
-	enum class PageType {
-		CLASS_SELECTION,
-		RACE_SELECTION,
-		PROFICIENCY_SELECTION
-	}
+class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, private val childViewModelFactory: ViewModelFactory,
+								  private val pageCollection: ViewModelPageObservableCollection): ViewModel, ViewModelPageObservableCollection by pageCollection {
 
 	enum class PageAction {
 		NAVIGATE_BACK,
@@ -24,26 +17,19 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 	override val id = CharacterCreationViewModel2::class.java.name
 
 	// Private Subjects for publishing data
-	private val pageChanges = PublishSubject.create<PageChange>()
 	private val internalLoadingChanges = BehaviorSubject.create<Boolean>()
-	private val internalChildCreation = PublishSubject.create<ViewModel>()
 
 	// Public Observables
 	val loadingChanges = internalLoadingChanges as Observable<Boolean>
-	val pageAdditions: Observable<PageInsertion> = pageChanges.ofType(PageInsertion::class.java)
-	val pageRemovals: Observable<PageRemoval> = pageChanges.ofType(PageRemoval::class.java)
-	val childCreation = internalChildCreation as Observable<ViewModel>
 
 	// Private data at rest
 	private var internalLoading = true
 
 
-	val pages = LinkedList<Page>()
 	var isLoading
 		get() = internalLoading
 		private set(value) { internalLoading = value; internalLoadingChanges.onNext(value) }
 	private var mainDisposable = CompositeDisposable()
-	val children = HashMap<String, ViewModel>()
 
 
 	init {
@@ -54,20 +40,15 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 		internalLoadingChanges.onNext(isLoading)
 	}
 
-	fun clear() {
+	override fun clear() {
 		blueprint.clear()
-		children.clear()
+		pageCollection.clear()
 	}
 
 	fun destroy() {
-		children.clear()
+		pageCollection.clear()
 		blueprint.destroy()
 		mainDisposable.dispose()
-	}
-
-	fun handleChildCreated(child: ViewModel, id: String) {
-		children[id] = child
-		pageFactory.applyData(child)
 	}
 
 	fun getActionsForPage(id: String): Collection<PageAction> {
@@ -82,39 +63,22 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 		// Send requirements to pageFactory to figure out what pages need to be inserted/removed
 		while (requirementIndex < requirements.size) {
 			val requirement = requirements[requirementIndex]
-			val outOfPages = pageIndex >= pages.size
-			val pageAtIndex = if (!outOfPages) pages[pageIndex] else null
-			val pageForRequirement = pageFactory.pageFor(requirement)
+			val pageForRequirement = childViewModelFactory.viewModelFor(requirement)
 
 			if (pageForRequirement != null) {
-				if (pageAtIndex == pageForRequirement) {
-					// Check if ViewModel is already around
-					val existingViewModel = children[pageAtIndex.id]
-					if (existingViewModel != null) {
-						pageFactory.applyData(existingViewModel)
+				val oldPageAtIndex = pageCollection.getOrNull(pageIndex)
+				if (oldPageAtIndex != pageForRequirement) {
+					val indexOfDesiredPage = pageCollection.indexOf(pageForRequirement)
+					if (indexOfDesiredPage == -1) {
+						// Desired page is not present, need to add it
+						pageCollection.insertPage(pageForRequirement, pageIndex)
+						pageIndex++
+					} else if (indexOfDesiredPage > pageIndex) {
+						// Desired page is present, but there are 1 or more stale pages in between
+						pageCollection.removePages(pageIndex until indexOfDesiredPage)
+						pageIndex++
 					}
-				} else if (pages.contains(pageForRequirement)) {
-					val indexOfTargetPage = pages.indexOf(pageForRequirement)
-					if (indexOfTargetPage > pageIndex) {
-						// We had this page already, but some pages in between weren't needed, drop them
-						for (page in pages.subList(pageIndex, indexOfTargetPage)) {
-							pageChanges.onNext(PageRemoval(page))
-						}
-
-						pages.subList(pageIndex, indexOfTargetPage).clear()
-					}
-
-					val existingViewModel = children[pageForRequirement.id]
-					if (existingViewModel != null) {
-						pageFactory.applyData(existingViewModel)
-					}
-				} else {
-					// This page wasn't present at all, need to insert it
-					pageChanges.onNext(PageInsertion(pageForRequirement, pageIndex))
-					if (outOfPages) pages.add(pageForRequirement) else pages.add(pageIndex, pageForRequirement)
 				}
-
-				pageIndex++
 			}
 
 			requirementIndex++
@@ -122,11 +86,7 @@ class CharacterCreationViewModel2(private val blueprint: DndCharacterBlueprint, 
 
 		// Got to the end of the requirements but still have leftover pages; drop them
 		if (pageIndex < pages.size) {
-			for (page in pages.subList(pageIndex, pages.size)) {
-				pageChanges.onNext(PageRemoval(page))
-			}
-
-			pages.subList(pageIndex, pages.size).clear()
+			pageCollection.removePages(pageIndex until pages.size)
 		}
 	}
 
