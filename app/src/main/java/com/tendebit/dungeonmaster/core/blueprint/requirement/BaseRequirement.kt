@@ -36,4 +36,15 @@ abstract class BaseRequirement<ItemType>(initialValue: ItemType?): Requirement<I
 
 	protected abstract fun onRevoke()
 
+	override fun equals(other: Any?): Boolean {
+		if (other !is BaseRequirement<*>) return false
+		return other.javaClass == javaClass && other.item == item && other.status == status
+	}
+
+	override fun hashCode(): Int {
+		return (17 * javaClass.hashCode()
+			+ 17 * status.hashCode()
+			+ 17 * (item?.hashCode() ?: 0))
+	}
+
 }
