@@ -18,7 +18,9 @@ object CharacterCreationRobots {
 	val standardClassList = listOf(DndClass("Barbarian", "example.com/barbarian"))
 	val standardRaceList = listOf(DndRace("Orc", "example.com/orc"))
 	val standardProficiencyList = listOf(DndProficiency("Stealth", "example.com/stealth"))
-	val standardProficiencyGroupList = listOf(DndProficiencyGroup(standardProficiencyList, arrayListOf(), 1))
+	val alternateProficiencyList = listOf(DndProficiency("Brewers Supplies", "example.com/brewers+supplies"))
+	val standardProficiencyGroupList = listOf(DndProficiencyGroup(standardProficiencyList, arrayListOf(), 1),
+												DndProficiencyGroup(alternateProficiencyList, arrayListOf(), 1))
 
 	@Suppress("UNCHECKED_CAST")
 	fun <T> runRobotForRequirement(requirement: Requirement<T>, testingLevel: ValueRobot.TestingLevel) {
