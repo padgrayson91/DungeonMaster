@@ -2,12 +2,12 @@ package com.tendebit.dungeonmaster
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.SelectionRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceRequirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.SelectionRequirement
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CLASS_SELECTION
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationViewModelFactory
 import com.tendebit.dungeonmaster.charactercreation.viewpager.PROFICIENCY_SELECTION_PREFIX
@@ -33,7 +33,7 @@ class TestCharacterCreationViewModelFactory {
 		val toTest = CharacterCreationViewModelFactory()
 
 		val page = toTest.viewModelFor(DndClassOptionsRequirement(emptyList()))
-		val otherPage = toTest.viewModelFor (DndClassRequirement(null, emptyList()))
+		val otherPage = toTest.viewModelFor(DndClassRequirement(null, emptyList()))
 
 		assert(page == otherPage)
 	}

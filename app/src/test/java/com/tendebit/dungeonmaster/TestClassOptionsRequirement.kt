@@ -2,8 +2,8 @@ package com.tendebit.dungeonmaster
 
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassOptionsRequirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 import io.reactivex.observers.TestObserver
 import org.junit.Test
 

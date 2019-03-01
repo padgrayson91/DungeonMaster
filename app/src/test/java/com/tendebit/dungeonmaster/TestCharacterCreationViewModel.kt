@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterBlueprint
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceRequirement
 import com.tendebit.dungeonmaster.charactercreation.viewpager.BasePageCollection
 import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationViewModel2
 import com.tendebit.dungeonmaster.charactercreation.viewpager.PageInsertion

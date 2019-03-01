@@ -2,7 +2,7 @@ package com.tendebit.dungeonmaster
 
 import com.tendebit.dungeonmaster.charactercreation.SelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassRequirement
 import io.reactivex.observers.TestObserver
 import org.junit.Test
 

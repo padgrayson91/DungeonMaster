@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.feature.examiner
+package com.tendebit.dungeonmaster.core.blueprint.examination
 
 interface Examiner<StateType> {
 

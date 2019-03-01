@@ -1,12 +1,12 @@
 package com.tendebit.dungeonmaster
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterBlueprint
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceRequirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.ValueRobot
 import io.reactivex.Observer

@@ -3,8 +3,8 @@ package com.tendebit.dungeonmaster
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 import io.reactivex.observers.TestObserver
 import org.junit.Test
 

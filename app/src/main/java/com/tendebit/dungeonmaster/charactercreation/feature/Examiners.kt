@@ -1,21 +1,9 @@
-package com.tendebit.dungeonmaster.charactercreation.feature.examiner
+package com.tendebit.dungeonmaster.charactercreation.feature
 
-import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
-import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
-import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndClassFulfillment
-import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndClassOptionsFulfillment
-import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndProficiencyFulfillment
-import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndProficiencyOptionsFulfillment
-import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndRaceFulfillment
-import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndRaceOptionsFulfillment
-import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.Fulfillment
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
+import com.tendebit.dungeonmaster.core.blueprint.fulfillment.Fulfillment
+import com.tendebit.dungeonmaster.core.blueprint.examination.Examination
+import com.tendebit.dungeonmaster.core.blueprint.examination.Examiner
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 
 // FIXME: These examiners blindly assume that current selections are valid so long as pre-requisites are met, but this is not necessarily the case
 // FIXME: For example, if the list of available classes changes to no longer include the user's selection, that selectionRequirement should be recreated with no value

@@ -4,9 +4,9 @@ import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreation
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
-import com.tendebit.dungeonmaster.charactercreation.feature.fulfillment.DndProficiencyFulfillment
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyFulfillment
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when` as whenever

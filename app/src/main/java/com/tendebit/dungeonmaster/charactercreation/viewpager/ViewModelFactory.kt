@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 
 interface ViewModelFactory {
 

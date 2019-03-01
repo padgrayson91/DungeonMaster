@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.feature.requirement
+package com.tendebit.dungeonmaster.core.blueprint.requirement
 
 open class SelectionRequirement<ItemType>(val choices: List<ItemType>, initialValue: ItemType?): SimpleRequirement<ItemType>(initialValue) {
 

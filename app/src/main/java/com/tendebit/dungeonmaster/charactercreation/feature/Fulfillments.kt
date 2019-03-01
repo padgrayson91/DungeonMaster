@@ -1,11 +1,7 @@
-package com.tendebit.dungeonmaster.charactercreation.feature.fulfillment
+package com.tendebit.dungeonmaster.charactercreation.feature
 
-import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
-import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
-import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
-import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
-import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
+import com.tendebit.dungeonmaster.core.blueprint.fulfillment.BaseFulfillment
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 
 abstract class DndCharacterFulfillment<T>(requirement: Requirement<T>): BaseFulfillment<T, DndCharacterCreationState>(requirement)
 

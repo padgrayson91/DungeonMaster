@@ -3,11 +3,11 @@ package com.tendebit.dungeonmaster.charactercreation.viewpager
 import com.tendebit.dungeonmaster.charactercreation.SelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndClassRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndRaceRequirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceRequirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 
 class CharacterCreationViewModelFactory: ViewModelFactory {
 

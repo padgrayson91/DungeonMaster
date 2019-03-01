@@ -5,8 +5,8 @@ import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
-import com.tendebit.dungeonmaster.charactercreation.feature.examiner.CharacterProficiencyExaminer
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.CharacterProficiencyExaminer
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyRequirement
 import org.junit.Test
 
 class TestProficiencyExaminer {

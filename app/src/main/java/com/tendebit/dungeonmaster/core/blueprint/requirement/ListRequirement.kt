@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.feature.requirement
+package com.tendebit.dungeonmaster.core.blueprint.requirement
 
 open class ListRequirement<ItemType>(initialValue: List<ItemType>): BaseRequirement<List<ItemType>>(initialValue) {
 
@@ -16,7 +16,11 @@ open class ListRequirement<ItemType>(initialValue: List<ItemType>): BaseRequirem
 	override fun onRevoke() = this.item.clear()
 
 	final override fun statusForItem(item: List<ItemType>?): Requirement.Status {
-		return if (item.isNullOrEmpty()) { Requirement.Status.NOT_FULFILLED } else { Requirement.Status.FULFILLED }
+		return if (item.isNullOrEmpty()) {
+			Requirement.Status.NOT_FULFILLED
+		} else {
+			Requirement.Status.FULFILLED
+		}
 	}
 
 }

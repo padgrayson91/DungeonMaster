@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation
 
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.SelectionRequirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.SelectionRequirement
 import com.tendebit.dungeonmaster.charactercreation.viewpager.ViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable

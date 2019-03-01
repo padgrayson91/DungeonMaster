@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.feature.requirement
+package com.tendebit.dungeonmaster.core.blueprint.requirement
 
 open class SimpleRequirement<ItemType>(initialValue: ItemType?): BaseRequirement<ItemType>(initialValue) {
 
@@ -14,7 +14,11 @@ open class SimpleRequirement<ItemType>(initialValue: ItemType?): BaseRequirement
 	}
 
 	override fun statusForItem(item: ItemType?): Requirement.Status {
-		return if (item == null) { Requirement.Status.NOT_FULFILLED } else { Requirement.Status.FULFILLED }
+		return if (item == null) {
+			Requirement.Status.NOT_FULFILLED
+		} else {
+			Requirement.Status.FULFILLED
+		}
 	}
 
 }

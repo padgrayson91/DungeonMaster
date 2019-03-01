@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterBlueprint
-import com.tendebit.dungeonmaster.charactercreation.feature.requirement.Requirement
+import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
