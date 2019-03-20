@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster
 
+import com.tendebit.dungeonmaster.charactercreation.SelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
 import com.tendebit.dungeonmaster.charactercreation.feature.DndClassOptionsRequirement
@@ -25,7 +26,7 @@ class TestCharacterCreationViewModelFactory {
 		val page = toTest.viewModelFor(DndClassOptionsRequirement(emptyList()))
 
 		assert(page?.id == CLASS_SELECTION)
-		assert((page as SelectionRequirement<DndClass>).choices.isEmpty())
+		assert((page as SelectionViewModel<DndClass>).selectionRequirement == null)
 	}
 
 	@Test
@@ -45,7 +46,7 @@ class TestCharacterCreationViewModelFactory {
 		val page = toTest.viewModelFor(DndRaceOptionsRequirement(emptyList()))
 
 		assert(page?.id == RACE_SELECTION)
-		assert((page as SelectionRequirement<DndRace>).choices.isEmpty())
+		assert((page as SelectionViewModel<DndRace>).selectionRequirement == null)
 	}
 
 	@Test

@@ -1,10 +1,5 @@
 package com.tendebit.dungeonmaster.charactercreation.feature
 
-import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
-import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
-import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
-import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
-import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
 import com.tendebit.dungeonmaster.core.blueprint.requirement.ListRequirement
 import com.tendebit.dungeonmaster.core.blueprint.requirement.SelectionRequirement
 import com.tendebit.dungeonmaster.core.blueprint.requirement.SimpleRequirement
