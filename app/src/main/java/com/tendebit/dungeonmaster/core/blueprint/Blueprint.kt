@@ -36,6 +36,7 @@ class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, ini
 			subscriptions[examiner] = disposable
 			val index = item.index
 			val examination = examiner.examineWithDelta(state, examinations[examiner])
+			examinations[examiner] = examination
 			for (change in examination.changes) {
 				val fulfillment = change.item ?: continue
 				disposable.add(fulfillment.requirement.statusChanges.subscribe {
