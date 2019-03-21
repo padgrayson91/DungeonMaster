@@ -14,6 +14,7 @@ import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragme
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPagerAdapter
+import com.tendebit.dungeonmaster.charactercreation2.pager.PageAction
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import io.reactivex.disposables.CompositeDisposable
@@ -160,7 +161,7 @@ class CharacterCreationPagesFragment: Fragment(), BackNavigationHandler {
             forwardButton.text = getTextForAction(forwardAction)
             // TODO: the enabled state should be part of the action object
             forwardButton.isEnabled = forwardAction == PageAction.CONFIRM ||
-                    viewModel.currentPageIndex < viewModel.pageCollection.size - 1
+									  viewModel.currentPageIndex < viewModel.pageCollection.size - 1
         } else {
             forwardButton.visibility = View.INVISIBLE
             forwardButton.isEnabled = false

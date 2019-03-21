@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation.feature
+package com.tendebit.dungeonmaster.charactercreation2.feature
 
 class DndCharacterCreationState {
 

@@ -10,6 +10,7 @@ import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel.C
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel.Companion.TAG_REVIEW
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
 import com.tendebit.dungeonmaster.charactercreation.pages.custominfoentry.CustomInfoEntryViewModel
+import com.tendebit.dungeonmaster.charactercreation2.pager.PageAction
 import com.tendebit.dungeonmaster.core.model.AsyncViewModel
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject

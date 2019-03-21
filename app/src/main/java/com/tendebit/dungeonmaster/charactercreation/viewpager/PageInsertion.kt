@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation.viewpager
 
+import com.tendebit.dungeonmaster.charactercreation2.ViewModel
 import java.lang.IllegalArgumentException
 
 data class PageInsertion(override val range: IntRange, val pages: List<ViewModel>): PageChange {

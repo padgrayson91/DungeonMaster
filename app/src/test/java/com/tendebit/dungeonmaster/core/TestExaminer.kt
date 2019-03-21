@@ -17,9 +17,9 @@ class TestExaminer {
 		val req1 = Mockito.mock(Requirement::class.java) as Requirement<Any>
 		val req2 = Mockito.mock(Requirement::class.java) as Requirement<Any>
 		val req3 = Mockito.mock(Requirement::class.java) as Requirement<Any>
-		val toTest = object : Examiner<String> {
+		val toTest = object : Examiner<Any> {
 
-			override fun examine(state: String): Examination<String> {
+			override fun examine(state: Any): Examination<Any> {
 				return StaticExamination(listOf(
 						SimpleFulfillment(req1),
 						SimpleFulfillment(req2),
@@ -39,9 +39,9 @@ class TestExaminer {
 		val req1 = Mockito.mock(Requirement::class.java) as Requirement<Any>
 		val req2 = Mockito.mock(Requirement::class.java) as Requirement<Any>
 		val req3 = Mockito.mock(Requirement::class.java) as Requirement<Any>
-		val toTest = object : Examiner<String> {
+		val toTest = object : Examiner<Any> {
 
-			override fun examine(state: String): Examination<String> {
+			override fun examine(state: Any): Examination<Any> {
 				return StaticExamination(listOf(
 						SimpleFulfillment(req1),
 						SimpleFulfillment(req2),
@@ -62,10 +62,10 @@ class TestExaminer {
 		val req1 = Mockito.mock(Requirement::class.java) as Requirement<Any>
 		val req2 = Mockito.mock(Requirement::class.java) as Requirement<Any>
 		val req3 = Mockito.mock(Requirement::class.java) as Requirement<Any>
-		val toTest = object : Examiner<String> {
+		val toTest = object : Examiner<Any> {
 
-			override fun examine(state: String): Examination<String> {
-				return if (state.isEmpty()) {
+			override fun examine(state: Any): Examination<Any> {
+				return if (state is String && state.isEmpty()) {
 					StaticExamination(listOf(
 							SimpleFulfillment(req1),
 							SimpleFulfillment(req2),
@@ -89,10 +89,10 @@ class TestExaminer {
 		val req1 = Mockito.mock(Requirement::class.java) as Requirement<Any>
 		val req2 = Mockito.mock(Requirement::class.java) as Requirement<Any>
 		val req3 = Mockito.mock(Requirement::class.java) as Requirement<Any>
-		val toTest = object : Examiner<String> {
+		val toTest = object : Examiner<Any> {
 
-			override fun examine(state: String): Examination<String> {
-				return if (state.isEmpty()) {
+			override fun examine(state: Any): Examination<Any> {
+				return if (state is String && state.isEmpty()) {
 					StaticExamination(listOf(
 							SimpleFulfillment(req1),
 							SimpleFulfillment(req2),

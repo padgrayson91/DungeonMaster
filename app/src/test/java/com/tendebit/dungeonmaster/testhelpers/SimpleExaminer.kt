@@ -5,8 +5,8 @@ import com.tendebit.dungeonmaster.core.blueprint.examination.Examiner
 import com.tendebit.dungeonmaster.core.blueprint.examination.StaticExamination
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 
-class SimpleExaminer(val requirement: Requirement<Any>): Examiner<String> {
-	override fun examine(state: String): Examination<String> {
+class SimpleExaminer(val requirement: Requirement<Any>): Examiner<Any> {
+	override fun examine(state: Any): Examination<Any> {
 		return StaticExamination(listOf(SimpleFulfillment(requirement)), false)
 	}
 }

@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster
 
-import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiency
 import org.junit.Test
 
 class TestDndProficiency {
