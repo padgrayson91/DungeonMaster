@@ -12,7 +12,7 @@ class DndRaceOptionsRequirement(initialValue: List<DndRace>): ListRequirement<Dn
 
 class DndRaceRequirement(initialValue: DndRace?, choices: List<DndRace>): SelectionRequirement<DndRace>(choices, initialValue)
 
-class DndProficiencyOptionsRequirement(initialValue: List<DndProficiencyGroup>): SimpleRequirement<List<DndProficiencyGroup>>(initialValue)
+class DndProficiencyOptionsRequirement(initialValue: List<DndProficiencyGroup>?, val forSource: ProficiencySource): SimpleRequirement<List<DndProficiencyGroup>>(initialValue)
 
 class DndProficiencyRequirement(initialValue: DndProficiencySelection?, val fromGroup: DndProficiencyGroup): SimpleRequirement<DndProficiencySelection>(initialValue) {
 

@@ -47,4 +47,7 @@ abstract class BaseRequirement<ItemType>(initialValue: ItemType?): Requirement<I
 			+ 17 * (item?.hashCode() ?: 0))
 	}
 
+	override fun toString(): String {
+		return "${javaClass.simpleName} with $item and status of $internalStatus"
+	}
 }

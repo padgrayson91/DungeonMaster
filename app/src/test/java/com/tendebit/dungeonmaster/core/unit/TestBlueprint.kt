@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.core
+package com.tendebit.dungeonmaster.core.unit
 
 import com.tendebit.dungeonmaster.core.blueprint.Blueprint
 import com.tendebit.dungeonmaster.core.blueprint.Delta
@@ -95,6 +95,31 @@ class TestBlueprint {
 		ps2.onNext(Requirement.Status.FULFILLED)
 		testObserver.assertValueCount(2)
 		testObserver.assertValueAt(1) { it[0].type == Delta.Type.UNCHANGED && it[0].item == req1 }
+	}
+
+	@Test
+	fun testHaltingExaminerRespected() {
+		val ps1 = PublishSubject.create<Requirement.Status>()
+		val ps2 = PublishSubject.create<Requirement.Status>()
+		val ps3 = PublishSubject.create<Requirement.Status>()
+
+		val req1 = Mockito.mock(Requirement::class.java) as Requirement<Any>
+		whenever(req1.statusChanges).thenReturn(ps1)
+		val req2 = Mockito.mock(Requirement::class.java) as Requirement<Any>
+		whenever(req2.statusChanges).thenReturn(ps2)
+		val req3 = Mockito.mock(Requirement::class.java) as Requirement<Any>
+		whenever(req3.statusChanges).thenReturn(ps3)
+
+		val ex1 = SimpleExaminer(req1)
+		val ex2 = SimpleExaminer(req2, true)
+		val ex3 = SimpleExaminer(req3)
+
+		val testObserver = TestObserver<List<Delta<Requirement<*>>>>()
+		val toTest = Blueprint(listOf(ex1, ex2, ex3), "")
+		toTest.requirements.subscribe(testObserver)
+
+		testObserver.assertValueCount(1)
+		testObserver.assertValueAt(0) { it.size == 2 }
 	}
 
 }

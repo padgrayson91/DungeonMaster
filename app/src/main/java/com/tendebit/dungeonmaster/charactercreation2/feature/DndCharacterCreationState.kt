@@ -5,13 +5,15 @@ class DndCharacterCreationState {
 	val character = DndCharacter()
 	var classOptions = ArrayList<DndClass>()
 	val raceOptions = ArrayList<DndRace>()
-	val proficiencyOptions = ArrayList<DndProficiencyGroup>()
+	val proficiencySources = HashMap<ProficiencySource, MutableList<DndProficiencyGroup>>()
+	val proficiencyOptions
+		get() = proficiencySources.values.flatten()
 
 	fun clear() {
 		character.clear()
 		classOptions.clear()
 		raceOptions.clear()
-		proficiencyOptions.clear()
+		proficiencySources.clear()
 	}
 
 }

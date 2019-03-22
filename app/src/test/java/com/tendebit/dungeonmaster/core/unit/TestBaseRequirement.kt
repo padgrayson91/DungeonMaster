@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.core
+package com.tendebit.dungeonmaster.core.unit
 
 import com.tendebit.dungeonmaster.core.blueprint.requirement.BaseRequirement
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement

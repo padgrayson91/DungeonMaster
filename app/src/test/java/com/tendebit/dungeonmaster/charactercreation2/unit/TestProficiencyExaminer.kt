@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster
+package com.tendebit.dungeonmaster.charactercreation2.unit
 
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacterCreationState
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndClass
@@ -7,6 +7,7 @@ import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndRace
 import com.tendebit.dungeonmaster.charactercreation2.feature.CharacterProficiencyExaminer
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.charactercreation2.feature.ProficiencySource
 import org.junit.Test
 
 class TestProficiencyExaminer {
@@ -23,7 +24,7 @@ class TestProficiencyExaminer {
 		val testState = DndCharacterCreationState()
 		testState.character.characterClass = DndClass("Monk", "example.com/monk")
 		testState.character.race = DndRace("Halfling", "example.com/halfling")
-		testState.proficiencyOptions.add(DndProficiencyGroup(listOf(
+		testState.proficiencySources[ProficiencySource.CLASS]  = arrayListOf(DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
 				DndProficiency("Brewer's Supplies", "another.com"),
 				DndProficiency("Stealth", "third.com")), ArrayList(), 2))
@@ -46,8 +47,7 @@ class TestProficiencyExaminer {
 
 		testState.character.characterClass = DndClass("Barbarian", "example.com/barbarian")
 		testState.character.race = DndRace("Halfling", "example.com/halfling")
-		testState.proficiencyOptions.add(testGroupA)
-		testState.proficiencyOptions.add(testGroupB)
+		testState.proficiencySources[ProficiencySource.CLASS] = arrayListOf(testGroupA, testGroupB)
 
 
 		assert(toTest.examine(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupA }.size == 2)
@@ -71,8 +71,7 @@ class TestProficiencyExaminer {
 
 		testState.character.characterClass = DndClass("Wizard", "example.com/wizard")
 		testState.character.race = DndRace("Halfling", "example.com/halfling")
-		testState.proficiencyOptions.add(testGroupA)
-		testState.proficiencyOptions.add(testGroupB)
+		testState.proficiencySources[ProficiencySource.CLASS] = arrayListOf(testGroupA, testGroupB)
 
 		val groupBFulfillment = toTest.examine(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupB }
 		// mark the one requirement with an item as fulfilled

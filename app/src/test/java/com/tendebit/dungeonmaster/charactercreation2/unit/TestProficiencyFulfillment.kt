@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster
+package com.tendebit.dungeonmaster.charactercreation2.unit
 
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacterCreationState
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiency

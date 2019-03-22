@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation2
+package com.tendebit.dungeonmaster.core.viewmodel2
 
 import com.tendebit.dungeonmaster.core.Id
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement

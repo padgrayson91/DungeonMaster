@@ -1,6 +1,6 @@
-package com.tendebit.dungeonmaster
+package com.tendebit.dungeonmaster.charactercreation.integration
 
-import com.tendebit.dungeonmaster.charactercreation2.SelectionViewModel
+import com.tendebit.dungeonmaster.core.viewmodel2.SelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndClassRequirement
 import com.tendebit.dungeonmaster.core.Id

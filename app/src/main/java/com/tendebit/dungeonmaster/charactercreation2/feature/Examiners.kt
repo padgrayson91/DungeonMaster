@@ -26,9 +26,10 @@ class CharacterClassExaminer: DndCharacterCreationExaminer() {
 
 	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		val availableClasses = state.classOptions
+		if (availableClasses.isEmpty()) return Examination.Empty(true)
 		return StaticExamination(
 				listOf(DndClassFulfillment(DndClassRequirement(state.character.characterClass, availableClasses))),
-				availableClasses.isEmpty())
+				false)
 	}
 
 }
@@ -36,8 +37,8 @@ class CharacterClassExaminer: DndCharacterCreationExaminer() {
 class CharacterRaceExaminer: DndCharacterCreationExaminer() {
 
 	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
-		if (state.raceOptions.isEmpty()) return StaticExamination(emptyList(), true)
-		return StaticExamination(listOf(DndRaceFulfillment(DndRaceRequirement(state.character.race, state.raceOptions))), state.character.race == null)
+		if (state.raceOptions.isEmpty() || state.character.characterClass == null) return Examination.Empty(true)
+		return StaticExamination(listOf(DndRaceFulfillment(DndRaceRequirement(state.character.race, state.raceOptions))), false)
 	}
 
 }
@@ -45,8 +46,11 @@ class CharacterRaceExaminer: DndCharacterCreationExaminer() {
 class CharacterProficiencyOptionsExaminer: DndCharacterCreationExaminer() {
 
 	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
-		state.character.characterClass ?: return StaticExamination(emptyList(), true)
-		return StaticExamination(listOf(DndProficiencyOptionsFulfillment(DndProficiencyOptionsRequirement(state.proficiencyOptions))), false)
+		state.character.characterClass ?: return Examination.Empty(true)
+		val classDerivedOptions = DndProficiencyOptionsFulfillment(DndProficiencyOptionsRequirement(state.proficiencySources[ProficiencySource.CLASS], ProficiencySource.CLASS))
+		state.character.race ?: return StaticExamination(listOf(classDerivedOptions), false)
+		val raceDerivedOptions = DndProficiencyOptionsFulfillment(DndProficiencyOptionsRequirement(state.proficiencySources[ProficiencySource.RACE], ProficiencySource.RACE))
+		return StaticExamination(listOf(classDerivedOptions, raceDerivedOptions), false)
 	}
 
 }
@@ -55,6 +59,8 @@ class CharacterProficiencyExaminer: DndCharacterCreationExaminer() {
 
 	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		val availableProficiencies = state.proficiencyOptions
+		// Remove any proficiencies
+
 		val fulfillmentList = ArrayList<DndProficiencyFulfillment>()
 		for (group in availableProficiencies) {
 			for (selectedOption in group.selectedOptions) {

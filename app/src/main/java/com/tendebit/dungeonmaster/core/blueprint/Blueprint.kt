@@ -2,9 +2,9 @@ package com.tendebit.dungeonmaster.core.blueprint
 
 import com.tendebit.dungeonmaster.core.blueprint.examination.Examination
 import com.tendebit.dungeonmaster.core.blueprint.examination.Examiner
+import com.tendebit.dungeonmaster.core.blueprint.fulfillment.Fulfillment
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 import io.reactivex.Observable
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import java.util.LinkedList
@@ -14,7 +14,7 @@ class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, ini
 	private val internalRequirements = BehaviorSubject.create<List<Delta<Requirement<*>>>>()
 	val requirements = internalRequirements as Observable<List<Delta<Requirement<*>>>>
 	private val examinations = HashMap<Examiner<StateType>, Examination<StateType>>()
-	private val subscriptions = HashMap<Examiner<StateType>, Disposable>()
+	private val subscriptions = HashMap<Examiner<StateType>, MutableList<Disposable>>()
 
 	init {
 		examineState(initialState)
@@ -31,25 +31,55 @@ class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, ini
 
 		for (item in examiners.subList(startingWithIndex, examiners.size).withIndex()) {
 			val examiner = item.value
-			subscriptions[examiner]?.dispose()
-			val disposable = CompositeDisposable()
-			subscriptions[examiner] = disposable
+			val disposables = subscriptions[examiner] ?: LinkedList()
 			val index = item.index
-			val examination = examiner.examineWithDelta(state, examinations[examiner])
+			var disposableIndex = 0
+			val previousExamination = examinations[examiner]
+			val examination = examiner.examineWithDelta(state, previousExamination)
 			examinations[examiner] = examination
-			for (change in examination.changes) {
-				val fulfillment = change.item ?: continue
-				disposable.add(fulfillment.requirement.statusChanges.subscribe {
-					if (fulfillment.applyToState(state)) {
-						examineState(state, index)
+			changeLoop@ for (change in examination.changes) {
+				val fulfillment = change.item
+				requirementChangesForState.add(Delta(change.type, fulfillment?.requirement))
+				when (change.type) {
+					Delta.Type.INSERTION -> {
+						if (fulfillment == null) throw IllegalStateException("Inserted a null ${Fulfillment<*, *>::javaClass.name}")
+						if (disposableIndex < disposables.size) {
+							disposables.add(disposableIndex, subscribeToFulfillmentAtIndex(state, fulfillment, index))
+						} else {
+							disposables.add(subscribeToFulfillmentAtIndex(state, fulfillment, index))
+						}
+						disposableIndex++
 					}
-				})
+					Delta.Type.REMOVAL -> {
+						disposables.removeAt(disposableIndex).dispose()
+					}
+					Delta.Type.UNCHANGED -> {
+						disposableIndex++
+					}
+					Delta.Type.UPDATE -> {
+						val temp = disposableIndex
+						if (temp >= disposables.size) throw IllegalStateException("Attempting to perform an ")
+						disposables[temp].dispose()
+						disposableIndex++
+						if (fulfillment == null) throw IllegalStateException("Updated to a null ${Fulfillment<*, *>::javaClass.name}")
+						disposables[temp] = subscribeToFulfillmentAtIndex(state, fulfillment, index)
+					}
+				}
 			}
-			examination.changes
-					.map { Delta(it.type, it.item?.requirement) }
-					.forEach { requirementChangesForState.add(it) }
+			subscriptions[examiner] = disposables
+			if (examination.shouldHalt) {
+				break
+			}
 		}
 		internalRequirements.onNext(requirementChangesForState)
+	}
+
+	private fun subscribeToFulfillmentAtIndex(state: StateType, fulfillment: Fulfillment<*, StateType>, index: Int): Disposable {
+		return fulfillment.requirement.statusChanges.subscribe {
+			if (fulfillment.applyToState(state)) {
+				examineState(state, index)
+			}
+		}
 	}
 
 }

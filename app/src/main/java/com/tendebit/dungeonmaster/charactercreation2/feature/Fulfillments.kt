@@ -51,14 +51,17 @@ class DndRaceFulfillment(requirement: Requirement<DndRace>): DndCharacterFulfill
 
 }
 
-class DndProficiencyOptionsFulfillment(requirement: Requirement<List<DndProficiencyGroup>>): DndCharacterFulfillment<List<DndProficiencyGroup>>(requirement) {
+class DndProficiencyOptionsFulfillment(requirement: DndProficiencyOptionsRequirement): DndCharacterFulfillment<List<DndProficiencyGroup>>(requirement) {
+	private val forSource = requirement.forSource
 
 	override fun applyToState(state: DndCharacterCreationState): Boolean {
-		if (state.proficiencyOptions == requirement.item) return false
-		state.proficiencyOptions.clear()
+		val listToUpdate = state.proficiencySources[forSource] ?: ArrayList()
+		if (listToUpdate == requirement.item) return false
+		listToUpdate.clear()
 		requirement.item?.let {
-			state.proficiencyOptions.addAll(it)
+			listToUpdate.addAll(it)
 		}
+		state.proficiencySources[forSource] = listToUpdate
 		return true
 	}
 

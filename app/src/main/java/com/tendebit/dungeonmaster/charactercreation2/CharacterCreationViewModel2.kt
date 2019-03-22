@@ -1,22 +1,19 @@
 package com.tendebit.dungeonmaster.charactercreation2
 
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacter
-import com.tendebit.dungeonmaster.charactercreation2.pager.Page
+import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacterCreationState
+import com.tendebit.dungeonmaster.core.viewmodel2.Page
+import com.tendebit.dungeonmaster.charactercreation2.pager.PageAction
 import com.tendebit.dungeonmaster.core.Id
 import com.tendebit.dungeonmaster.core.blueprint.Blueprint
 import com.tendebit.dungeonmaster.core.blueprint.Delta
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
+import com.tendebit.dungeonmaster.core.viewmodel2.ViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
-class CharacterCreationViewModel2(blueprint: Blueprint<DndCharacter>): ViewModel {
-
-	enum class PageAction {
-		NAVIGATE_BACK,
-		NAVIGATE_FORWARD
-	}
+class CharacterCreationViewModel2(blueprint: Blueprint<DndCharacterCreationState>): ViewModel {
 
 	override val id = Id(CharacterCreationViewModel2::class.java.name)
 

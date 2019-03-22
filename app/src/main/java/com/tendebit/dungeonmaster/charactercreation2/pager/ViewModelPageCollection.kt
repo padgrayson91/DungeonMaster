@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation2.pager
 
+import com.tendebit.dungeonmaster.core.viewmodel2.Page
 
 interface ViewModelPageCollection : List<Page> {
 

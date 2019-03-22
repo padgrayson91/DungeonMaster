@@ -23,7 +23,7 @@ object CharacterCreationRobots {
 												DndProficiencyGroup(alternateProficiencyList, arrayListOf(), 1))
 
 	@Suppress("UNCHECKED_CAST")
-	fun <T> runRobotForRequirement(requirement: Requirement<T>, testingLevel: ValueRobot.TestingLevel) {
+	fun <T> runRobotForRequirement(requirement: Requirement<T>, testingLevel: ValueRobot.TestingLevel = ValueRobot.TestingLevel.SIMPLE) {
 		val robot = when(requirement) {
 			is DndRaceOptionsRequirement -> SimpleRobot(standardRaceList)
 			is DndClassOptionsRequirement -> SimpleRobot(standardClassList)
