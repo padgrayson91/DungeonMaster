@@ -168,12 +168,12 @@ class TestExaminer {
 
 		val examination = toTest.examine("")
 		val testObserver = TestObserver<Requirement.Status>()
-		examination[2].requirement.statusChanges.subscribe(testObserver)
+		req3.statusChanges.subscribe(testObserver)
 		val examination2 = toTest.examineWithDelta("a", examination)
 
 		assert(req3 == req4)
 		assert(examination2.changes[2].type == Delta.Type.UNCHANGED)
-		(examination[2].requirement as Requirement<Any>).update("")
+		(examination2[2].requirement as Requirement<Any>).update("")
 
 		assert(testObserver.valueCount() == 1) { "Had ${testObserver.values()}"}
 

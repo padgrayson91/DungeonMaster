@@ -126,4 +126,25 @@ class TestCharacterCreationBlueprint {
 		assert(requirements.find { it is DndProficiencyRequirement } != null)
 	}
 
+	@Test
+	fun testAfterAllRequirementsFulfilledCharacterHasRaceClassAndProficiencies() {
+		val toTest = Blueprint(examiners, DndCharacterCreationState())
+		val testObserver = TestObserver<List<Delta<Requirement<*>>>>()
+
+		toTest.requirements.subscribe(testObserver)
+
+		while (testObserver.values().last().any { it.item?.status == Requirement.Status.NOT_FULFILLED }) {
+			val unfulfilledRequirement = testObserver.values().last().first { it.item?.status == Requirement.Status.NOT_FULFILLED }.item!!
+			CharacterCreationRobots.runRobotForRequirement(unfulfilledRequirement)
+		}
+
+		assert(testObserver.values().size >= 4) { "Had ${testObserver.values().last()}"}
+
+		val character = toTest.state.character
+
+		assert(character.race != null) { "Had $character"}
+		assert(character.characterClass != null) { "Had $character"}
+		assert(character.proficiencies.isNotEmpty()) { "Had $character"}
+	}
+
 }

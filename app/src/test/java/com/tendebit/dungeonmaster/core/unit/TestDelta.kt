@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.core.unit
 
 import com.tendebit.dungeonmaster.core.blueprint.Delta
 import org.junit.Test
+import java.math.BigInteger
 import kotlin.math.max
 
 class TestDelta {
@@ -141,6 +142,19 @@ class TestDelta {
 		assert(toTest[3].type == Delta.Type.INSERTION)
 		assert(toTest[4].type == Delta.Type.UNCHANGED)
 		assert(toTest[5].type == Delta.Type.REMOVAL)
+	}
+
+	@Test
+	fun testUnchangedIsSameObject() {
+		val oldList = listOf(BigInteger("10"), BigInteger("20"))
+		val newList = listOf(BigInteger("10"), BigInteger("20"))
+
+		val toTest = Delta.from(oldList, newList)
+
+		assert(toTest[0].type == Delta.Type.UNCHANGED)
+		assert(toTest[1].type == Delta.Type.UNCHANGED)
+		assert(oldList[0] !== newList[0])
+		assert(toTest[0].item === oldList[0])
 	}
 
 }

@@ -6,7 +6,10 @@ import com.tendebit.dungeonmaster.core.blueprint.fulfillment.Fulfillment
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Action
+import io.reactivex.functions.Consumer
 import io.reactivex.subjects.BehaviorSubject
+import java.lang.RuntimeException
 import java.util.LinkedList
 
 class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, initialState: StateType) {
@@ -15,9 +18,10 @@ class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, ini
 	val requirements = internalRequirements as Observable<List<Delta<Requirement<*>>>>
 	private val examinations = HashMap<Examiner<StateType>, Examination<StateType>>()
 	private val subscriptions = HashMap<Examiner<StateType>, MutableList<Disposable>>()
+	val state = initialState
 
 	init {
-		examineState(initialState)
+		examineState(state)
 	}
 
 	private fun examineState(state: StateType, startingWithIndex: Int = 0) {
@@ -32,12 +36,12 @@ class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, ini
 		for (item in examiners.subList(startingWithIndex, examiners.size).withIndex()) {
 			val examiner = item.value
 			val disposables = subscriptions[examiner] ?: LinkedList()
-			val index = item.index
+			val index = startingWithIndex + item.index
 			var disposableIndex = 0
 			val previousExamination = examinations[examiner]
 			val examination = examiner.examineWithDelta(state, previousExamination)
 			examinations[examiner] = examination
-			changeLoop@ for (change in examination.changes) {
+			for (change in examination.changes) {
 				val fulfillment = change.item
 				requirementChangesForState.add(Delta(change.type, fulfillment?.requirement))
 				when (change.type) {
@@ -58,7 +62,7 @@ class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, ini
 					}
 					Delta.Type.UPDATE -> {
 						val temp = disposableIndex
-						if (temp >= disposables.size) throw IllegalStateException("Attempting to perform an ")
+						if (temp >= disposables.size) throw IllegalStateException("Attempting to update out of bounds")
 						disposables[temp].dispose()
 						disposableIndex++
 						if (fulfillment == null) throw IllegalStateException("Updated to a null ${Fulfillment<*, *>::javaClass.name}")

@@ -1,7 +1,8 @@
-package com.tendebit.dungeonmaster.core.unit
+package com.tendebit.dungeonmaster.core.integration
 
 import com.tendebit.dungeonmaster.core.blueprint.Blueprint
 import com.tendebit.dungeonmaster.core.blueprint.Delta
+import com.tendebit.dungeonmaster.core.blueprint.examination.Examination
 import com.tendebit.dungeonmaster.core.blueprint.examination.StaticExamination
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 import com.tendebit.dungeonmaster.testhelpers.SimpleExaminer
@@ -10,8 +11,12 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 import org.mockito.ArgumentMatchers
+import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.Mockito.anyList
 import org.mockito.Mockito.argThat
+import org.mockito.Mockito.times
+import java.lang.RuntimeException
 import org.mockito.Mockito.`when` as whenever
 
 @Suppress("UNCHECKED_CAST")
@@ -120,6 +125,72 @@ class TestBlueprint {
 
 		testObserver.assertValueCount(1)
 		testObserver.assertValueAt(0) { it.size == 2 }
+	}
+
+	@Test
+	fun testChainExaminationCompletes() {
+		val ps1 = PublishSubject.create<Requirement.Status>()
+		val ps2 = PublishSubject.create<Requirement.Status>()
+		val ps3 = PublishSubject.create<Requirement.Status>()
+
+		val req1 = Mockito.mock(Requirement::class.java) as Requirement<Any>
+		whenever(req1.statusChanges).thenReturn(ps1)
+		whenever(req1.item).thenReturn("Hello")
+		val req2 = Mockito.mock(Requirement::class.java) as Requirement<Any>
+		whenever(req2.statusChanges).thenReturn(ps2)
+		whenever(req2.item).thenReturn("World")
+		val req3 = Mockito.mock(Requirement::class.java) as Requirement<Any>
+		whenever(req3.statusChanges).thenReturn(ps3)
+		whenever(req3.item).thenReturn("!")
+
+		val ex1 = Mockito.mock(SimpleExaminer::class.java)
+		whenever(ex1.requirement).thenReturn(req1)
+		whenever(ex1.examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })).thenCallRealMethod()
+		whenever(ex1.examine(ArgumentMatchers.anyList<String>()))
+				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req1)), true))
+				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req1)), false))
+				.thenThrow(RuntimeException("Examiner 1 called too many times!"))
+		val ex2 = Mockito.mock(SimpleExaminer::class.java)
+		whenever(ex2.requirement).thenReturn(req2)
+		whenever(ex2.examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })).thenCallRealMethod()
+		whenever(ex2.examine(ArgumentMatchers.anyList<String>()))
+				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req2)), true))
+				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req2)), false))
+				.thenThrow(RuntimeException("Examiner 2 called too many times"))
+		val ex3 = Mockito.mock(SimpleExaminer::class.java)
+		whenever(ex3.requirement).thenReturn(req3)
+		whenever(ex3.examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })).thenCallRealMethod()
+		whenever(ex3.examine(ArgumentMatchers.anyList<String>()))
+				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req3)), false))
+				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req3)), false))
+				.thenThrow(RuntimeException("Examiner 3 called too many times!"))
+
+
+		val testObserver = TestObserver<List<Delta<Requirement<*>>>>()
+		val toTest = Blueprint(listOf(ex1, ex2, ex3), ArrayList<String>())
+		toTest.requirements.subscribe(testObserver)
+
+		ps1.onNext(Requirement.Status.FULFILLED)
+
+		assert(toTest.state == listOf("Hello")) { "State was ${toTest.state}"}
+		Mockito.verify(ex1, times(2)).examineWithDelta(ArgumentMatchers.anyList<String>(), ArgumentMatchers.any())
+		Mockito.verify(ex2, times(1)).examineWithDelta(listOf("Hello"), null)
+		Mockito.verify(ex3, times(0)).examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })
+		assert(testObserver.values().last().find { it.item == req2 } != null)
+		assert(testObserver.values().last().size == 2) { "Had ${testObserver.values().last()}"}
+
+		ps2.onNext(Requirement.Status.FULFILLED)
+
+		assert(toTest.state == listOf("Hello", "World")) { "State was ${toTest.state}"}
+		Mockito.verify(ex1, times(2)).examineWithDelta(ArgumentMatchers.anyList<String>(), ArgumentMatchers.any())
+		Mockito.verify(ex2, times(2)).examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })
+		Mockito.verify(ex3, times(1)).examineWithDelta(listOf("Hello", "World"), null)
+		assert(testObserver.values().last().find { it.item == req3 } != null)
+		assert(testObserver.values().last().size == 3)
+
+		ps3.onNext(Requirement.Status.FULFILLED)
+
+		assert(toTest.state == listOf("Hello", "World", "!")) { "State was ${toTest.state}"}
 	}
 
 }

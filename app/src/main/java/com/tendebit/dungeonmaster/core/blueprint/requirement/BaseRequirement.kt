@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.core.blueprint.requirement
 
 import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 
 abstract class BaseRequirement<ItemType>(initialValue: ItemType?): Requirement<ItemType> {
@@ -48,6 +49,6 @@ abstract class BaseRequirement<ItemType>(initialValue: ItemType?): Requirement<I
 	}
 
 	override fun toString(): String {
-		return "${javaClass.simpleName} with $item and status of $internalStatus"
+		return "${javaClass.simpleName} with $item and status of $status"
 	}
 }

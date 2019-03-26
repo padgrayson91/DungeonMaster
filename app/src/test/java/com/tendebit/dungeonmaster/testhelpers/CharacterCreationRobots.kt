@@ -9,6 +9,7 @@ import com.tendebit.dungeonmaster.charactercreation2.feature.DndClassOptionsRequ
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndClassRequirement
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyOptionsRequirement
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndRaceOptionsRequirement
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndRaceRequirement
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
@@ -30,7 +31,7 @@ object CharacterCreationRobots {
 			is DndRaceRequirement -> SimpleRobot(standardRaceList[0])
 			is DndClassRequirement -> SimpleRobot(standardClassList[0])
 			is DndProficiencyOptionsRequirement -> SimpleRobot(standardProficiencyGroupList)
-			is DndProficiencyRequirement -> SimpleRobot(requirement.fromGroup.availableOptions[0])
+			is DndProficiencyRequirement -> SimpleRobot(DndProficiencySelection(requirement.fromGroup.availableOptions[0], requirement.fromGroup))
 			else -> null
 		} as? ValueRobot<T>
 		if (robot != null) {

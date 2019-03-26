@@ -14,4 +14,7 @@ class DndCharacter {
 		proficiencies.clear()
 	}
 
+	override fun toString(): String {
+		return "Character named $name is a(n) ${race?.name} ${characterClass?.name} with proficiencies in $proficiencies"
+	}
 }
