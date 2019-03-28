@@ -11,7 +11,10 @@ import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 
 abstract class DndCharacterCreationExaminer: Examiner<DndCharacterCreationState>
 
-class CharacterPrerequisiteExaminer: DndCharacterCreationExaminer() {
+/**
+ * Examiner which ensures lists of options for class and race are provided
+ */
+class DndCharacterPrerequisiteExaminer: DndCharacterCreationExaminer() {
 
 	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		val requirements = ArrayList<Fulfillment<*, DndCharacterCreationState>>()
@@ -22,7 +25,10 @@ class CharacterPrerequisiteExaminer: DndCharacterCreationExaminer() {
 
 }
 
-class CharacterClassExaminer: DndCharacterCreationExaminer() {
+/**
+ * Examiner which ensures a class is selected
+ */
+class DndClassExaminer: DndCharacterCreationExaminer() {
 
 	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		val availableClasses = state.classOptions
@@ -34,7 +40,10 @@ class CharacterClassExaminer: DndCharacterCreationExaminer() {
 
 }
 
-class CharacterRaceExaminer: DndCharacterCreationExaminer() {
+/**
+ * Examiner which ensures a race is selected
+ */
+class DndRaceExaminer: DndCharacterCreationExaminer() {
 
 	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		if (state.raceOptions.isEmpty() || state.character.characterClass == null) return Examination.Empty(true)
@@ -43,7 +52,10 @@ class CharacterRaceExaminer: DndCharacterCreationExaminer() {
 
 }
 
-class CharacterProficiencyOptionsExaminer: DndCharacterCreationExaminer() {
+/**
+ * Examiner which ensures proficiency options are provided
+ */
+class DndProficiencyOptionsExaminer: DndCharacterCreationExaminer() {
 
 	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		state.character.characterClass ?: return Examination.Empty(true)
@@ -55,11 +67,13 @@ class CharacterProficiencyOptionsExaminer: DndCharacterCreationExaminer() {
 
 }
 
-class CharacterProficiencyExaminer: DndCharacterCreationExaminer() {
+/**
+ * Examiner which ensures the required number of proficiencies are selected for each proficiency group
+ */
+class DndProficiencyExaminer: DndCharacterCreationExaminer() {
 
 	override fun examine(state: DndCharacterCreationState): Examination<DndCharacterCreationState> {
 		val availableProficiencies = state.proficiencyOptions
-		// Remove any proficiencies
 
 		val fulfillmentList = ArrayList<DndProficiencyFulfillment>()
 		for (group in availableProficiencies) {
@@ -80,7 +94,7 @@ class CharacterProficiencyExaminer: DndCharacterCreationExaminer() {
 		}
 
 		// If any proficiency selection is not complete, further requirements should not be queried
-		return StaticExamination(fulfillmentList, fulfillmentList.isNotEmpty() && fulfillmentList.find { it.requirement.status == Requirement.Status.NOT_FULFILLED } != null)
+		return StaticExamination(fulfillmentList, fulfillmentList.isNotEmpty() && fulfillmentList.any { it.requirement.status == Requirement.Status.NOT_FULFILLED })
 	}
 
 }

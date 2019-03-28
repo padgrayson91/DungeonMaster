@@ -2,7 +2,6 @@ package com.tendebit.dungeonmaster.charactercreation2.integration
 
 
 import com.tendebit.dungeonmaster.charactercreation2.CharacterCreationViewModel2
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacter
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacterCreationState
 import com.tendebit.dungeonmaster.core.viewmodel2.Page
 import com.tendebit.dungeonmaster.core.blueprint.Blueprint

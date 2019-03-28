@@ -86,7 +86,7 @@ class TestBlueprint {
 
 		val ex1 = Mockito.mock(SimpleExaminer::class.java)
 		whenever(ex1.requirement).thenReturn(req1)
-		whenever(ex1.examineWithDelta(ArgumentMatchers.anyString(), argThat { it == it })).thenCallRealMethod()
+		whenever(ex1.examineWithDelta(ArgumentMatchers.anyString(), ArgumentMatchers.any())).thenCallRealMethod()
 		whenever(ex1.examine(ArgumentMatchers.anyString()))
 				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req1)), false))
 				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req1Alt)), false))
@@ -145,21 +145,21 @@ class TestBlueprint {
 
 		val ex1 = Mockito.mock(SimpleExaminer::class.java)
 		whenever(ex1.requirement).thenReturn(req1)
-		whenever(ex1.examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })).thenCallRealMethod()
+		whenever(ex1.examineWithDelta(ArgumentMatchers.anyList<String>(), ArgumentMatchers.any())).thenCallRealMethod()
 		whenever(ex1.examine(ArgumentMatchers.anyList<String>()))
 				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req1)), true))
 				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req1)), false))
 				.thenThrow(RuntimeException("Examiner 1 called too many times!"))
 		val ex2 = Mockito.mock(SimpleExaminer::class.java)
 		whenever(ex2.requirement).thenReturn(req2)
-		whenever(ex2.examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })).thenCallRealMethod()
+		whenever(ex2.examineWithDelta(ArgumentMatchers.anyList<String>(), ArgumentMatchers.any())).thenCallRealMethod()
 		whenever(ex2.examine(ArgumentMatchers.anyList<String>()))
 				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req2)), true))
 				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req2)), false))
 				.thenThrow(RuntimeException("Examiner 2 called too many times"))
 		val ex3 = Mockito.mock(SimpleExaminer::class.java)
 		whenever(ex3.requirement).thenReturn(req3)
-		whenever(ex3.examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })).thenCallRealMethod()
+		whenever(ex3.examineWithDelta(ArgumentMatchers.anyList<String>(), ArgumentMatchers.any())).thenCallRealMethod()
 		whenever(ex3.examine(ArgumentMatchers.anyList<String>()))
 				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req3)), false))
 				.thenReturn(StaticExamination(listOf(SimpleFulfillment(req3)), false))
@@ -175,7 +175,7 @@ class TestBlueprint {
 		assert(toTest.state == listOf("Hello")) { "State was ${toTest.state}"}
 		Mockito.verify(ex1, times(2)).examineWithDelta(ArgumentMatchers.anyList<String>(), ArgumentMatchers.any())
 		Mockito.verify(ex2, times(1)).examineWithDelta(listOf("Hello"), null)
-		Mockito.verify(ex3, times(0)).examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })
+		Mockito.verify(ex3, times(0)).examineWithDelta(ArgumentMatchers.anyList<String>(), ArgumentMatchers.any())
 		assert(testObserver.values().last().find { it.item == req2 } != null)
 		assert(testObserver.values().last().size == 2) { "Had ${testObserver.values().last()}"}
 
@@ -183,7 +183,7 @@ class TestBlueprint {
 
 		assert(toTest.state == listOf("Hello", "World")) { "State was ${toTest.state}"}
 		Mockito.verify(ex1, times(2)).examineWithDelta(ArgumentMatchers.anyList<String>(), ArgumentMatchers.any())
-		Mockito.verify(ex2, times(2)).examineWithDelta(ArgumentMatchers.anyList<String>(), argThat { it == it })
+		Mockito.verify(ex2, times(2)).examineWithDelta(ArgumentMatchers.anyList<String>(), ArgumentMatchers.any())
 		Mockito.verify(ex3, times(1)).examineWithDelta(listOf("Hello", "World"), null)
 		assert(testObserver.values().last().find { it.item == req3 } != null)
 		assert(testObserver.values().last().size == 3)

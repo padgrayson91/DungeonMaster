@@ -1,10 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation2.integration
 
-import com.tendebit.dungeonmaster.charactercreation2.feature.CharacterClassExaminer
-import com.tendebit.dungeonmaster.charactercreation2.feature.CharacterPrerequisiteExaminer
-import com.tendebit.dungeonmaster.charactercreation2.feature.CharacterProficiencyExaminer
-import com.tendebit.dungeonmaster.charactercreation2.feature.CharacterProficiencyOptionsExaminer
-import com.tendebit.dungeonmaster.charactercreation2.feature.CharacterRaceExaminer
+import com.tendebit.dungeonmaster.charactercreation2.feature.DndClassExaminer
+import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacterPrerequisiteExaminer
+import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyExaminer
+import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyOptionsExaminer
+import com.tendebit.dungeonmaster.charactercreation2.feature.DndRaceExaminer
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacterCreationState
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndClassOptionsRequirement
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndClassRequirement
@@ -22,11 +22,11 @@ import org.junit.Test
 class TestCharacterCreationBlueprint {
 
 	private val examiners = listOf(
-			CharacterPrerequisiteExaminer(),
-			CharacterClassExaminer(),
-			CharacterRaceExaminer(),
-			CharacterProficiencyOptionsExaminer(),
-			CharacterProficiencyExaminer())
+			DndCharacterPrerequisiteExaminer(),
+			DndClassExaminer(),
+			DndRaceExaminer(),
+			DndProficiencyOptionsExaminer(),
+			DndProficiencyExaminer())
 
 	@Test
 	fun testStartsWithRequirementForClassListAndRaceList() {
@@ -133,8 +133,8 @@ class TestCharacterCreationBlueprint {
 
 		toTest.requirements.subscribe(testObserver)
 
-		while (testObserver.values().last().any { it.item?.status == Requirement.Status.NOT_FULFILLED }) {
-			val unfulfilledRequirement = testObserver.values().last().first { it.item?.status == Requirement.Status.NOT_FULFILLED }.item!!
+		while (testObserver.values().last().any { it.item.status == Requirement.Status.NOT_FULFILLED }) {
+			val unfulfilledRequirement = testObserver.values().last().first { it.item.status == Requirement.Status.NOT_FULFILLED }.item
 			CharacterCreationRobots.runRobotForRequirement(unfulfilledRequirement)
 		}
 

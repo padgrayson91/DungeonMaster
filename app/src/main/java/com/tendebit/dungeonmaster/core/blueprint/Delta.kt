@@ -2,7 +2,7 @@ package com.tendebit.dungeonmaster.core.blueprint
 
 import java.util.LinkedList
 
-class Delta<T>(val type: Type, val item: T?) {
+class Delta<T>(val type: Type, val item: T) {
 
 	enum class Type {
 		INSERTION,
@@ -31,7 +31,7 @@ class Delta<T>(val type: Type, val item: T?) {
 				val updatedListElement = item.value
 				val oldListElement = if (oldIndex >= previous.size) null else previous[oldIndex]
 				when {
-					oldIndex >= previous.size -> deltas.add(Delta(Delta.Type.INSERTION, updatedListElement))
+					oldListElement == null -> deltas.add(Delta(Delta.Type.INSERTION, updatedListElement))
 					updatedListElement == oldListElement -> { deltas.add(Delta(Delta.Type.UNCHANGED, oldListElement)); oldIndex++ }
 					else -> {
 						// Look ahead in the old list to see if this item is there
@@ -41,7 +41,7 @@ class Delta<T>(val type: Type, val item: T?) {
 							val start = oldIndex
 							val end = oldIndex + offsetInOld
 							for (i in start until end) {
-								deltas.add(Delta(Delta.Type.REMOVAL, null))
+								deltas.add(Delta(Delta.Type.REMOVAL, previous[i]))
 								oldIndex++
 							}
 							deltas.add(Delta(Delta.Type.UNCHANGED, oldListElement))

@@ -5,7 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation2.feature.DndClass
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndRace
-import com.tendebit.dungeonmaster.charactercreation2.feature.CharacterProficiencyExaminer
+import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyExaminer
 import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyRequirement
 import com.tendebit.dungeonmaster.charactercreation2.feature.ProficiencySource
 import org.junit.Test
@@ -14,13 +14,13 @@ class TestProficiencyExaminer {
 
 	@Test
 	fun testExaminerYieldsNothingWhenNothingIsProvided() {
-		val toTest = CharacterProficiencyExaminer()
+		val toTest = DndProficiencyExaminer()
 		assert(toTest.examine(DndCharacterCreationState()).isEmpty())
 	}
 
 	@Test
 	fun testExaminerYieldsCorrectNumberOfFulfillmentForSingleGroup() {
-		val toTest = CharacterProficiencyExaminer()
+		val toTest = DndProficiencyExaminer()
 		val testState = DndCharacterCreationState()
 		testState.character.characterClass = DndClass("Monk", "example.com/monk")
 		testState.character.race = DndRace("Halfling", "example.com/halfling")
@@ -34,7 +34,7 @@ class TestProficiencyExaminer {
 
 	@Test
 	fun testExaminerYieldsCorrectNumberOfFulfillmentForMultipleGroup() {
-		val toTest = CharacterProficiencyExaminer()
+		val toTest = DndProficiencyExaminer()
 		val testState = DndCharacterCreationState()
 		val testGroupA = DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
@@ -52,13 +52,11 @@ class TestProficiencyExaminer {
 
 		assert(toTest.examine(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupA }.size == 2)
 		assert(toTest.examine(testState).filter { (it.requirement is DndProficiencyRequirement) && (it.requirement as DndProficiencyRequirement).fromGroup == testGroupB }.size == 2)
-
-
 	}
 
 	@Test
 	fun testExaminerYieldsCorrectNumberOfFulfillmentForMultipleGroupAfterSelection() {
-		val toTest = CharacterProficiencyExaminer()
+		val toTest = DndProficiencyExaminer()
 		val testState = DndCharacterCreationState()
 		val testGroupA = DndProficiencyGroup(listOf(
 				DndProficiency("Athletics", "example.com"),
@@ -85,7 +83,6 @@ class TestProficiencyExaminer {
 		assert(groupAFulfillment.size == 3) {
 			"Expected 3 requirements, but got $groupAFulfillment"
 		}
-
 	}
 
 }

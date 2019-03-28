@@ -6,19 +6,16 @@ import com.tendebit.dungeonmaster.core.blueprint.fulfillment.Fulfillment
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Action
-import io.reactivex.functions.Consumer
 import io.reactivex.subjects.BehaviorSubject
-import java.lang.RuntimeException
 import java.util.LinkedList
 
-class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, initialState: StateType) {
+class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, initialState: StateType) : IBlueprint<StateType> {
 
 	private val internalRequirements = BehaviorSubject.create<List<Delta<Requirement<*>>>>()
-	val requirements = internalRequirements as Observable<List<Delta<Requirement<*>>>>
+	override val requirements = internalRequirements as Observable<List<Delta<Requirement<*>>>>
 	private val examinations = HashMap<Examiner<StateType>, Examination<StateType>>()
 	private val subscriptions = HashMap<Examiner<StateType>, MutableList<Disposable>>()
-	val state = initialState
+	override val state = initialState
 
 	init {
 		examineState(state)
@@ -43,10 +40,9 @@ class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, ini
 			examinations[examiner] = examination
 			for (change in examination.changes) {
 				val fulfillment = change.item
-				requirementChangesForState.add(Delta(change.type, fulfillment?.requirement))
+				requirementChangesForState.add(Delta(change.type, fulfillment.requirement))
 				when (change.type) {
 					Delta.Type.INSERTION -> {
-						if (fulfillment == null) throw IllegalStateException("Inserted a null ${Fulfillment<*, *>::javaClass.name}")
 						if (disposableIndex < disposables.size) {
 							disposables.add(disposableIndex, subscribeToFulfillmentAtIndex(state, fulfillment, index))
 						} else {
@@ -65,7 +61,6 @@ class Blueprint<StateType>(private val examiners: List<Examiner<StateType>>, ini
 						if (temp >= disposables.size) throw IllegalStateException("Attempting to update out of bounds")
 						disposables[temp].dispose()
 						disposableIndex++
-						if (fulfillment == null) throw IllegalStateException("Updated to a null ${Fulfillment<*, *>::javaClass.name}")
 						disposables[temp] = subscribeToFulfillmentAtIndex(state, fulfillment, index)
 					}
 				}

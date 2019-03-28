@@ -18,11 +18,11 @@ class DndCharacterBlueprint {
 	private var stateDisposable = CompositeDisposable()
 
 	private val examiners = listOf(
-			CharacterPrerequisiteExaminer(),
-			CharacterRaceExaminer(),
-			CharacterClassExaminer(),
-			CharacterProficiencyOptionsExaminer(),
-			CharacterProficiencyExaminer())
+			DndCharacterPrerequisiteExaminer(),
+			DndRaceExaminer(),
+			DndClassExaminer(),
+			DndProficiencyOptionsExaminer(),
+			DndProficiencyExaminer())
 
 	init {
 		subscribeExaminers()
