@@ -1,17 +1,17 @@
 package com.tendebit.dungeonmaster.testhelpers
 
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacterBlueprint
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndClass
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiency
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyGroup
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndRace
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndClassOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndClassRequirement
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencyRequirement
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndProficiencySelection
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndRaceOptionsRequirement
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndRaceRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterBlueprint
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClass
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRace
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndClassRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceOptionsRequirement
+import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceRequirement
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 
 object CharacterCreationRobots {

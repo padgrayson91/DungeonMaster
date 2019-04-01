@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation2.feature
+package com.tendebit.dungeonmaster.charactercreation.feature
 
 import com.tendebit.dungeonmaster.core.model.StoredCharacter
 import com.tendebit.dungeonmaster.core.model.StoredCharacterDao

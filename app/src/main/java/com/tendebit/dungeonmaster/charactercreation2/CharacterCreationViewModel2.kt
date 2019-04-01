@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation2
 
-import com.tendebit.dungeonmaster.charactercreation2.feature.DndCharacterCreationState
+import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
 import com.tendebit.dungeonmaster.core.viewmodel2.Page
 import com.tendebit.dungeonmaster.charactercreation2.pager.PageAction
 import com.tendebit.dungeonmaster.core.Id

@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation2.feature
+package com.tendebit.dungeonmaster.charactercreation.feature
 
 import com.tendebit.dungeonmaster.core.blueprint.fulfillment.Fulfillment
 import com.tendebit.dungeonmaster.core.blueprint.examination.Examination

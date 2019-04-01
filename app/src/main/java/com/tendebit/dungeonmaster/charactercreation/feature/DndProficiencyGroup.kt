@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation2.feature
+package com.tendebit.dungeonmaster.charactercreation.feature
 
 import java.lang.IllegalStateException
 

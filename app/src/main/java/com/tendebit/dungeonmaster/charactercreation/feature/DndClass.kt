@@ -1,3 +1,3 @@
-package com.tendebit.dungeonmaster.charactercreation2.feature
+package com.tendebit.dungeonmaster.charactercreation.feature
 
 data class DndClass(val name: String, val identifier: String)

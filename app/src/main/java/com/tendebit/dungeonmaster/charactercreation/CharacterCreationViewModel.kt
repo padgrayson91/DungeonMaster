@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation
 
 import android.util.Log
-import com.tendebit.dungeonmaster.charactercreation2.feature.StoredCharacterSupplier
+import com.tendebit.dungeonmaster.charactercreation.feature.StoredCharacterSupplier
 import com.tendebit.dungeonmaster.charactercreation.pages.characterlist.CharacterListViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.ClassSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation.pages.classselection.model.CharacterClassInfo
