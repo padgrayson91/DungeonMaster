@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation2.unit
 
 import com.tendebit.dungeonmaster.charactercreation.feature.DndCharacterCreationState
-import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencyFulfillment
