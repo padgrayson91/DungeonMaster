@@ -8,23 +8,23 @@ import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
-class DndProficiencyViewModel(initialState: ItemState<out DndProficiency>) {
+class DndProficiencyViewModel(initialState: ItemState<out DndProficiency>) : CheckableViewModel {
 
 	private var internalState = initialState
-	internal var state: ItemState<out DndProficiency>
+	var state: ItemState<out DndProficiency>
 		get() = internalState
 		set(value) { onStateChanged(value) }
-	val enabled = state is Normal || state is Selected
-	val checked = state is Selected || state is Locked
-	val text = state.item?.name
+	override val enabled = state is Normal || state is Selected
+	override val checked = state is Selected || state is Locked
+	override val text = state.item?.name
 
 	private val internalChanges = PublishSubject.create<DndProficiencyViewModel>()
-	val changes = internalChanges as Observable<DndProficiencyViewModel>
+	override val changes = internalChanges as Observable<DndProficiencyViewModel>
 
 	private val internalSelection = PublishSubject.create<Boolean>()
 	internal val selection = internalSelection.distinct()
 
-	fun changeSelection(selected: Boolean) {
+	override fun changeSelection(selected: Boolean) {
 		internalSelection.onNext(selected)
 	}
 

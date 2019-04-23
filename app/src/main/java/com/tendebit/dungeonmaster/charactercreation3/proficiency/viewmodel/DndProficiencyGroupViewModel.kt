@@ -10,10 +10,10 @@ import io.reactivex.subjects.PublishSubject
 /**
  * ViewModel for displaying a selection of proficiencies
  */
-class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGroup>) {
+class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGroup>) : MultiSelectViewModel {
 
 	private var internalState = initialState
-	internal var state: ItemState<out DndProficiencyGroup>
+	var state: ItemState<out DndProficiencyGroup>
 		get() = internalState
 		set(value) { onStateChanged(value) }
 	private val internalChanges = PublishSubject.create<DndProficiencyGroupViewModel>()
@@ -21,18 +21,18 @@ class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGro
 	/**
 	 * Emits whenever a change occurs to the relevant fields of this ViewModel
 	 */
-	val changes = internalChanges as Observable<DndProficiencyGroupViewModel>
+	override val changes = internalChanges as Observable<DndProficiencyGroupViewModel>
 
 	/**
 	 * The [DndProficiencyViewModel] items which serve as children of this ViewModel, representing
 	 * each individual proficiency
 	 */
-	val children = ArrayList(getChildrenForState(initialState))
+	override val children = ArrayList(getChildrenForState(initialState))
 
 	/**
 	 * The number of remaining choices for this group, which should be displayed by the view
 	 */
-	val remainingChoices: Int
+	override val remainingChoices: Int
 		get() = state.item?.remainingChoices ?: 0
 
 	private var groupDisposable: Disposable? = null
