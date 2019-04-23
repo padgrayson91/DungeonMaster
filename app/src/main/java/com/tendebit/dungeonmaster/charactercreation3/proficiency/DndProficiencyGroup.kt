@@ -37,7 +37,9 @@ class DndProficiencyGroup(initialOptions: List<ItemState<DndProficiency>>, priva
 	val selectionChanges : Observable<ListItemState<DndProficiency>> = internalSelectionChanges.mergeWith(externalSelectionChanges)
 
 	/**
-	 * An [Observable] which will emit [ItemState] changes driven
+	 * An [Observable] which will emit [ItemState] changes driven by selections coming from within this group
+	 * @see select
+	 * @see deselect
 	 */
 	internal val outboundSelectionChanges = internalSelectionChanges as Observable<ListItemState<DndProficiency>>
 
