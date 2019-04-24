@@ -1,8 +1,9 @@
-package com.tendebit.dungeonmaster.charactercreation3
+package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyProvider
+import com.tendebit.dungeonmaster.charactercreation3.Completed
+import com.tendebit.dungeonmaster.charactercreation3.Normal
+import com.tendebit.dungeonmaster.charactercreation3.PageAction
+import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencySelectionViewModel
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import io.reactivex.Observable
@@ -48,7 +49,7 @@ class TestDndProficiencySelectionViewModel {
 		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal (testSelection)))
+		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		assert(toTest.pageCount == 2)
@@ -62,7 +63,7 @@ class TestDndProficiencySelectionViewModel {
 		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal (testSelection)))
+		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		val firstPageActions = toTest.getPageActions(0)
@@ -77,7 +78,7 @@ class TestDndProficiencySelectionViewModel {
 		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal (testSelection)))
+		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		val secondPageActions = toTest.getPageActions(1)

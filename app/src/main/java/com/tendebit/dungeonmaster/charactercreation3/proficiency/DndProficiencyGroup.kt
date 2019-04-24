@@ -1,7 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.Disabled
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
+import com.tendebit.dungeonmaster.charactercreation3.ItemStateUtils
 import com.tendebit.dungeonmaster.charactercreation3.ListItemState
 import com.tendebit.dungeonmaster.charactercreation3.Locked
 import com.tendebit.dungeonmaster.charactercreation3.Normal
@@ -15,7 +18,7 @@ import io.reactivex.subjects.PublishSubject
  * should all be [Normal]
  * @param choiceCount the total number of selections that a user is allowed to make from this group
  */
-class DndProficiencyGroup(initialOptions: List<ItemState<DndProficiency>>, private val choiceCount: Int) {
+class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, private val choiceCount: Int) : Parcelable {
 
 	/**
 	 * The current [ItemState] for all the [DndProficiency] items in this group
@@ -25,23 +28,23 @@ class DndProficiencyGroup(initialOptions: List<ItemState<DndProficiency>>, priva
 	/**
 	 * A list of all [Selected] items from this group
 	 */
-	val selections : List<ItemState<DndProficiency>>
+	val selections : List<ItemState<out DndProficiency>>
 		get() { return options.filter { it is Selected }}
 
-	private val externalSelectionChanges = PublishSubject.create<ListItemState<DndProficiency>>()
-	private val internalSelectionChanges = PublishSubject.create<ListItemState<DndProficiency>>()
+	private val indirectSelectionChanges = PublishSubject.create<ListItemState<DndProficiency>>()
+	private val directSelectionChanges = PublishSubject.create<ListItemState<DndProficiency>>()
 
 	/**
 	 * An [Observable] which will emit whenever the [ItemState] for any item in this group changes
 	 */
-	val selectionChanges : Observable<ListItemState<DndProficiency>> = internalSelectionChanges.mergeWith(externalSelectionChanges)
+	val selectionChanges : Observable<ListItemState<DndProficiency>> = directSelectionChanges.mergeWith(indirectSelectionChanges)
 
 	/**
 	 * An [Observable] which will emit [ItemState] changes driven by selections coming from within this group
 	 * @see select
 	 * @see deselect
 	 */
-	internal val outboundSelectionChanges = internalSelectionChanges as Observable<ListItemState<DndProficiency>>
+	internal val outboundSelectionChanges = directSelectionChanges as Observable<ListItemState<DndProficiency>>
 
 	val remainingChoices: Int
 		get() { return choiceCount - selections.size }
@@ -54,10 +57,10 @@ class DndProficiencyGroup(initialOptions: List<ItemState<DndProficiency>>, priva
 	 */
 	fun select(index: Int) {
 		if (index < 0 || index >= options.size) { throw IndexOutOfBoundsException("Attempting to select a proficiency outside the list") }
-		val itemState = options[index] as? Normal<DndProficiency> ?: throw IllegalArgumentException("Proficiency at index $index cannot be selected")
+		val itemState = options[index] as? Normal<out DndProficiency> ?: throw IllegalArgumentException("Proficiency at index $index cannot be selected")
 		val selectedState = Selected(itemState.item)
 		options[index] = selectedState
-		internalSelectionChanges.onNext(ListItemState(index, selectedState))
+		directSelectionChanges.onNext(ListItemState(index, selectedState))
 		if (remainingChoices == 0) {
 			onSelectionComplete()
 		}
@@ -71,10 +74,10 @@ class DndProficiencyGroup(initialOptions: List<ItemState<DndProficiency>>, priva
 	 */
 	fun deselect(index: Int) {
 		if (index < 0 || index >= options.size) { throw IndexOutOfBoundsException("Attempting to deselect a proficiency outside the list") }
-		val itemState = options[index] as? Selected<DndProficiency> ?: throw IllegalArgumentException("Proficiency at index $index cannot be deselected")
+		val itemState = options[index] as? Selected<out DndProficiency> ?: throw IllegalArgumentException("Proficiency at index $index cannot be deselected")
 		val normalState = Normal(itemState.item)
 		options[index] = normalState
-		internalSelectionChanges.onNext(ListItemState(index, normalState))
+		directSelectionChanges.onNext(ListItemState(index, normalState))
 		if (remainingChoices == 1) {
 			onSelectionIncomplete()
 		}
@@ -89,7 +92,7 @@ class DndProficiencyGroup(initialOptions: List<ItemState<DndProficiency>>, priva
 		if (localIndex < 0) return
 		val lockedState = Locked(proficiency)
 		options[localIndex] = lockedState
-		externalSelectionChanges.onNext(ListItemState(localIndex, lockedState))
+		indirectSelectionChanges.onNext(ListItemState(localIndex, lockedState))
 	}
 
 	/**
@@ -101,7 +104,7 @@ class DndProficiencyGroup(initialOptions: List<ItemState<DndProficiency>>, priva
 		if (localIndex < 0) return
 		val deselectedState = if (remainingChoices == 0) Disabled(proficiency) else Normal(proficiency)
 		options[localIndex] = deselectedState
-		externalSelectionChanges.onNext(ListItemState(localIndex, deselectedState))
+		indirectSelectionChanges.onNext(ListItemState(localIndex, deselectedState))
 	}
 
 	private fun onSelectionComplete() {
@@ -110,7 +113,7 @@ class DndProficiencyGroup(initialOptions: List<ItemState<DndProficiency>>, priva
 					if (itemState is Normal) {
 						val disabledState = Disabled(itemState.item)
 						options[index] = disabledState
-						internalSelectionChanges.onNext(ListItemState(index, disabledState))
+						indirectSelectionChanges.onNext(ListItemState(index, disabledState))
 					}
 				}
 	}
@@ -121,9 +124,31 @@ class DndProficiencyGroup(initialOptions: List<ItemState<DndProficiency>>, priva
 					if (itemState is Disabled) {
 						val normalState = Normal(itemState.item)
 						options[index] = normalState
-						internalSelectionChanges.onNext(ListItemState(index, normalState))
+						indirectSelectionChanges.onNext(ListItemState(index, normalState))
 					}
 				}
+	}
+
+	override fun writeToParcel(dest: Parcel?, flags: Int) {
+		dest?.let {
+			it.writeInt(choiceCount)
+			ItemStateUtils.writeItemStateListToParcel(options, it)
+		}
+	}
+
+	override fun describeContents(): Int = 0
+
+	companion object CREATOR : Parcelable.Creator<DndProficiencyGroup> {
+
+		override fun createFromParcel(source: Parcel): DndProficiencyGroup {
+			val optionCount = source.readInt()
+			val options = ItemStateUtils.readItemStateListFromParcel<DndProficiency>(source)
+			return DndProficiencyGroup(options, optionCount)
+		}
+
+		override fun newArray(size: Int): Array<DndProficiencyGroup?> {
+			return arrayOfNulls(size)
+		}
 	}
 
 }

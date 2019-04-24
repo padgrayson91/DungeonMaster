@@ -1,7 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
+import com.tendebit.dungeonmaster.charactercreation3.ItemStateUtils
 import com.tendebit.dungeonmaster.charactercreation3.ListItemState
 import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.Selected
@@ -10,9 +13,19 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import java.lang.IllegalStateException
 
-class DndProficiencySelection(forGroups: List<DndProficiencyGroup>) {
+class DndProficiencySelection : Parcelable {
 
-	val groupStates = ArrayList(forGroups.map { stateForGroup(it) })
+	constructor(forGroups: List<DndProficiencyGroup>) {
+		groupStates = ArrayList(forGroups.map { stateForGroup(it) })
+		subscribeToGroups(forGroups)
+	}
+
+	private constructor(parcel: Parcel) {
+		groupStates = ArrayList(ItemStateUtils.readItemStateListFromParcel(parcel))
+		subscribeToGroups(groupStates.filter { it.item != null }.map { it.item!! })
+	}
+
+	val groupStates: MutableList<ItemState<out DndProficiencyGroup>>
 	val selections: List<DndProficiency>
 		get() {
 			return groupStates.asSequence()
@@ -28,7 +41,7 @@ class DndProficiencySelection(forGroups: List<DndProficiencyGroup>) {
 	val stateChanges = internalStateChanges as Observable<ListItemState<DndProficiencyGroup>>
 	private val disposable = CompositeDisposable()
 
-	init {
+	private fun subscribeToGroups(forGroups: List<DndProficiencyGroup>) {
 		for (item in forGroups.withIndex()) {
 			val group = item.value
 			disposable.add(group.outboundSelectionChanges.subscribe {
@@ -66,6 +79,25 @@ class DndProficiencySelection(forGroups: List<DndProficiencyGroup>) {
 		if (oldState::class != newState::class) {
 			groupStates[index] = newState
 			internalStateChanges.onNext(ListItemState(index, newState))
+		}
+	}
+
+	override fun writeToParcel(dest: Parcel?, flags: Int) {
+		dest?.let {
+			ItemStateUtils.writeItemStateListToParcel(groupStates, it)
+		}
+	}
+
+	override fun describeContents(): Int = 0
+
+	companion object CREATOR : Parcelable.Creator<DndProficiencySelection> {
+
+		override fun createFromParcel(source: Parcel): DndProficiencySelection {
+			return DndProficiencySelection(source)
+		}
+
+		override fun newArray(size: Int): Array<DndProficiencySelection?> {
+			return arrayOfNulls(size)
 		}
 	}
 

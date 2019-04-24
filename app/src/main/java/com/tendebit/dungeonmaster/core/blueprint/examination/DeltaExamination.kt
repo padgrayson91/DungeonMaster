@@ -12,7 +12,7 @@ interface DeltaExamination<StateType> : Examination<StateType> {
 			DeltaExamination<StateType>, List<Fulfillment<*, StateType>> by fulfillmentList {
 
 		constructor(changes: List<Delta<Fulfillment<*, StateType>>>,
-					shouldHalt: Boolean): this(changes, shouldHalt, changes.filter { it.item != null && it.type != Delta.Type.REMOVAL }.map { it.item!! })
+					shouldHalt: Boolean): this(changes, shouldHalt, changes.filter { it.type != Delta.Type.REMOVAL }.map { it.item!! })
 
 		constructor(examination: Examination<StateType>): this(examination.map { Delta(Delta.Type.INSERTION, it) }, examination.shouldHalt)
 

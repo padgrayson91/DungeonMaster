@@ -1,0 +1,6 @@
+package com.tendebit.dungeonmaster.charactercreation3
+
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+
+class DndDetailedCharacterClass(val characterClass: DndCharacterClass, val proficiencyOptions: List<DndProficiencyGroup>)

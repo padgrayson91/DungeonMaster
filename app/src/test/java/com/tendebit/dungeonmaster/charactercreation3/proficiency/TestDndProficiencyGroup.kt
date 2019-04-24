@@ -1,7 +1,10 @@
-package com.tendebit.dungeonmaster.charactercreation3
+package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.Disabled
+import com.tendebit.dungeonmaster.charactercreation3.ListItemState
+import com.tendebit.dungeonmaster.charactercreation3.Locked
+import com.tendebit.dungeonmaster.charactercreation3.Normal
+import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import io.reactivex.observers.TestObserver
 import org.junit.Test
@@ -132,6 +135,28 @@ class TestDndProficiencyGroup {
 		toTest.onExternalSelection(CharacterCreationRobots.alternateProficiencyList[0])
 
 		testObserver.assertEmpty()
+	}
+
+	@Test
+	fun testExternalSelectionDoesNotEmitToOutbound() {
+		val toTest = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
+		val testObserver = TestObserver<ListItemState<DndProficiency>>()
+		toTest.outboundSelectionChanges.subscribe(testObserver)
+		toTest.onExternalSelection(CharacterCreationRobots.standardProficiencyList[2])
+
+		assert(testObserver.valueCount() == 0)
+	}
+
+	@Test
+	fun testCompletingSelectionOnlyEmitsSelectedItemsToOutbound() {
+		val toTest = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
+		val testObserver = TestObserver<ListItemState<DndProficiency>>()
+		toTest.outboundSelectionChanges.subscribe(testObserver)
+
+		toTest.select(0)
+		toTest.select(1)
+
+		assert(testObserver.valueCount() == 2)
 	}
 
 }

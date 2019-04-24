@@ -13,11 +13,17 @@ import com.tendebit.dungeonmaster.charactercreation.feature.DndProficiencySelect
 import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceOptionsRequirement
 import com.tendebit.dungeonmaster.charactercreation.feature.DndRaceRequirement
 import com.tendebit.dungeonmaster.charactercreation3.Normal
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.core.blueprint.requirement.Requirement
 
 object CharacterCreationRobots {
 
 	val standardClassList = listOf(DndClass("Barbarian", "example.com/barbarian"))
+	val standardClassListV2 = listOf(
+			DndCharacterClass("Barbarian", "example.com/barbarian"),
+			DndCharacterClass("Wizard", "example.com/wizard"),
+			DndCharacterClass("Fighter", "example.com/fighter"),
+			DndCharacterClass("Rogue", "example.com/rogue"))
 	val standardRaceList = listOf(DndRace("Orc", "example.com/orc"))
 	val standardProficiencyList = listOf(
 			DndProficiency("Stealth", "example.com/stealth"),
@@ -27,6 +33,7 @@ object CharacterCreationRobots {
 	val alternateProficiencyList = listOf(DndProficiency("Brewers Supplies", "example.com/brewers+supplies"))
 
 	val blankProficiencyStateList = standardProficiencyList.map { Normal(it) }
+	val blankClassStateList = standardClassListV2.map { Normal(it) }
 
 	val standardProficiencyGroupList = listOf(DndProficiencyGroup(standardProficiencyList, arrayListOf(), 1),
 			DndProficiencyGroup(alternateProficiencyList, arrayListOf(), 1))

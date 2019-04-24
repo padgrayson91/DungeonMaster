@@ -1,6 +1,7 @@
-package com.tendebit.dungeonmaster.charactercreation3
+package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.Normal
+import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyGroupViewModel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyViewModel
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
