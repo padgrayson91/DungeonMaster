@@ -50,6 +50,7 @@ class TestDndProficiencySelectionViewModel {
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
 		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
+		whenever(mockProvider.refreshState()).thenReturn(Normal(testSelection))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		assert(toTest.pageCount == 2)
@@ -64,6 +65,7 @@ class TestDndProficiencySelectionViewModel {
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
 		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
+		whenever(mockProvider.refreshState()).thenReturn(Normal(testSelection))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		val firstPageActions = toTest.getPageActions(0)
@@ -79,6 +81,7 @@ class TestDndProficiencySelectionViewModel {
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
 		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
+		whenever(mockProvider.refreshState()).thenReturn(Normal(testSelection))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		val secondPageActions = toTest.getPageActions(1)
@@ -94,8 +97,46 @@ class TestDndProficiencySelectionViewModel {
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
 		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Completed(testSelection)))
+		whenever(mockProvider.refreshState()).thenReturn(Completed(testSelection))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
+		val secondPageActions = toTest.getPageActions(1)
+		assert(secondPageActions.contains(PageAction.NAVIGATE_BACK) && secondPageActions.contains(PageAction.NAVIGATE_NEXT))
+	}
+
+	@Test
+	fun testChildStateIsCompletedAfterSelection() {
+		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
+		val groupB = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 1)
+
+		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
+
+		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
+		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
+		whenever(mockProvider.refreshState()).thenReturn(Normal(testSelection))
+
+
+		val toTest = DndProficiencySelectionViewModel(mockProvider)
+		groupA.select(0)
+		groupA.select(1)
+
+		assert(toTest.children[0].state is Completed)
+	}
+
+	@Test
+	fun testForwardNavigationAllowedAfterSelectionIfRefreshedStateIsComplete() {
+		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
+		val groupB = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 1)
+
+		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
+
+		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
+		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
+		whenever(mockProvider.refreshState()).thenReturn(Completed(testSelection))
+
+		val toTest = DndProficiencySelectionViewModel(mockProvider)
+
+		groupB.select(0)
 		val secondPageActions = toTest.getPageActions(1)
 		assert(secondPageActions.contains(PageAction.NAVIGATE_BACK) && secondPageActions.contains(PageAction.NAVIGATE_NEXT))
 	}

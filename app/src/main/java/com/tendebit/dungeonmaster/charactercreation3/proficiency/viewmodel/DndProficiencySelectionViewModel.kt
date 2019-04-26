@@ -15,7 +15,7 @@ import io.reactivex.subjects.BehaviorSubject
  * ViewModel for the entire proficiency selection process. This ViewModel indicates how many
  * pages
  */
-class DndProficiencySelectionViewModel(provider: ProficiencyProvider) {
+class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider) {
 
 	private var state: ItemState<out DndProficiencySelection> = Removed
 	private val proficiencyOptionsDisposable: Disposable
@@ -30,7 +30,7 @@ class DndProficiencySelectionViewModel(provider: ProficiencyProvider) {
 	val changes = internalChanges as Observable<DndProficiencySelectionViewModel>
 
 	init {
-		proficiencyOptionsDisposable = provider.proficiencyOptions.subscribe { onStateChanged(it) }
+		proficiencyOptionsDisposable = provider.proficiencyOptions.subscribe { onStateChangedExternally(it) }
 	}
 
 	fun getPageActions(forChild: Int): List<PageAction> {
@@ -47,7 +47,7 @@ class DndProficiencySelectionViewModel(provider: ProficiencyProvider) {
 		}
 	}
 
-	private fun onStateChanged(newState: ItemState<out DndProficiencySelection>) {
+	private fun onStateChangedExternally(newState: ItemState<out DndProficiencySelection>) {
 		state = newState
 
 		// FIXME: children probably don't need to be changed with every state change
@@ -61,6 +61,15 @@ class DndProficiencySelectionViewModel(provider: ProficiencyProvider) {
 		childUpdateDisposable?.dispose()
 		childUpdateDisposable = selection?.stateChanges?.subscribe {
 			children[it.index].state = it.state
+			checkForCompletion()
+		}
+	}
+
+	private fun checkForCompletion() {
+		val newState = provider.refreshState()
+		if (newState != state) {
+			state = newState
+			internalChanges.onNext(this)
 		}
 	}
 

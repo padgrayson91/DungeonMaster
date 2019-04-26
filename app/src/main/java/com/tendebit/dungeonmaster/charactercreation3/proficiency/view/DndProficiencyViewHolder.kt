@@ -6,7 +6,7 @@ import com.google.android.material.chip.Chip
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.CheckableViewModel
 import io.reactivex.disposables.Disposable
 
-class DndProficiencyViewWrapper(val context: Context?, initialViewModel: CheckableViewModel) {
+class DndProficiencyViewHolder(val context: Context?, initialViewModel: CheckableViewModel) {
 
 	private var viewModel = initialViewModel
 	private var view: Chip? = null

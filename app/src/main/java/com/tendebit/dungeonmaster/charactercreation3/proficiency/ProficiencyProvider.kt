@@ -7,4 +7,6 @@ interface ProficiencyProvider {
 
 	val proficiencyOptions: Observable<ItemState<out DndProficiencySelection>>
 
+	fun refreshState(): ItemState<out DndProficiencySelection>
+
 }
