@@ -5,8 +5,11 @@ import io.reactivex.Observable
 
 interface ClassProvider {
 
-	val classOptions: Observable<ItemState<out DndCharacterClassSelection>>
+	val state: ItemState<out DndCharacterClassSelection>
 
-	fun refreshState(): ItemState<out DndCharacterClassSelection>
+	val externalStateChanges: Observable<ItemState<out DndCharacterClassSelection>>
+	val internalStateChanges: Observable<ItemState<out DndCharacterClassSelection>>
+
+	fun refreshClassState()
 
 }

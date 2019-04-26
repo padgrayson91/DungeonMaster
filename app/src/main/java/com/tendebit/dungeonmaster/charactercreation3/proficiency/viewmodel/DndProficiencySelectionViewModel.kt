@@ -3,11 +3,11 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.PageAction
-import com.tendebit.dungeonmaster.charactercreation3.Removed
 import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyProvider
 import io.reactivex.Observable
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 
@@ -17,20 +17,23 @@ import io.reactivex.subjects.BehaviorSubject
  */
 class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider) {
 
-	private var state: ItemState<out DndProficiencySelection> = Removed
-	private val proficiencyOptionsDisposable: Disposable
+	private val proficiencyOptionsDisposable: CompositeDisposable = CompositeDisposable()
 	private var childUpdateDisposable: Disposable? = null
 
-	val showLoading: Boolean
-			get() = state is Undefined
-	val children = ArrayList<DndProficiencyGroupViewModel>()
-	val pageCount: Int
-		get() = children.size
+	var showLoading = provider.state is Undefined
+		private set
+	val children = ArrayList<DndProficiencyGroupViewModel>(provider.state.item?.groupStates?.map { DndProficiencyGroupViewModel(it) } ?: emptyList())
+	var pageCount = children.size
+		private set
+
 	private val internalChanges = BehaviorSubject.create<DndProficiencySelectionViewModel>()
 	val changes = internalChanges as Observable<DndProficiencySelectionViewModel>
 
 	init {
-		proficiencyOptionsDisposable = provider.proficiencyOptions.subscribe { onStateChangedExternally(it) }
+		onStateChangedExternally(provider.state)
+		proficiencyOptionsDisposable.addAll(
+				provider.externalStateChanges.subscribe { onStateChangedExternally(it) },
+				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })
 	}
 
 	fun getPageActions(forChild: Int): List<PageAction> {
@@ -39,7 +42,7 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 			listOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_NEXT)
 		} else {
 			// For the last page, user can only navigate forward if all groups have been filled out
-			if (state is Completed) {
+			if (provider.state is Completed) {
 				listOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_NEXT)
 			} else {
 				listOf(PageAction.NAVIGATE_BACK)
@@ -48,12 +51,20 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 	}
 
 	private fun onStateChangedExternally(newState: ItemState<out DndProficiencySelection>) {
-		state = newState
-
-		// FIXME: children probably don't need to be changed with every state change
 		children.clear()
-		children.addAll(state.item?.groupStates?.map { DndProficiencyGroupViewModel(it) } ?: emptyList())
-		subscribeToSelection(state.item)
+		children.addAll(newState.item?.groupStates?.map { DndProficiencyGroupViewModel(it) } ?: emptyList())
+		subscribeToSelection(newState.item)
+		updateViewModelValues(newState)
+	}
+
+
+	private fun onStateChangedInternally(newState: ItemState<out DndProficiencySelection>) {
+		updateViewModelValues(newState)
+	}
+
+	private fun updateViewModelValues(state: ItemState<out DndProficiencySelection>) {
+		showLoading = state is Undefined
+		pageCount = children.size
 		internalChanges.onNext(this)
 	}
 
@@ -66,11 +77,7 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 	}
 
 	private fun checkForCompletion() {
-		val newState = provider.refreshState()
-		if (newState != state) {
-			state = newState
-			internalChanges.onNext(this)
-		}
+		provider.refreshProficiencyState()
 	}
 
 }

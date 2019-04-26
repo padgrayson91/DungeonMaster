@@ -11,7 +11,6 @@ import com.tendebit.dungeonmaster.charactercreation3.Selected
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
-import java.lang.IllegalStateException
 
 class DndProficiencySelection : Parcelable {
 

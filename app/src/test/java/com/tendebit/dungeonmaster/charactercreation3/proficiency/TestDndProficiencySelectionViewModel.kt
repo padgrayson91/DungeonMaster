@@ -1,12 +1,15 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import com.tendebit.dungeonmaster.charactercreation3.Completed
+import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.PageAction
+import com.tendebit.dungeonmaster.charactercreation3.Removed
 import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencySelectionViewModel
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when` as whenever
@@ -14,31 +17,44 @@ import org.mockito.Mockito.`when` as whenever
 class TestDndProficiencySelectionViewModel {
 
 	@Test
-	fun testInitialViewModelHasZeroPages() {
+	fun testHasZeroPagesForRemovedState() {
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.empty())
+		val testExternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		val testInternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		whenever(mockProvider.externalStateChanges).thenReturn(testExternal)
+		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
+		whenever(mockProvider.state).thenReturn(Removed)
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		assert(toTest.pageCount == 0)
 	}
 
 	@Test
-	fun testInitialViewModelDoesNotShowLoading() {
+	fun testDoesNotShowLoadingForRemovedState() {
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.empty())
+		val testExternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		val testInternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		whenever(mockProvider.externalStateChanges).thenReturn(testExternal)
+		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
+		whenever(mockProvider.state).thenReturn(testExternal.mergeWith(testInternal).last(Removed).blockingGet())
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		assert(!toTest.showLoading)
 	}
 
 	@Test
-	fun testShowsLoadingWhenSelectionStateIsUndefined() {
+	fun testShowsLoadingForUndefinedStateButHasZeroPages() {
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Undefined))
+		val testExternal = Observable.fromArray<ItemState<out DndProficiencySelection>>(Undefined)
+		val testInternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		whenever(mockProvider.externalStateChanges).thenReturn(testExternal)
+		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
+		whenever(mockProvider.state).thenReturn(Undefined)
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 
 		assert(toTest.showLoading)
+		assert(toTest.pageCount == 0)
 	}
 
 	@Test
@@ -49,8 +65,11 @@ class TestDndProficiencySelectionViewModel {
 		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
-		whenever(mockProvider.refreshState()).thenReturn(Normal(testSelection))
+		val testExternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		val testInternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		whenever(mockProvider.externalStateChanges).thenReturn(testExternal)
+		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
+		whenever(mockProvider.state).thenReturn(Normal(testSelection))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		assert(toTest.pageCount == 2)
@@ -64,8 +83,11 @@ class TestDndProficiencySelectionViewModel {
 		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
-		whenever(mockProvider.refreshState()).thenReturn(Normal(testSelection))
+		val testExternal = Observable.fromArray<ItemState<out DndProficiencySelection>>(Completed(testSelection))
+		val testInternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		whenever(mockProvider.externalStateChanges).thenReturn(testExternal)
+		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
+		whenever(mockProvider.state).thenReturn(Normal(testSelection))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		val firstPageActions = toTest.getPageActions(0)
@@ -80,8 +102,11 @@ class TestDndProficiencySelectionViewModel {
 		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
-		whenever(mockProvider.refreshState()).thenReturn(Normal(testSelection))
+		val testExternal = Observable.fromArray<ItemState<out DndProficiencySelection>>(Completed(testSelection))
+		val testInternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		whenever(mockProvider.externalStateChanges).thenReturn(testExternal)
+		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
+		whenever(mockProvider.state).thenReturn(Normal(testSelection))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		val secondPageActions = toTest.getPageActions(1)
@@ -96,8 +121,11 @@ class TestDndProficiencySelectionViewModel {
 		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Completed(testSelection)))
-		whenever(mockProvider.refreshState()).thenReturn(Completed(testSelection))
+		val testExternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		val testInternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		whenever(mockProvider.externalStateChanges).thenReturn(testExternal)
+		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
+		whenever(mockProvider.state).thenReturn(Completed(testSelection))
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
 		val secondPageActions = toTest.getPageActions(1)
@@ -112,8 +140,11 @@ class TestDndProficiencySelectionViewModel {
 		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
 
 		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
-		whenever(mockProvider.refreshState()).thenReturn(Normal(testSelection))
+		val testExternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		val testInternal = Observable.empty<ItemState<out DndProficiencySelection>>()
+		whenever(mockProvider.externalStateChanges).thenReturn(testExternal)
+		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
+		whenever(mockProvider.state).thenReturn(Normal(testSelection))
 
 
 		val toTest = DndProficiencySelectionViewModel(mockProvider)
@@ -121,24 +152,6 @@ class TestDndProficiencySelectionViewModel {
 		groupA.select(1)
 
 		assert(toTest.children[0].state is Completed)
-	}
-
-	@Test
-	fun testForwardNavigationAllowedAfterSelectionIfRefreshedStateIsComplete() {
-		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
-		val groupB = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 1)
-
-		val testSelection = DndProficiencySelection(listOf(groupA, groupB))
-
-		val mockProvider = Mockito.mock(ProficiencyProvider::class.java)
-		whenever(mockProvider.proficiencyOptions).thenReturn(Observable.fromArray(Normal(testSelection)))
-		whenever(mockProvider.refreshState()).thenReturn(Completed(testSelection))
-
-		val toTest = DndProficiencySelectionViewModel(mockProvider)
-
-		groupB.select(0)
-		val secondPageActions = toTest.getPageActions(1)
-		assert(secondPageActions.contains(PageAction.NAVIGATE_BACK) && secondPageActions.contains(PageAction.NAVIGATE_NEXT))
 	}
 
 }

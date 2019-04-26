@@ -5,8 +5,10 @@ import io.reactivex.Observable
 
 interface ProficiencyProvider {
 
-	val proficiencyOptions: Observable<ItemState<out DndProficiencySelection>>
+	val state: ItemState<out DndProficiencySelection>
+	val internalStateChanges: Observable<ItemState<out DndProficiencySelection>>
+	val externalStateChanges: Observable<ItemState<out DndProficiencySelection>>
 
-	fun refreshState(): ItemState<out DndProficiencySelection>
+	fun refreshProficiencyState()
 
 }

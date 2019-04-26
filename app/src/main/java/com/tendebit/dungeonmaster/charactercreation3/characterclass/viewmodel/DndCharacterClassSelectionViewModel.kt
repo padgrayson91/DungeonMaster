@@ -16,17 +16,18 @@ private const val PAGE_COUNT = 1 // Always 1 page for class selection
 
 class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) {
 
-	private var state: ItemState<out DndCharacterClassSelection> = Loading
-	private val classOptionsDisposable: Disposable
+	private val classOptionsDisposable = CompositeDisposable()
 	private var childUpdateDisposable: Disposable? = null
 	private var childClickDisposable = CompositeDisposable()
 
-	val showLoading: Boolean
-		get() = state is Loading
-	val children = ArrayList<DndCharacterClassViewModel>()
-	val itemCount: Int
-		get() = children.size
+	val children = ArrayList<DndCharacterClassViewModel>(provider.state.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
+
+	var itemCount: Int = children.size
+		private set
+	var showLoading: Boolean = provider.state is Loading
+		private set
 	val pageCount = PAGE_COUNT
+
 	private val internalChanges = BehaviorSubject.create<DndCharacterClassSelectionViewModel>()
 	val changes = internalChanges as Observable<DndCharacterClassSelectionViewModel>
 
@@ -34,12 +35,15 @@ class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) {
 	val itemChanges = internalItemChanges as Observable<Int>
 
 	init {
-		classOptionsDisposable = provider.classOptions.subscribe { onStateChangedExternally(it) }
+		onStateChangedExternally(provider.state)
+		classOptionsDisposable.addAll(
+				provider.externalStateChanges.subscribe { onStateChangedExternally(it) },
+				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })
 	}
 
 	fun getPageActions(): List<PageAction> {
 		//User can only navigate forward if a selection has been made
-		return if (state is Completed) {
+		return if (provider.state is Completed) {
 			listOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_NEXT)
 		} else {
 			listOf(PageAction.NAVIGATE_BACK)
@@ -47,14 +51,20 @@ class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) {
 	}
 
 	private fun onStateChangedExternally(newState: ItemState<out DndCharacterClassSelection>) {
-		state = newState
-
-		// FIXME: children probably don't need to be changed with every state change
 		children.clear()
-		children.addAll(state.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
-		subscribeToSelection(state.item)
-		subscribeToChildren()
-		internalChanges.onNext(this)
+		children.addAll(newState.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
+		subscribeToSelection(newState.item)
+		subscribeToChildren(newState)
+		updateViewModelValues(newState)
+	}
+
+	private fun onStateChangedInternally(newState: ItemState<out DndCharacterClassSelection>) {
+		updateViewModelValues(newState)
+	}
+
+	private fun updateViewModelValues(state: ItemState<out DndCharacterClassSelection>) {
+		showLoading = state is Loading
+		itemCount = children.size
 	}
 
 	private fun subscribeToSelection(selection: DndCharacterClassSelection?) {
@@ -65,7 +75,7 @@ class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) {
 		}
 	}
 
-	private fun subscribeToChildren() {
+	private fun subscribeToChildren(state: ItemState<out DndCharacterClassSelection>) {
 		childClickDisposable.dispose()
 		childClickDisposable = CompositeDisposable()
 		for (childItem in children.withIndex()) {
@@ -79,11 +89,7 @@ class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) {
 	}
 
 	private fun checkForCompletion() {
-		val newState = provider.refreshState()
-		if (newState != state) {
-			state = newState
-			internalChanges.onNext(this)
-		}
+		provider.refreshClassState()
 	}
 
 }
