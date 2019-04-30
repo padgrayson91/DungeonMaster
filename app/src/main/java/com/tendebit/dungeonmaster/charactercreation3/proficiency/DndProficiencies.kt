@@ -6,6 +6,7 @@ import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.Removed
 import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 
@@ -19,7 +20,7 @@ class DndProficiencies(prerequisites: ProficiencyPrerequisites) : ProficiencyPro
 	private val disposable: Disposable
 
 	init {
-		disposable = prerequisites.classSelections.subscribe { doLoadProficienciesForSelectedClass(it) }
+		disposable = prerequisites.classSelections.subscribe { updateStateForClassSelectionChange(it) }
 	}
 
 	override fun refreshProficiencyState() {
@@ -47,7 +48,21 @@ class DndProficiencies(prerequisites: ProficiencyPrerequisites) : ProficiencyPro
 		}
 	}
 
-	private fun doLoadProficienciesForSelectedClass(dndClass: DndCharacterClass) {
+	private fun updateStateForClassSelectionChange(selection: ItemState<out DndCharacterClassSelection>) {
+		when(selection) {
+			is Completed -> doLoadProficienciesForSelectedClass(selection.item.selectedItem?.item)
+			else -> {
+				state = Removed
+				externalStateChanges.onNext(state)
+			}
+		}
+	}
+
+	private fun doLoadProficienciesForSelectedClass(dndClass: DndCharacterClass?) {
+		if (dndClass == null) {
+			return
+		}
+
 		state = Undefined
 		externalStateChanges.onNext(state)
 

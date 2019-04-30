@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3
+package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
@@ -7,6 +7,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tendebit.dungeonmaster.R
+import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.view.DndProficiencyGroupFragment
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyViewModel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.MultiSelectViewModel
@@ -58,7 +59,7 @@ class TestProficiencyGroupFragment {
 				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[1])))
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
-		whenever(viewModel.remainingChoices).thenReturn(2)
+		whenever(viewModel.remainingChoices).thenReturn(0)
 		val scenario = launchFragmentInContainer<DndProficiencyGroupFragment>(themeResId = R.style.AppTheme)
 		scenario.onFragment { it.viewModel = viewModel }
 

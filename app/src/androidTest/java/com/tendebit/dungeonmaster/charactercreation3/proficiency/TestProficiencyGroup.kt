@@ -1,8 +1,9 @@
-package com.tendebit.dungeonmaster.charactercreation3
+package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import android.os.Parcel
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.Normal
+import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

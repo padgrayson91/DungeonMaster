@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.viewmodel.Page
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -10,7 +11,7 @@ import io.reactivex.subjects.PublishSubject
 /**
  * ViewModel for displaying a selection of proficiencies
  */
-class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGroup>) : MultiSelectViewModel {
+class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGroup>) : MultiSelectViewModel, Page {
 
 	private var internalState = initialState
 	var state: ItemState<out DndProficiencyGroup>

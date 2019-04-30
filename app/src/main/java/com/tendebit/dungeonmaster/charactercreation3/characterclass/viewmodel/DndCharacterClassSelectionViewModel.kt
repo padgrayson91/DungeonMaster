@@ -3,9 +3,10 @@ package com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel
 import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Loading
-import com.tendebit.dungeonmaster.charactercreation3.PageAction
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.ClassProvider
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
+import com.tendebit.dungeonmaster.charactercreation3.viewmodel.Page
+import com.tendebit.dungeonmaster.charactercreation3.viewmodel.PageSection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -14,40 +15,37 @@ import io.reactivex.subjects.PublishSubject
 
 private const val PAGE_COUNT = 1 // Always 1 page for class selection
 
-class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) {
+class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) : SingleSelectViewModel, PageSection, Page {
 
 	private val classOptionsDisposable = CompositeDisposable()
 	private var childUpdateDisposable: Disposable? = null
 	private var childClickDisposable = CompositeDisposable()
 
-	val children = ArrayList<DndCharacterClassViewModel>(provider.state.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
+	override val pages = listOf(this)
+	override val children = ArrayList<DndCharacterClassViewModel>(provider.state.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
 
-	var itemCount: Int = children.size
+	override var itemCount: Int = children.size
 		private set
-	var showLoading: Boolean = provider.state is Loading
+	override var showLoading: Boolean = provider.state is Loading
 		private set
-	val pageCount = PAGE_COUNT
+	override val pageCount = PAGE_COUNT
 
-	private val internalChanges = BehaviorSubject.create<DndCharacterClassSelectionViewModel>()
-	val changes = internalChanges as Observable<DndCharacterClassSelectionViewModel>
+	override val changes = BehaviorSubject.create<DndCharacterClassSelectionViewModel>()
 
 	private val internalItemChanges = PublishSubject.create<Int>()
-	val itemChanges = internalItemChanges as Observable<Int>
+	override val itemChanges = internalItemChanges as Observable<Int>
+
+	override val isComplete: Boolean
+		get() = provider.state is Completed
+
+	override val pageAdditions: Observable<Int> = Observable.just(0)
+	override val pageRemovals: Observable<Int> = Observable.empty<Int>()
 
 	init {
 		onStateChangedExternally(provider.state)
 		classOptionsDisposable.addAll(
 				provider.externalStateChanges.subscribe { onStateChangedExternally(it) },
 				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })
-	}
-
-	fun getPageActions(): List<PageAction> {
-		//User can only navigate forward if a selection has been made
-		return if (provider.state is Completed) {
-			listOf(PageAction.NAVIGATE_BACK, PageAction.NAVIGATE_NEXT)
-		} else {
-			listOf(PageAction.NAVIGATE_BACK)
-		}
 	}
 
 	private fun onStateChangedExternally(newState: ItemState<out DndCharacterClassSelection>) {
@@ -65,6 +63,7 @@ class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) {
 	private fun updateViewModelValues(state: ItemState<out DndCharacterClassSelection>) {
 		showLoading = state is Loading
 		itemCount = children.size
+		changes.onNext(this)
 	}
 
 	private fun subscribeToSelection(selection: DndCharacterClassSelection?) {

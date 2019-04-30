@@ -41,12 +41,6 @@ class DndCharacterClassSelection : Parcelable {
 		options = ArrayList(ItemStateUtils.readItemStateListFromParcel(parcel))
 	}
 
-	override fun writeToParcel(dest: Parcel?, flags: Int) {
-		dest?.let {
-			ItemStateUtils.writeItemStateListToParcel(options, it)
-		}
-	}
-
 	fun deselect(index: Int) {
 		val target = options.getOrNull(index)
 
@@ -81,6 +75,12 @@ class DndCharacterClassSelection : Parcelable {
 			val updatedState = Normal(currentSelection.item)
 			options[previousSelectionIndex] = updatedState
 			indirectSelectionChanges.onNext(ListItemState(previousSelectionIndex, updatedState))
+		}
+	}
+
+	override fun writeToParcel(dest: Parcel?, flags: Int) {
+		dest?.let {
+			ItemStateUtils.writeItemStateListToParcel(options, it)
 		}
 	}
 

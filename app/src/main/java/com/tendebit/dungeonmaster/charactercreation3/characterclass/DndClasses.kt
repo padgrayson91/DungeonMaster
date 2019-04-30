@@ -12,6 +12,7 @@ class DndClasses : ClassProvider {
 
 	override val internalStateChanges = PublishSubject.create<ItemState<out DndCharacterClassSelection>>()
 	override val externalStateChanges = PublishSubject.create<ItemState<out DndCharacterClassSelection>>()
+	val allChanges = internalStateChanges.mergeWith(externalStateChanges)
 
 	override fun refreshClassState() {
 		val oldState = state
