@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass
 
+import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.assertion.ViewAssertions
@@ -10,8 +11,12 @@ import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.view.DndClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassViewModel
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.SingleSelectViewModel
+import com.tendebit.dungeonmaster.core.platform.ViewModelManager
+import com.tendebit.dungeonmaster.core.platform.ViewModels
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
+import org.hamcrest.CoreMatchers.not
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
@@ -27,8 +32,10 @@ class TestDndClassSelectionFragment {
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.itemCount).thenReturn(0)
-		val scenario = launchFragmentInContainer<DndClassSelectionFragment>(themeResId = R.style.AppTheme)
-		scenario.onFragment { it.viewModel = viewModel }
+		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
+		whenever(viewModelManager.findViewModel<SingleSelectViewModel>(0)).thenReturn(viewModel)
+		ViewModels.viewModelAccess = { viewModelManager }
+		launchFragmentInContainer<DndClassSelectionFragment>(themeResId = R.style.AppTheme, fragmentArgs = Bundle().apply { putLong(ID_KEY, 0) })
 
 		Espresso.onView(withId(R.id.item_list)).check(ViewAssertions.matches(hasChildCount(0)))
 	}
@@ -41,8 +48,10 @@ class TestDndClassSelectionFragment {
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.itemCount).thenReturn(2)
-		val scenario = launchFragmentInContainer<DndClassSelectionFragment>(themeResId = R.style.AppTheme)
-		scenario.onFragment { it.viewModel = viewModel }
+		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
+		whenever(viewModelManager.findViewModel<SingleSelectViewModel>(0)).thenReturn(viewModel)
+		ViewModels.viewModelAccess = { viewModelManager }
+		launchFragmentInContainer<DndClassSelectionFragment>(themeResId = R.style.AppTheme, fragmentArgs = Bundle().apply { putLong(ID_KEY, 0) })
 
 		Espresso.onView(withId(R.id.item_list)).check(ViewAssertions.matches(hasChildCount(2)))
 	}
@@ -55,10 +64,55 @@ class TestDndClassSelectionFragment {
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.itemCount).thenReturn(2)
-		val scenario = launchFragmentInContainer<DndClassSelectionFragment>(themeResId = R.style.AppTheme)
-		scenario.onFragment { it.viewModel = viewModel }
+		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
+		whenever(viewModelManager.findViewModel<SingleSelectViewModel>(0)).thenReturn(viewModel)
+		ViewModels.viewModelAccess = { viewModelManager }
+		launchFragmentInContainer<DndClassSelectionFragment>(themeResId = R.style.AppTheme, fragmentArgs = Bundle().apply { putLong(ID_KEY, 0) })
 
 		Espresso.onView(withId(R.id.item_list)).check(ViewAssertions.matches(hasDescendant(withText(CharacterCreationViewRobots.standardClassList[0].name))))
+	}
+
+	@Test
+	fun testShowsLoadingWithNullViewModel() {
+		launchFragmentInContainer<DndClassSelectionFragment>(themeResId = R.style.AppTheme)
+		Espresso.onView(withId(R.id.loading_dialog)).check(ViewAssertions.matches(isDisplayed()))
+	}
+
+	@Test
+	fun testShowsLoadingWhenViewModelIsLoading() {
+		val viewModel = Mockito.mock(SingleSelectViewModel::class.java)
+		val classStates = CharacterCreationViewRobots.standardClassList.subList(0, 2).map { Normal(it) }
+		val children = classStates.map { DndCharacterClassViewModel(it) }
+		whenever(viewModel.changes).thenReturn(Observable.empty())
+		whenever(viewModel.children).thenReturn(children)
+		whenever(viewModel.itemCount).thenReturn(2)
+		whenever(viewModel.showLoading).thenReturn(true)
+		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
+		whenever(viewModelManager.findViewModel<SingleSelectViewModel>(0)).thenReturn(viewModel)
+		ViewModels.viewModelAccess = { viewModelManager }
+		launchFragmentInContainer<DndClassSelectionFragment>(themeResId = R.style.AppTheme, fragmentArgs = Bundle().apply { putLong(ID_KEY, 0) })
+		Espresso.onView(withId(R.id.loading_dialog)).check(ViewAssertions.matches(isDisplayed()))
+	}
+
+	@Test
+	fun testHidesLoadingWhenViewModelStopsLoading() {
+		val viewModel = Mockito.mock(SingleSelectViewModel::class.java)
+		val classStates = CharacterCreationViewRobots.standardClassList.subList(0, 2).map { Normal(it) }
+		val children = classStates.map { DndCharacterClassViewModel(it) }
+		val changes = PublishSubject.create<SingleSelectViewModel>()
+		var loading = true
+		whenever(viewModel.changes).thenReturn(changes)
+		whenever(viewModel.children).thenReturn(children)
+		whenever(viewModel.itemCount).thenReturn(2)
+		whenever(viewModel.itemChanges).thenReturn(Observable.empty())
+		whenever(viewModel.showLoading).thenAnswer { loading }
+		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
+		whenever(viewModelManager.findViewModel<SingleSelectViewModel>(0)).thenReturn(viewModel)
+		ViewModels.viewModelAccess = { viewModelManager }
+		launchFragmentInContainer<DndClassSelectionFragment>(themeResId = R.style.AppTheme, fragmentArgs = Bundle().apply { putLong(ID_KEY, 0) })
+		loading = false
+		changes.onNext(viewModel)
+		Espresso.onView(withId(R.id.loading_dialog)).check(ViewAssertions.matches(not(isDisplayed())))
 	}
 
 }

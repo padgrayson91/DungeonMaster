@@ -11,7 +11,7 @@ import org.junit.Test
 import org.mockito.Mockito.`when` as whenever
 
 @Suppress("UNCHECKED_CAST")
-class TestCharacterCreationViewModel {
+class TestCharacterCreationSectionsViewModel {
 
 	@Test
 	fun testInitialStateHasNoPages() {

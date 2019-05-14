@@ -1,18 +1,39 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
+import com.tendebit.dungeonmaster.charactercreation3.ItemStateUtils
+import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.Normal
-import com.tendebit.dungeonmaster.charactercreation3.Removed
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndCharacterClassDataStoreImpl
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.network.DndCharacterClassApiConnection
 import io.reactivex.subjects.PublishSubject
 
-class DndClasses : ClassProvider {
+class DndClasses : DndCharacterClassProvider, Parcelable {
 
-	override var state: ItemState<out DndCharacterClassSelection> = Removed
+	override var state: ItemState<out DndCharacterClassSelection> = Loading
 
 	override val internalStateChanges = PublishSubject.create<ItemState<out DndCharacterClassSelection>>()
 	override val externalStateChanges = PublishSubject.create<ItemState<out DndCharacterClassSelection>>()
-	val allChanges = internalStateChanges.mergeWith(externalStateChanges)
+
+	private val dataStore = DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl())
+
+	constructor()
+
+	private constructor(parcel: Parcel) {
+		state = ItemStateUtils.readItemStateFromParcel(parcel)
+		@Suppress("UNCHECKED_CAST")
+		val classesFromState = state.item?.options?.map { it.item }?.filter { it != null } as? List<DndCharacterClass>
+		if (classesFromState != null) {
+			dataStore.restoreCharacterClassList(classesFromState)
+		}
+	}
+
+	override suspend fun start() {
+		doLoadAvailableClasses()
+	}
 
 	override fun refreshClassState() {
 		val oldState = state
@@ -38,8 +59,28 @@ class DndClasses : ClassProvider {
 		}
 	}
 
-	private fun doLoadAvailableClasses() {
-		TODO()
+	private suspend fun doLoadAvailableClasses() {
+		val characterClasses = dataStore.getCharacterClassList()
+		externalStateChanges.onNext(Normal(DndCharacterClassSelection(characterClasses.map { Normal(it) })))
+	}
+
+	override fun writeToParcel(dest: Parcel?, flags: Int) {
+		dest?.let {
+			ItemStateUtils.writeItemStateToParcel(state, it)
+		}
+	}
+
+	override fun describeContents(): Int = 0
+
+	companion object CREATOR : Parcelable.Creator<DndClasses> {
+
+		override fun createFromParcel(source: Parcel): DndClasses {
+			return DndClasses(source)
+		}
+
+		override fun newArray(size: Int): Array<DndClasses?> {
+			return arrayOfNulls(size)
+		}
 	}
 
 }

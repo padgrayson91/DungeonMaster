@@ -20,7 +20,7 @@ class DndClassSelectionAdapter(private val viewModel: SingleSelectViewModel?) : 
 		return DndClassViewHolder(LayoutInflater.from(parent.context), parent)
 	}
 
-	private fun subscribeToSelection(selection: DndCharacterClassSelectionViewModel) {
+	private fun subscribeToSelection(selection: SingleSelectViewModel) {
 		childDisposable?.dispose()
 		childDisposable = selection.itemChanges.subscribe {
 			notifyItemChanged(it)

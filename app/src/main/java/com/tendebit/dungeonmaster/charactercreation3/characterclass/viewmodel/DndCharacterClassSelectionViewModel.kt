@@ -1,9 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel
 
+import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Loading
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.ClassProvider
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassProvider
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.Page
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.PageSection
@@ -12,10 +13,17 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 private const val PAGE_COUNT = 1 // Always 1 page for class selection
 
-class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) : SingleSelectViewModel, PageSection, Page {
+class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClassProvider) : SingleSelectViewModel, PageSection, Page {
+
+	private val viewModelScope = CoroutineScope(Dispatchers.Main)
 
 	private val classOptionsDisposable = CompositeDisposable()
 	private var childUpdateDisposable: Disposable? = null
@@ -30,7 +38,7 @@ class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) :
 		private set
 	override val pageCount = PAGE_COUNT
 
-	override val changes = BehaviorSubject.create<DndCharacterClassSelectionViewModel>()
+	override val changes = PublishSubject.create<DndCharacterClassSelectionViewModel>()
 
 	private val internalItemChanges = PublishSubject.create<Int>()
 	override val itemChanges = internalItemChanges as Observable<Int>
@@ -38,22 +46,37 @@ class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) :
 	override val isComplete: Boolean
 		get() = provider.state is Completed
 
-	override val pageAdditions: Observable<Int> = Observable.just(0)
-	override val pageRemovals: Observable<Int> = Observable.empty<Int>()
+	override val pageAdditions: Observable<Int> = Observable.empty()
+	override val pageRemovals: Observable<Int> = Observable.empty()
 
 	init {
 		onStateChangedExternally(provider.state)
 		classOptionsDisposable.addAll(
 				provider.externalStateChanges.subscribe { onStateChangedExternally(it) },
 				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })
+		viewModelScope.launch(context = Dispatchers.IO) {
+			provider.start()
+		}
 	}
 
+	@ExperimentalCoroutinesApi
+	override fun clear() {
+		classOptionsDisposable.dispose()
+		childClickDisposable.dispose()
+		childUpdateDisposable?.dispose()
+		viewModelScope.cancel()
+	}
+
+	override fun getInstanceState(): Parcelable? = provider as? Parcelable
+
 	private fun onStateChangedExternally(newState: ItemState<out DndCharacterClassSelection>) {
-		children.clear()
-		children.addAll(newState.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
-		subscribeToSelection(newState.item)
-		subscribeToChildren(newState)
-		updateViewModelValues(newState)
+		viewModelScope.launch(context = Dispatchers.Default) {
+			children.clear()
+			children.addAll(newState.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
+			subscribeToSelection(newState.item)
+			subscribeToChildren(newState)
+			updateViewModelValues(newState)
+		}
 	}
 
 	private fun onStateChangedInternally(newState: ItemState<out DndCharacterClassSelection>) {
@@ -63,7 +86,7 @@ class DndCharacterClassSelectionViewModel(private val provider: ClassProvider) :
 	private fun updateViewModelValues(state: ItemState<out DndCharacterClassSelection>) {
 		showLoading = state is Loading
 		itemCount = children.size
-		changes.onNext(this)
+		viewModelScope.launch(Dispatchers.Main) { changes.onNext(this@DndCharacterClassSelectionViewModel) }
 	}
 
 	private fun subscribeToSelection(selection: DndCharacterClassSelection?) {

@@ -23,6 +23,7 @@ The following items are on the roadmap to include in future development
 
 - [X] Unit tests
 - [ ] UI tests using Barista/Espresso
+- [ ] Use `@Parcelize` annotation from Kotlin Android Extensions to eliminate some `Parcelable` boilerplate
 - [ ] Kotlin Flow (to potentially replace RxJava2)
 
 ### MVVM Implementation

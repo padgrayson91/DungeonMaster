@@ -2,7 +2,7 @@ package com.tendebit.dungeonmaster
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.tendebit.dungeonmaster.charactercreation.viewpager.CharacterCreationPagesFragment
+import com.tendebit.dungeonmaster.charactercreation3.view.CharacterCreationFragment
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import io.reactivex.Observable
 
@@ -18,7 +18,7 @@ class DashboardActivity : AppCompatActivity() {
         val addedFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
         if (addedFragment == null) {
             supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, CharacterCreationPagesFragment())
+                    .add(R.id.fragment_container, CharacterCreationFragment())
                     .commit()
         }
     }

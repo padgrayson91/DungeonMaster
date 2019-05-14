@@ -8,18 +8,22 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.ID_KEY
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.view.DndClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.MultiSelectViewModel
+import com.tendebit.dungeonmaster.core.platform.ViewModels
 import io.reactivex.disposables.Disposable
 import java.text.MessageFormat
 
 class DndProficiencyGroupFragment : Fragment() {
 
+	companion object {
+		fun newInstance(viewModelId: Long) = DndProficiencyGroupFragment().apply { arguments = Bundle().apply { putLong(ID_KEY, viewModelId) } }
+	}
+
 	private lateinit var chipGroup: ChipGroup
 	private lateinit var instructions: TextView
-	private var internalViewModel: MultiSelectViewModel? = null
-	var viewModel: MultiSelectViewModel?
-		get() = internalViewModel
-		set(value) { onAttachViewModel(value) }
+	private var viewModel: MultiSelectViewModel? = null
 	private var disposable: Disposable? = null
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -30,8 +34,6 @@ class DndProficiencyGroupFragment : Fragment() {
 	}
 
 	private fun onAttachViewModel(viewModel: MultiSelectViewModel?) {
-		subscribeToViewModel(viewModel)
-		internalViewModel = viewModel
 		if (viewModel != null) {
 			createChildViews(viewModel)
 			updateFromViewModel(viewModel)
@@ -39,11 +41,17 @@ class DndProficiencyGroupFragment : Fragment() {
 	}
 
 	private fun subscribeToViewModel(viewModel: MultiSelectViewModel?) {
+		disposable?.dispose()
 		disposable = viewModel?.changes?.subscribe { updateFromViewModel(it) }
 	}
 
 	override fun onResume() {
 		super.onResume()
+		val oldViewModel = viewModel
+		viewModel = ViewModels.from(activity)?.findViewModel(arguments?.getLong(ID_KEY))
+		if (viewModel != oldViewModel) {
+			onAttachViewModel(viewModel)
+		}
 		subscribeToViewModel(viewModel)
 	}
 

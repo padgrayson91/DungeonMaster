@@ -19,6 +19,9 @@ class CharacterCreationSectionsViewModel(sections: List<PageSection>) {
 	private val internalPageAdditions = PublishSubject.create<Int>()
 	val pageAdditions = internalPageAdditions as Observable<Int>
 
+	private val internalPageChanges = PublishSubject.create<Int>()
+	val pageChanges = internalPageChanges as Observable<Int>
+
 	val pages = LinkedList(getUpdatedPages(sections))
 	val pageCount: Int
 		get() = pages.size
@@ -57,7 +60,7 @@ class CharacterCreationSectionsViewModel(sections: List<PageSection>) {
 			sectionsDisposable.addAll(
 					section.pageAdditions.subscribe { onPageAdded(it + offsets[sectionItem.index], sectionItem.index, section.pages[it]) },
 					section.pageRemovals.subscribe { onPageRemoved(it + offsets[sectionItem.index], sectionItem.index) },
-					section.changes.subscribe { onSectionChanged(it) })
+					section.changes.subscribe { onSectionChanged(it, offsets[sectionItem.index]) })
 		}
 	}
 
@@ -84,9 +87,10 @@ class CharacterCreationSectionsViewModel(sections: List<PageSection>) {
 		internalPageAdditions.onNext(index)
 	}
 
-	private fun onSectionChanged(section: PageSection) {
+	private fun onSectionChanged(section: PageSection, sectionOffset: Int) {
 		for (i in 0 until section.pageCount) {
 			pageActions[i] = determineActionsForSinglePage(section, i)
+			internalPageChanges.onNext(sectionOffset + i)
 		}
 	}
 

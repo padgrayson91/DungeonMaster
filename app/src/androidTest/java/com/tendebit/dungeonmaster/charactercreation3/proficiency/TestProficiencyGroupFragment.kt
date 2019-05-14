@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
+import android.os.Bundle
 import androidx.fragment.app.testing.launchFragmentInContainer
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -8,9 +9,12 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.Normal
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.ID_KEY
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.view.DndProficiencyGroupFragment
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyViewModel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.MultiSelectViewModel
+import com.tendebit.dungeonmaster.core.platform.ViewModelManager
+import com.tendebit.dungeonmaster.core.platform.ViewModels
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import io.reactivex.Observable
 import org.junit.Test
@@ -30,8 +34,10 @@ class TestProficiencyGroupFragment {
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.remainingChoices).thenReturn(1)
-		val scenario = launchFragmentInContainer<DndProficiencyGroupFragment>(themeResId = R.style.AppTheme)
-		scenario.onFragment { it.viewModel = viewModel }
+		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
+		whenever(viewModelManager.findViewModel<MultiSelectViewModel>(0)).thenReturn(viewModel)
+		ViewModels.viewModelAccess = { viewModelManager }
+		launchFragmentInContainer<DndProficiencyGroupFragment>(themeResId = R.style.AppTheme, fragmentArgs = Bundle().apply { putLong(ID_KEY, 0) })
 
 		onView(withId(R.id.instructions)).check(matches(withText("Choose 1 Proficiency")))
 	}
@@ -45,8 +51,10 @@ class TestProficiencyGroupFragment {
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.remainingChoices).thenReturn(2)
-		val scenario = launchFragmentInContainer<DndProficiencyGroupFragment>(themeResId = R.style.AppTheme)
-		scenario.onFragment { it.viewModel = viewModel }
+		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
+		whenever(viewModelManager.findViewModel<MultiSelectViewModel>(0)).thenReturn(viewModel)
+		ViewModels.viewModelAccess = { viewModelManager }
+		launchFragmentInContainer<DndProficiencyGroupFragment>(themeResId = R.style.AppTheme, fragmentArgs = Bundle().apply { putLong(ID_KEY, 0) })
 
 		onView(withId(R.id.instructions)).check(matches(withText("Choose 2 Proficiencies")))
 	}
@@ -60,8 +68,10 @@ class TestProficiencyGroupFragment {
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.remainingChoices).thenReturn(0)
-		val scenario = launchFragmentInContainer<DndProficiencyGroupFragment>(themeResId = R.style.AppTheme)
-		scenario.onFragment { it.viewModel = viewModel }
+		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
+		whenever(viewModelManager.findViewModel<MultiSelectViewModel>(0)).thenReturn(viewModel)
+		ViewModels.viewModelAccess = { viewModelManager }
+		launchFragmentInContainer<DndProficiencyGroupFragment>(themeResId = R.style.AppTheme, fragmentArgs = Bundle().apply { putLong(ID_KEY, 0) })
 
 		onView(withId(R.id.instructions)).check(matches(withText("Selection Complete")))
 	}
