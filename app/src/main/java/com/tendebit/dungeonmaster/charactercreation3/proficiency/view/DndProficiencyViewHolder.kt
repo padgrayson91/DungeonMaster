@@ -3,7 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency.view
 import android.content.Context
 import android.view.View
 import com.google.android.material.chip.Chip
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.CheckableViewModel
+import com.tendebit.dungeonmaster.core.viewmodel3.CheckableViewModel
 import io.reactivex.disposables.Disposable
 
 class DndProficiencyViewHolder(val context: Context?, initialViewModel: CheckableViewModel) {
