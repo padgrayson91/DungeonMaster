@@ -6,6 +6,11 @@ import androidx.fragment.app.Fragment
 
 const val VIEW_MODEL_FRAGMENT_TAG = "view_model_fragment"
 
+/**
+ * An implementation of [ViewModelManager] as a headless [Fragment], which can be attached to an activity.
+ * NOTE: This should not be nested within another fragment to avoid issues with older Android APIs, which forbid
+ * using nested headless fragments
+ */
 class ViewModelFragment : Fragment(), ViewModelManager {
 
 	companion object {
