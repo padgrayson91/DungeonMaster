@@ -9,14 +9,27 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.CharacterCreation
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.ID_KEY
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.core.extensions.getViewModelManager
+import com.tendebit.dungeonmaster.core.platform.ViewModels
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
+import com.tendebit.dungeonmaster.core.viewmodel3.ViewModelFactory
 import io.reactivex.disposables.Disposable
 
-private const val KEY_CHARACTER_CREATION = "character_creation"
-
 class CharacterCreationFragment : Fragment() {
+
+	companion object {
+		fun newInstance(viewModelId: Long?) = CharacterCreationFragment().apply { arguments = Bundle().apply { if (viewModelId != null) putLong(ID_KEY, viewModelId) } }
+	}
+
+	private class Factory : ViewModelFactory<CharacterCreationViewModel> {
+
+		override fun createNew(): CharacterCreationViewModel {
+			return CharacterCreationViewModel(CharacterCreation())
+		}
+
+	}
 
 	var viewModel: CharacterCreationViewModel? = null
 
@@ -43,9 +56,6 @@ class CharacterCreationFragment : Fragment() {
 		forwardButton = root.findViewById(R.id.button_forward)
 		loadingDialog = root.findViewById(R.id.loading_dialog)
 
-		savedInstanceState?.getParcelable<CharacterCreation>(KEY_CHARACTER_CREATION)?.let {
-			viewModel = CharacterCreationViewModel(it)
-		}
 		return root
 	}
 
@@ -53,8 +63,11 @@ class CharacterCreationFragment : Fragment() {
 		super.onResume()
 		val activity = activity ?: return
 		if (viewModel == null) {
-			val characterCreation = CharacterCreation()
-			viewModel = CharacterCreationViewModel(characterCreation)
+			val lookup = ViewModels.from(activity)?.findOrCreateViewModel(arguments?.get(ID_KEY) as? Long, Factory())
+			lookup?.let {
+				viewModel = lookup.viewModel
+				arguments?.putLong(ID_KEY, lookup.id)
+			}
 		}
 
 		viewModel?.sectionsViewModel?.let { sections ->
@@ -69,7 +82,6 @@ class CharacterCreationFragment : Fragment() {
 			viewPager.registerOnPageChangeCallback(pageChangeCallback)
 		}
 
-
 	}
 
 	override fun onPause() {
@@ -79,10 +91,4 @@ class CharacterCreationFragment : Fragment() {
 		viewPager.unregisterOnPageChangeCallback(pageChangeCallback)
 	}
 
-	override fun onSaveInstanceState(outState: Bundle) {
-		super.onSaveInstanceState(outState)
-		viewModel?.state?.let {
-			outState.putParcelable(KEY_CHARACTER_CREATION, it)
-		}
-	}
 }

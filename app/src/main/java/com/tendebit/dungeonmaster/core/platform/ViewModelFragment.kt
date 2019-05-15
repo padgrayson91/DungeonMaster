@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.LongSparseArray
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.core.viewmodel3.ViewModel
+import com.tendebit.dungeonmaster.core.viewmodel3.ViewModelFactory
 
 const val VIEW_MODEL_FRAGMENT_TAG = "view_model_fragment"
 
@@ -41,9 +42,17 @@ class ViewModelFragment : Fragment(), ViewModelManager {
 	}
 
 	@Suppress("UNCHECKED_CAST")
-	override fun <T> findViewModel(id: Long?): T? {
+	override fun <T : ViewModel> findViewModel(id: Long?): T? {
 		if (id == null) return null
 		return viewModels[id] as? T
+	}
+
+	override fun <T : ViewModel> findOrCreateViewModel(id: Long?, factory: ViewModelFactory<T>): ViewModelManager.Lookup<T> {
+		val existing = findViewModel<T>(id)
+		if (existing != null && id != null) return ViewModelManager.Lookup(id, existing)
+		val created = factory.createNew()
+		val createdId = addViewModel(created)
+		return ViewModelManager.Lookup(createdId, created)
 	}
 
 }

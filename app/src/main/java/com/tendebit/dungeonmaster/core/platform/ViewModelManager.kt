@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.core.platform
 
 import com.tendebit.dungeonmaster.core.viewmodel3.ViewModel
+import com.tendebit.dungeonmaster.core.viewmodel3.ViewModelFactory
 
 /**
  * A [ViewModelManager] is effectively a map from [Long] to [Any] (representing ViewModels, which can have any type in this project);
@@ -14,6 +15,10 @@ interface ViewModelManager {
 
 	fun removeViewModel(id: Long?)
 
-	fun <T> findViewModel(id: Long?): T?
+	fun <T : ViewModel> findViewModel(id: Long?): T?
+
+	fun <T : ViewModel> findOrCreateViewModel(id: Long?, factory: ViewModelFactory<T>): Lookup<T>
+
+	class Lookup<T : ViewModel>(val id: Long, val viewModel: T)
 
 }
