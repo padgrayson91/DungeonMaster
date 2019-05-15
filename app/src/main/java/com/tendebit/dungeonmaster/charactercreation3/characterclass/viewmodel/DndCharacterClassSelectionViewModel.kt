@@ -6,8 +6,8 @@ import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassProvider
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
-import com.tendebit.dungeonmaster.charactercreation3.viewmodel.Page
-import com.tendebit.dungeonmaster.charactercreation3.viewmodel.PageSection
+import com.tendebit.dungeonmaster.core.viewmodel3.Page
+import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable

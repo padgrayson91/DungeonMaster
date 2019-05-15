@@ -1,5 +1,7 @@
 package com.tendebit.dungeonmaster.core.platform
 
+import com.tendebit.dungeonmaster.core.viewmodel3.ViewModel
+
 /**
  * A [ViewModelManager] is effectively a map from [Long] to [Any] (representing ViewModels, which can have any type in this project);
  * However, when a ViewModel is added to the map, the [ViewModelManager] is responsible for assigning it a key, as opposed to a traditional
@@ -8,7 +10,7 @@ package com.tendebit.dungeonmaster.core.platform
  */
 interface ViewModelManager {
 
-	fun addViewModel(viewModel: Any): Long
+	fun addViewModel(viewModel: ViewModel): Long
 
 	fun removeViewModel(id: Long?)
 

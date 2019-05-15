@@ -2,6 +2,8 @@ package com.tendebit.dungeonmaster.charactercreation3.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation3.PageAction
 import com.tendebit.dungeonmaster.core.extensions.addOrInsert
+import com.tendebit.dungeonmaster.core.viewmodel3.Page
+import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject

@@ -5,7 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyProvider
-import com.tendebit.dungeonmaster.charactercreation3.viewmodel.PageSection
+import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
