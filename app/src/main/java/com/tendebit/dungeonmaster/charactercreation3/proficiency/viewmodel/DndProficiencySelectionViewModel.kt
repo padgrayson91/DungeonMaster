@@ -5,17 +5,25 @@ import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyProvider
+import com.tendebit.dungeonmaster.core.viewmodel3.Clearable
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the entire proficiency selection process. This ViewModel indicates how many
  * pages
  */
-class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider) : PageSection {
+class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider) : PageSection, Clearable {
+
+	private val viewModelScope = CoroutineScope(Dispatchers.Main)
 
 	private val proficiencyOptionsDisposable: CompositeDisposable = CompositeDisposable()
 	private var childUpdateDisposable: Disposable? = null
@@ -40,11 +48,18 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })
 	}
 
+	@ExperimentalCoroutinesApi
+	override fun clear() {
+		viewModelScope.cancel()
+	}
+
 	private fun onStateChangedExternally(newState: ItemState<out DndProficiencySelection>) {
-		pages.clear()
-		pages.addAll(newState.item?.groupStates?.map { DndProficiencyGroupViewModel(it) } ?: emptyList())
-		subscribeToSelection(newState.item)
-		updateViewModelValues(newState)
+		viewModelScope.launch(context = Dispatchers.Main) {
+			pages.clear()
+			pages.addAll(newState.item?.groupStates?.map { DndProficiencyGroupViewModel(it) } ?: emptyList())
+			subscribeToSelection(newState.item)
+			updateViewModelValues(newState)
+		}
 	}
 
 
@@ -72,7 +87,7 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 				pageRemovals.onNext(i)
 			}
 		}
-		changes.onNext(this)
+		viewModelScope.launch(Dispatchers.Main) { changes.onNext(this@DndProficiencySelectionViewModel) }
 	}
 
 	private fun subscribeToSelection(selection: DndProficiencySelection?) {

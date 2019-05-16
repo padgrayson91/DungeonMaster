@@ -54,9 +54,6 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 		classOptionsDisposable.addAll(
 				provider.externalStateChanges.subscribe { onStateChangedExternally(it) },
 				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })
-		viewModelScope.launch(context = Dispatchers.IO) {
-			provider.start()
-		}
 	}
 
 	@ExperimentalCoroutinesApi

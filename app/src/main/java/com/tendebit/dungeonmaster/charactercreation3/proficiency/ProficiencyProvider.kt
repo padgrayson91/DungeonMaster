@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineScope
 
 interface ProficiencyProvider {
 
@@ -9,6 +10,7 @@ interface ProficiencyProvider {
 	val internalStateChanges: Observable<ItemState<out DndProficiencySelection>>
 	val externalStateChanges: Observable<ItemState<out DndProficiencySelection>>
 
+	fun start(prerequisites: ProficiencyPrerequisites, scope: CoroutineScope)
 	fun refreshProficiencyState()
 
 }

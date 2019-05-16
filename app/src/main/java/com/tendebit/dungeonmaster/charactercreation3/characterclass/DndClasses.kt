@@ -61,7 +61,8 @@ class DndClasses : DndCharacterClassProvider, Parcelable {
 
 	private suspend fun doLoadAvailableClasses() {
 		val characterClasses = dataStore.getCharacterClassList()
-		externalStateChanges.onNext(Normal(DndCharacterClassSelection(characterClasses.map { Normal(it) })))
+		state = Normal(DndCharacterClassSelection(characterClasses.map { Normal(it) }))
+		externalStateChanges.onNext(state)
 	}
 
 	override fun writeToParcel(dest: Parcel?, flags: Int) {
