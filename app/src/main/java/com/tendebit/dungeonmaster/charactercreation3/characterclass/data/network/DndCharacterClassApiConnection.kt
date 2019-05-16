@@ -1,9 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass.data.network
 
-import android.util.Log
 import com.google.gson.Gson
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.TAG
 import okhttp3.OkHttpClient
 import okhttp3.Request
 

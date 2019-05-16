@@ -3,6 +3,7 @@ package com.tendebit.dungeonmaster.core.platform
 import android.os.Bundle
 import android.util.LongSparseArray
 import androidx.fragment.app.Fragment
+import com.tendebit.dungeonmaster.core.viewmodel3.Clearable
 import com.tendebit.dungeonmaster.core.viewmodel3.ViewModel
 import com.tendebit.dungeonmaster.core.viewmodel3.ViewModelFactory
 
@@ -28,6 +29,13 @@ class ViewModelFragment : Fragment(), ViewModelManager {
 	override fun onCreate(savedInstanceState: Bundle?) {
 		super.onCreate(savedInstanceState)
 		retainInstance = true
+	}
+
+	override fun onDestroy() {
+		super.onDestroy()
+		for (i in 0 until viewModels.size()) {
+			(viewModels[viewModels.keyAt(i)] as? Clearable)?.clear()
+		}
 	}
 
 	override fun addViewModel(viewModel: ViewModel): Long {

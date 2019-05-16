@@ -53,11 +53,6 @@ class DndClassSelectionFragment : Fragment() {
 		disposable?.dispose()
 	}
 
-	override fun onDestroy() {
-		super.onDestroy()
-		viewModel?.clear()
-	}
-
 	private fun onAttachViewModel(viewModel: SingleSelectViewModel?) {
 		disposable?.dispose()
 		adapter?.clear()
