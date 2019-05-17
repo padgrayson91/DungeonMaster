@@ -36,8 +36,7 @@ class DndClasses : DndCharacterClassProvider, Parcelable {
 	}
 
 	override fun refreshClassState() {
-		val oldState = state
-		val newState = when(oldState) {
+		val newState = when(val oldState = state) {
 			is Completed -> {
 				if (oldState.item.selectedItem != null) {
 					oldState
@@ -54,9 +53,8 @@ class DndClasses : DndCharacterClassProvider, Parcelable {
 			}
 			else -> oldState
 		}
-		if (oldState != newState) {
-			internalStateChanges.onNext(newState)
-		}
+		state = newState
+		internalStateChanges.onNext(newState)
 	}
 
 	private suspend fun doLoadAvailableClasses() {

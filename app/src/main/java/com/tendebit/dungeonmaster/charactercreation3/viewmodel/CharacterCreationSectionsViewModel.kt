@@ -4,12 +4,14 @@ import com.tendebit.dungeonmaster.charactercreation3.PageAction
 import com.tendebit.dungeonmaster.core.extensions.addOrInsert
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
+import com.tendebit.dungeonmaster.core.viewmodel3.ViewModel
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import java.util.LinkedList
+import kotlin.math.max
 
-class CharacterCreationSectionsViewModel(sections: List<PageSection>) {
+class CharacterCreationSectionsViewModel(private val sections: List<PageSection>) : ViewModel {
 
 	private val offsets = calculateOffsets(sections)
 	private val pageActions = determinePageActions(sections)
@@ -30,12 +32,21 @@ class CharacterCreationSectionsViewModel(sections: List<PageSection>) {
 
 	var showLoading = getUpdatedLoadingState(sections)
 		private set
+	var selectedPage = 0
+		private set
+
+	private val internalChanges = PublishSubject.create<CharacterCreationSectionsViewModel>()
+	override val changes = internalChanges as Observable<CharacterCreationSectionsViewModel>
 
 	init {
 		subscribeToSections(sections)
 	}
 
 	fun getPageActions(index: Int): List<PageAction> = pageActions[index]
+
+	fun scrolledToPage(index: Int) {
+		selectedPage = index
+	}
 
 	private fun determinePageActions(sections: List<PageSection>): MutableList<List<PageAction>> {
 		val result = LinkedList<List<PageAction>>()
@@ -73,7 +84,6 @@ class CharacterCreationSectionsViewModel(sections: List<PageSection>) {
 		// Remove the actions for this page and the page itself
 		pageActions.removeAt(index)
 		pages.removeAt(index)
-
 		internalPageRemovals.onNext(index)
 	}
 
@@ -94,6 +104,7 @@ class CharacterCreationSectionsViewModel(sections: List<PageSection>) {
 			pageActions[i] = determineActionsForSinglePage(section, i)
 			internalPageChanges.onNext(sectionOffset + i)
 		}
+		updateViewModelValues()
 	}
 
 	private fun getUpdatedPages(sections: List<PageSection>): List<Page> {
@@ -105,6 +116,10 @@ class CharacterCreationSectionsViewModel(sections: List<PageSection>) {
 		return sections.find { it.showLoading && it.pageCount == 0 } != null
 	}
 
+	private fun getPageRequiringAttention(): Int {
+		return max(pages.indexOfFirst { !it.isComplete }, 0)
+	}
+
 	private fun calculateOffsets(sections: List<PageSection>, startingOffSet: Int = 0): MutableList<Int> {
 		var offset = startingOffSet
 		val result = LinkedList<Int>()
@@ -113,6 +128,16 @@ class CharacterCreationSectionsViewModel(sections: List<PageSection>) {
 			offset += section.pageCount
 		}
 		return result
+	}
+
+	private fun updateViewModelValues() {
+		val oldLoading = showLoading
+		showLoading = getUpdatedLoadingState(sections)
+		val oldSelection = selectedPage
+		selectedPage = getPageRequiringAttention()
+		if (oldLoading != showLoading || oldSelection != selectedPage) {
+			internalChanges.onNext(this)
+		}
 	}
 
 }

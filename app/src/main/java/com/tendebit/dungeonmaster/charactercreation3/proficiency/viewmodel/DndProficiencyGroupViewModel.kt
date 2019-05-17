@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
+import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
@@ -36,6 +37,9 @@ class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGro
 	 */
 	override val remainingChoices: Int
 		get() = state.item?.remainingChoices ?: 0
+
+	override val isComplete: Boolean
+		get() = state is Completed
 
 	private var groupDisposable: Disposable? = null
 	private var childDisposable = CompositeDisposable()

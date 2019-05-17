@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.CharacterCreation
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.ID_KEY
+import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationSectionsViewModel
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.core.extensions.getViewModelManager
 import com.tendebit.dungeonmaster.core.platform.ViewModels
@@ -39,10 +40,12 @@ class CharacterCreationFragment : Fragment() {
 	private lateinit var backButton: Button
 	private lateinit var forwardButton: Button
 	private lateinit var loadingDialog: LoadingDialog
-	private var subscription: Disposable? = null
+	private var pageChangeDisposable: Disposable? = null
+	private var pagerChangeDisposable: Disposable? = null
 	private val pageChangeCallback = object : ViewPager2.OnPageChangeCallback() {
 		override fun onPageSelected(position: Int) {
 			super.onPageSelected(position)
+			viewModel?.sectionsViewModel?.scrolledToPage(position)
 			val actions = viewModel?.sectionsViewModel?.getPageActions(position)
 			// TODO: update buttons based on page actions
 		}
@@ -73,12 +76,16 @@ class CharacterCreationFragment : Fragment() {
 		viewModel?.sectionsViewModel?.let { sections ->
 			adapter = CharacterCreationSectionsAdapter(this, sections, activity.getViewModelManager())
 			viewPager.adapter = adapter
-			subscription = sections.pageChanges.subscribe {
+			pageChangeDisposable = sections.pageChanges.subscribe {
 				if (it == viewPager.currentItem) {
 					val actions = sections.getPageActions(it)
 					// TODO: update buttons based on page actions
 				}
 			}
+			pagerChangeDisposable = sections.changes.subscribe {
+				updateFromViewModel(it)
+			}
+			updateFromViewModel(sections)
 			viewPager.registerOnPageChangeCallback(pageChangeCallback)
 		}
 
@@ -87,8 +94,14 @@ class CharacterCreationFragment : Fragment() {
 	override fun onPause() {
 		super.onPause()
 		adapter.dispose()
-		subscription?.dispose()
+		pageChangeDisposable?.dispose()
+		pagerChangeDisposable?.dispose()
 		viewPager.unregisterOnPageChangeCallback(pageChangeCallback)
+	}
+
+	private fun updateFromViewModel(viewModel: CharacterCreationSectionsViewModel) {
+		loadingDialog.visibility = if (!viewModel.showLoading) View.GONE else View.VISIBLE
+		viewPager.currentItem = viewModel.selectedPage
 	}
 
 }

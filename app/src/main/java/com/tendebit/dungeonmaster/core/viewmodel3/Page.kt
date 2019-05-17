@@ -1,3 +1,3 @@
 package com.tendebit.dungeonmaster.core.viewmodel3
 
-interface Page : ViewModel
+interface Page : ViewModel, Completable
