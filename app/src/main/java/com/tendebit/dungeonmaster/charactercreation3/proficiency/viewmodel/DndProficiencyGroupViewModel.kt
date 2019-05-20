@@ -30,7 +30,7 @@ class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGro
 	 * The [DndProficiencyViewModel] items which serve as children of this ViewModel, representing
 	 * each individual proficiency
 	 */
-	override val children = ArrayList(getChildrenForState(initialState))
+	override val children = ArrayList(state.item?.options?.map { DndProficiencyViewModel(it) } ?: emptyList())
 
 	/**
 	 * The number of remaining choices for this group, which should be displayed by the view
@@ -51,16 +51,16 @@ class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGro
 
 	private fun onStateChanged(state: ItemState<out DndProficiencyGroup>) {
 		internalState = state
-		// FIXME: children may not need to be cleared for all state changes
-		children.clear()
-		children.addAll(getChildrenForState(state))
+		updateChildrenForState(state)
 		subscribeToGroup()
 		subscribeToChildren()
 		internalChanges.onNext(this)
 	}
 
-	private fun getChildrenForState(state: ItemState<out DndProficiencyGroup>): List<DndProficiencyViewModel> {
-		return state.item?.options?.map { DndProficiencyViewModel(it) } ?: emptyList()
+	private fun updateChildrenForState(state: ItemState<out DndProficiencyGroup>) {
+		state.item?.options?.forEachIndexed { index, item ->
+			children[index].state = item
+		}
 	}
 
 	private fun subscribeToGroup() {

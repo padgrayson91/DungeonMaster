@@ -14,9 +14,13 @@ class DndProficiencyViewModel(initialState: ItemState<out DndProficiency>) : Che
 	private var internalState = initialState
 	var state: ItemState<out DndProficiency>
 		get() = internalState
-		set(value) { onStateChanged(value) }
-	override val enabled = state is Normal || state is Selected
-	override val checked = state is Selected || state is Locked
+		set(value) {
+			onStateChanged(value)
+		}
+	override val enabled
+		get() = state is Normal || state is Selected
+	override val checked
+		get() = state is Selected || state is Locked
 	override val text = state.item?.name
 
 	private val internalChanges = PublishSubject.create<DndProficiencyViewModel>()
@@ -31,6 +35,9 @@ class DndProficiencyViewModel(initialState: ItemState<out DndProficiency>) : Che
 
 	private fun onStateChanged(state: ItemState<out DndProficiency>) {
 		internalState = state
+		if (!internalChanges.hasObservers()) {
+			throw IllegalStateException("Nobody is listening...")
+		}
 		internalChanges.onNext(this)
 	}
 

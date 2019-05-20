@@ -65,7 +65,6 @@ class DndProficiencyGroupFragment : Fragment() {
 	}
 
 	private fun createChildViews(viewModel: MultiSelectViewModel) {
-		chipGroup.removeAllViews() // FIXME: should recycle views by updating the ViewModels
 		viewModel.children.forEach {
 			chipGroup.addView(DndProficiencyViewHolder(context, it).getView())
 		}

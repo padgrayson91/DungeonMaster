@@ -6,9 +6,8 @@ import com.google.android.material.chip.Chip
 import com.tendebit.dungeonmaster.core.viewmodel3.CheckableViewModel
 import io.reactivex.disposables.Disposable
 
-class DndProficiencyViewHolder(val context: Context?, initialViewModel: CheckableViewModel) {
+class DndProficiencyViewHolder(val context: Context?, private val viewModel: CheckableViewModel) {
 
-	private var viewModel = initialViewModel
 	private var view: Chip? = null
 	private var disposable: Disposable? = null
 
@@ -16,12 +15,9 @@ class DndProficiencyViewHolder(val context: Context?, initialViewModel: Checkabl
 
 	private fun createView(): View {
 		val createdView = Chip(context)
+		createdView.isCheckable = true
+		createdView.setOnCheckedChangeListener { _, checked -> viewModel.changeSelection(checked) }
 		bindView(createdView)
-
-		disposable?.dispose()
-		disposable = viewModel.changes.subscribe {
-			bindView(createdView)
-		}
 
 		view = createdView
 		return createdView
@@ -31,6 +27,11 @@ class DndProficiencyViewHolder(val context: Context?, initialViewModel: Checkabl
 		createdView.isChecked = viewModel.checked
 		createdView.isEnabled = viewModel.enabled
 		createdView.text = viewModel.text
+
+		disposable?.dispose()
+		disposable = viewModel.changes.subscribe {
+			bindView(createdView)
+		}
 	}
 
 }

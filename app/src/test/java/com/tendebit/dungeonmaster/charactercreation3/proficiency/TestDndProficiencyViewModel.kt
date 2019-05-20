@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
+import com.tendebit.dungeonmaster.charactercreation3.Disabled
 import com.tendebit.dungeonmaster.charactercreation3.Locked
 import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.Selected
@@ -62,6 +63,19 @@ class TestDndProficiencyViewModel {
 
 		assert(testObserver.valueCount() == 1)
 		testObserver.assertValue { !it }
+	}
+
+	@Test
+	fun testExternalStateChangeEmits() {
+		val testInitial = Normal(CharacterCreationRobots.standardProficiencyList[0])
+		val toTest = DndProficiencyViewModel(testInitial)
+		val testObserver = TestObserver<DndProficiencyViewModel>()
+		toTest.changes.subscribe(testObserver)
+
+		toTest.state = Disabled(testInitial.item)
+		toTest.state = Normal(testInitial.item)
+
+		assert(testObserver.valueCount() == 2)
 	}
 
 }
