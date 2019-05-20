@@ -9,7 +9,6 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import java.util.LinkedList
-import kotlin.math.max
 
 class CharacterCreationSectionsViewModel(private val sections: List<PageSection>) : ViewModel {
 
@@ -117,7 +116,8 @@ class CharacterCreationSectionsViewModel(private val sections: List<PageSection>
 	}
 
 	private fun getPageRequiringAttention(): Int {
-		return max(pages.indexOfFirst { !it.isComplete }, 0)
+		val firstInComplete = pages.indexOfFirst { !it.isComplete }
+		return if (firstInComplete < 0) pageCount - 1 else firstInComplete
 	}
 
 	private fun calculateOffsets(sections: List<PageSection>, startingOffSet: Int = 0): MutableList<Int> {
