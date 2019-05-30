@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.CharacterCreation
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.ID_KEY
+import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationSectionsViewModel
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.core.extensions.getViewModelManager

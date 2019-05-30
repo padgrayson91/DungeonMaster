@@ -6,6 +6,7 @@ import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassProvider
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
@@ -16,6 +17,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
@@ -23,7 +25,8 @@ private const val PAGE_COUNT = 1 // Always 1 page for class selection
 
 class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClassProvider) : SingleSelectViewModel, PageSection, Page {
 
-	private val viewModelScope = CoroutineScope(Dispatchers.Main)
+	private val viewModelJob = Job()
+	private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
 
 	private val classOptionsDisposable = CompositeDisposable()
 	private var childUpdateDisposable: Disposable? = null
@@ -56,17 +59,18 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun clear() {
+		logger.writeDebug("Clearing resources")
 		classOptionsDisposable.dispose()
 		childClickDisposable.dispose()
 		childUpdateDisposable?.dispose()
-		viewModelScope.cancel()
+		viewModelJob.cancel()
 	}
 
 	override fun getInstanceState(): Parcelable? = provider as? Parcelable
 
 	private fun onStateChangedExternally(newState: ItemState<out DndCharacterClassSelection>) {
+		logger.writeDebug("Got external state: $newState")
 		viewModelScope.launch(context = Dispatchers.Default) {
 			children.clear()
 			children.addAll(newState.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
@@ -77,6 +81,7 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 	}
 
 	private fun onStateChangedInternally(newState: ItemState<out DndCharacterClassSelection>) {
+		logger.writeDebug("Got internal state: $newState")
 		updateViewModelValues(newState)
 	}
 

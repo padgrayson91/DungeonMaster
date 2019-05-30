@@ -2,7 +2,6 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.charactercreation3.CharacterCreation
 import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.ItemStateUtils
@@ -40,11 +39,11 @@ class DndProficiencies : ProficiencyProvider, Parcelable {
 		disposable = prerequisites.classSelections.subscribe {
 			scope.launch(context = Dispatchers.IO) { updateStateForClassSelectionChange (it) }
 		}
-
 	}
 
 	override fun refreshProficiencyState() {
 		val oldState = state
+		logger.writeDebug("Performing state check. Current state is $oldState")
 		val newState = when(oldState) {
 			is Normal -> {
 				if (oldState.item.groupStates.all { it is Completed }) {
@@ -62,14 +61,16 @@ class DndProficiencies : ProficiencyProvider, Parcelable {
 			}
 			else -> oldState
 		}
+		logger.writeDebug("State has been updated to $newState")
 
 		if (oldState != newState) {
+			state = newState
 			internalStateChanges.onNext(state)
 		}
 	}
 
 	private suspend fun updateStateForClassSelectionChange(selection: ItemState<out DndCharacterClassSelection>) {
-		val i = 0;
+		logger.writeDebug("Got a new class selection: $selection")
 		when(selection) {
 			is Completed -> doLoadProficienciesForSelectedClass(selection.item.selectedItem?.item)
 			else -> {
@@ -114,6 +115,5 @@ class DndProficiencies : ProficiencyProvider, Parcelable {
 			return arrayOfNulls(size)
 		}
 	}
-
 
 }

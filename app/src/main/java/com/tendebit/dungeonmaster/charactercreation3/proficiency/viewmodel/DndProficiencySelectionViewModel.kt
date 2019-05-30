@@ -5,6 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyProvider
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
 import com.tendebit.dungeonmaster.core.viewmodel3.Clearable
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import io.reactivex.disposables.CompositeDisposable
@@ -14,6 +15,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 
@@ -23,7 +25,8 @@ import kotlinx.coroutines.launch
  */
 class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider) : PageSection, Clearable {
 
-	private val viewModelScope = CoroutineScope(Dispatchers.Main)
+	private val job = Job()
+	private val viewModelScope = CoroutineScope(Dispatchers.Main + job)
 
 	private val proficiencyOptionsDisposable: CompositeDisposable = CompositeDisposable()
 	private var childUpdateDisposable: Disposable? = null
@@ -48,12 +51,12 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })
 	}
 
-	@ExperimentalCoroutinesApi
 	override fun clear() {
-		viewModelScope.cancel()
+		job.cancel()
 	}
 
 	private fun onStateChangedExternally(newState: ItemState<out DndProficiencySelection>) {
+		logger.writeDebug("Got external state: $newState")
 		viewModelScope.launch(context = Dispatchers.Main) {
 			pages.clear()
 			pages.addAll(newState.item?.groupStates?.map { DndProficiencyGroupViewModel(it) } ?: emptyList())
@@ -64,6 +67,7 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 
 
 	private fun onStateChangedInternally(newState: ItemState<out DndProficiencySelection>) {
+		logger.writeDebug("Got internal state: $newState")
 		updateViewModelValues(newState)
 	}
 

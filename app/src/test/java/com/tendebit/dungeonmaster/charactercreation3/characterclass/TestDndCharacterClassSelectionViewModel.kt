@@ -22,7 +22,7 @@ class TestDndCharacterClassSelectionViewModel {
 	@Before
 	@ExperimentalCoroutinesApi
 	fun configureCoroutines() {
-		Dispatchers.setMain(Dispatchers.Default)
+		Dispatchers.setMain(Dispatchers.Unconfined)
 	}
 
 	@Test

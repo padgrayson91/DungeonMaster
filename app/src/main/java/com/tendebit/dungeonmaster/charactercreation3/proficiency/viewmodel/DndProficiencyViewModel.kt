@@ -5,6 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation3.Locked
 import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
+import com.tendebit.dungeonmaster.core.debug.DebugUtils
 import com.tendebit.dungeonmaster.core.viewmodel3.CheckableViewModel
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
@@ -35,7 +36,7 @@ class DndProficiencyViewModel(initialState: ItemState<out DndProficiency>) : Che
 
 	private fun onStateChanged(state: ItemState<out DndProficiency>) {
 		internalState = state
-		if (!internalChanges.hasObservers()) {
+		if (!internalChanges.hasObservers() && !DebugUtils.isRunningTest()) {
 			throw IllegalStateException("Nobody is listening...")
 		}
 		internalChanges.onNext(this)

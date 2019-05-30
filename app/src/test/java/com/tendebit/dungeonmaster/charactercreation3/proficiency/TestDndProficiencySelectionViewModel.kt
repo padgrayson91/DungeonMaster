@@ -10,11 +10,21 @@ import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.setMain
+import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when` as whenever
 
 class TestDndProficiencySelectionViewModel {
+
+	@Before
+	@ExperimentalCoroutinesApi
+	fun configureCoroutines() {
+		Dispatchers.setMain(Dispatchers.Unconfined)
+	}
 
 	@Test
 	fun testHasZeroPagesForRemovedState() {
@@ -120,7 +130,7 @@ class TestDndProficiencySelectionViewModel {
 		state = Normal(testSelection2)
 		testExternal.onNext(state)
 
-		assert(toTest.pageCount == 3)
+		assert(toTest.pageCount == 3) { "Expected 3, but had ${toTest.pageCount}"}
 		assert(testObserver.valueCount() == 2)
 		assert(testObserver.values()[0] == 1)
 		assert(testObserver.values()[1] == 2)
