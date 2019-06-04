@@ -9,7 +9,10 @@ import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndCharacterClassDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.network.DndCharacterClassApiConnection
+import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import io.reactivex.subjects.PublishSubject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 class DndClasses : DndCharacterClassProvider, Parcelable {
 
@@ -19,6 +22,7 @@ class DndClasses : DndCharacterClassProvider, Parcelable {
 	override val externalStateChanges = PublishSubject.create<ItemState<out DndCharacterClassSelection>>()
 
 	private val dataStore = DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl())
+	private var concurrency: Concurrency? = null
 
 	constructor()
 
@@ -31,11 +35,22 @@ class DndClasses : DndCharacterClassProvider, Parcelable {
 		}
 	}
 
-	override suspend fun start() {
-		doLoadAvailableClasses()
+	override fun start(concurrency: Concurrency) {
+		this.concurrency = concurrency
+		concurrency.runDiskOrNetwork(::doLoadAvailableClasses)
 	}
 
 	override fun refreshClassState() {
+		concurrency?.runCalculation(::doUpdateClassState) { internalStateChanges.onNext(state) }
+	}
+
+	private suspend fun doLoadAvailableClasses() {
+		val characterClasses = dataStore.getCharacterClassList()
+		state = Normal(DndCharacterClassSelection(characterClasses.map { Normal(it) }))
+		externalStateChanges.onNext(state)
+	}
+
+	private suspend fun doUpdateClassState() = withContext(Dispatchers.Default) {
 		val newState = when(val oldState = state) {
 			is Completed -> {
 				if (oldState.item.selectedItem != null) {
@@ -54,13 +69,6 @@ class DndClasses : DndCharacterClassProvider, Parcelable {
 			else -> oldState
 		}
 		state = newState
-		internalStateChanges.onNext(newState)
-	}
-
-	private suspend fun doLoadAvailableClasses() {
-		val characterClasses = dataStore.getCharacterClassList()
-		state = Normal(DndCharacterClassSelection(characterClasses.map { Normal(it) }))
-		externalStateChanges.onNext(state)
 	}
 
 	override fun writeToParcel(dest: Parcel?, flags: Int) {

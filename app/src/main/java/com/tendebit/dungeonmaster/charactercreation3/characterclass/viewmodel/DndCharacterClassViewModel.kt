@@ -15,11 +15,12 @@ class DndCharacterClassViewModel(initialState: ItemState<out DndCharacterClass>)
 	private var internalState = initialState
 	var state: ItemState<out DndCharacterClass>
 		get() = internalState
-		set(value) { onStateChanged(value) }
-	val textType = when(state) {
-		is Selected -> TextTypes.SELECTED
-		else -> TextTypes.NORMAL
-	}
+		set(value) = onStateChanged(value)
+	val textType: TextTypes
+		get() = when(state) {
+			is Selected -> TextTypes.SELECTED
+			else -> TextTypes.NORMAL
+		}
 	val text = state.item?.name
 
 	private val internalSelection = PublishSubject.create<Boolean>()
