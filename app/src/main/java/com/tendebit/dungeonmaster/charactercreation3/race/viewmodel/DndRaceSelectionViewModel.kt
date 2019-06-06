@@ -1,13 +1,13 @@
-package com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel
+package com.tendebit.dungeonmaster.charactercreation3.race.viewmodel
 
 import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Loading
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassProvider
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
+import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
+import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceProvider
+import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceSelection
+import com.tendebit.dungeonmaster.charactercreation3.race.logger
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
@@ -20,9 +20,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
-private const val PAGE_COUNT = 1 // Always 1 page for class selection
+private const val PAGE_COUNT = 1 // Always 1 page for race selection
 
-class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClassProvider) : SingleSelectViewModel<DndCharacterClass>, PageSection, Page {
+class DndRaceSelectionViewModel(private val provider: DndRaceProvider) : SingleSelectViewModel<DndRace>, PageSection, Page {
 
 	private val viewModelJob = Job()
 	private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
@@ -32,7 +32,7 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 	private var childClickDisposable = CompositeDisposable()
 
 	override val pages = listOf(this)
-	override val children = ArrayList<DndCharacterClassViewModel>(provider.state.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
+	override val children = ArrayList<DndRaceViewModel>(provider.state.item?.options?.map { DndRaceViewModel(it) } ?: emptyList())
 
 	override var itemCount: Int = children.size
 		private set
@@ -40,7 +40,7 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 		private set
 	override val pageCount = PAGE_COUNT
 
-	override val changes = PublishSubject.create<DndCharacterClassSelectionViewModel>()
+	override val changes = PublishSubject.create<DndRaceSelectionViewModel>()
 
 	private val internalItemChanges = PublishSubject.create<Int>()
 	override val itemChanges = internalItemChanges as Observable<Int>
@@ -68,29 +68,29 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 
 	override fun getInstanceState(): Parcelable? = provider as? Parcelable
 
-	private fun onStateChangedExternally(newState: ItemState<out DndCharacterClassSelection>) {
+	private fun onStateChangedExternally(newState: ItemState<out DndRaceSelection>) {
 		logger.writeDebug("Got external state: $newState")
 		viewModelScope.launch(context = Dispatchers.Default) {
 			children.clear()
-			children.addAll(newState.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
+			children.addAll(newState.item?.options?.map { DndRaceViewModel(it) } ?: emptyList())
 			subscribeToSelection(newState.item)
 			subscribeToChildren(newState)
 			updateViewModelValues(newState)
 		}
 	}
 
-	private fun onStateChangedInternally(newState: ItemState<out DndCharacterClassSelection>) {
+	private fun onStateChangedInternally(newState: ItemState<out DndRaceSelection>) {
 		logger.writeDebug("Got internal state: $newState")
 		updateViewModelValues(newState)
 	}
 
-	private fun updateViewModelValues(state: ItemState<out DndCharacterClassSelection>) {
+	private fun updateViewModelValues(state: ItemState<out DndRaceSelection>) {
 		showLoading = state is Loading
 		itemCount = children.size
-		viewModelScope.launch(Dispatchers.Main) { changes.onNext(this@DndCharacterClassSelectionViewModel) }
+		viewModelScope.launch(Dispatchers.Main) { changes.onNext(this@DndRaceSelectionViewModel) }
 	}
 
-	private fun subscribeToSelection(selection: DndCharacterClassSelection?) {
+	private fun subscribeToSelection(selection: DndRaceSelection?) {
 		childUpdateDisposable?.dispose()
 		childUpdateDisposable = selection?.selectionChanges?.subscribe {
 			children[it.index].state = it.state
@@ -98,7 +98,7 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 		}
 	}
 
-	private fun subscribeToChildren(state: ItemState<out DndCharacterClassSelection>) {
+	private fun subscribeToChildren(state: ItemState<out DndRaceSelection>) {
 		childClickDisposable.dispose()
 		childClickDisposable = CompositeDisposable()
 		for (childItem in children.withIndex()) {

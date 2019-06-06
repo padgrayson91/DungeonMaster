@@ -4,12 +4,12 @@ import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassViewModel
 import io.reactivex.Observable
 
-interface SingleSelectViewModel : ViewModel, Clearable {
-	val children: List<DndCharacterClassViewModel>
+interface SingleSelectViewModel<T> : ViewModel, Clearable {
+	val children: List<SelectableViewModel<T>>
 	val itemCount: Int
 	val showLoading: Boolean
 	val pageCount: Int
-	override val changes: Observable<out SingleSelectViewModel>
+	override val changes: Observable<out SingleSelectViewModel<T>>
 	val itemChanges: Observable<Int>
 
 	fun getInstanceState(): Parcelable?

@@ -6,6 +6,8 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.view.DndClas
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.view.DndProficiencyGroupFragment
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyGroupViewModel
+import com.tendebit.dungeonmaster.charactercreation3.race.view.DndRaceSelectionFragment
+import com.tendebit.dungeonmaster.charactercreation3.race.viewmodel.DndRaceSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationSectionsViewModel
 import com.tendebit.dungeonmaster.core.platform.ViewModelManager
 import io.reactivex.disposables.Disposable
@@ -23,6 +25,7 @@ class CharacterCreationSectionsAdapter(fragment: Fragment, private val viewModel
 		return when (val childViewModel = viewModel.pages[position]) {
 			is DndProficiencyGroupViewModel -> DndProficiencyGroupFragment.newInstance(viewModelManager.addViewModel(childViewModel))
 			is DndCharacterClassSelectionViewModel -> DndClassSelectionFragment.newInstance(viewModelManager.addViewModel(childViewModel))
+			is DndRaceSelectionViewModel -> DndRaceSelectionFragment.newInstance(viewModelManager.addViewModel(childViewModel))
 			else -> throw IllegalStateException("Had unexpected viewmodel $childViewModel")
 		}
 	}

@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.characterclass.view
+package com.tendebit.dungeonmaster.charactercreation3.race.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,24 +9,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
-import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
+import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
+import com.tendebit.dungeonmaster.charactercreation3.race.viewmodel.DndRaceSelectionViewModel
 import com.tendebit.dungeonmaster.core.platform.ViewModels
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
+import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
 import io.reactivex.disposables.Disposable
 
-class DndClassSelectionFragment : Fragment() {
+class DndRaceSelectionFragment : Fragment() {
 
 	companion object {
-		fun newInstance(viewModelId: Long) = DndClassSelectionFragment().apply { arguments = Bundle().apply { putLong(ID_KEY, viewModelId) } }
+		fun newInstance(viewModelId: Long) = DndRaceSelectionFragment().apply { arguments = Bundle().apply { putLong(ID_KEY, viewModelId) } }
 	}
 
 	private lateinit var recycler: RecyclerView
 	private lateinit var loadingDialog: LoadingDialog
 	private var disposable: Disposable? = null
-	private var adapter: DndClassSelectionAdapter? = null
-	private var viewModel: SingleSelectViewModel<DndCharacterClass>? = null
+	private var adapter: DndRaceSelectionAdapter? = null
+	private var viewModel: SingleSelectViewModel<DndRace>? = null
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 		val root = inflater.inflate(R.layout.fragment_generic_list, container, false)
@@ -55,13 +55,13 @@ class DndClassSelectionFragment : Fragment() {
 		disposable?.dispose()
 	}
 
-	private fun onAttachViewModel(viewModel: SingleSelectViewModel<DndCharacterClass>?) {
+	private fun onAttachViewModel(viewModel: SingleSelectViewModel<DndRace>?) {
 		disposable?.dispose()
 		adapter?.clear()
-		adapter = DndClassSelectionAdapter(viewModel)
+		adapter = DndRaceSelectionAdapter(viewModel)
 	}
 
-	private fun onViewModelChanged(viewModel: SingleSelectViewModel<DndCharacterClass>?) {
+	private fun onViewModelChanged(viewModel: SingleSelectViewModel<DndRace>?) {
 		loadingDialog.visibility = if (viewModel?.showLoading == false) View.GONE else View.VISIBLE
 	}
 
