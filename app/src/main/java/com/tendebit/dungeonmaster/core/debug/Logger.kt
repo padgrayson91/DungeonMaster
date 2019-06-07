@@ -49,7 +49,7 @@ class Logger(vararg tags: CharSequence) {
 		} else {
 			": $throwable"
 		}
-		System.out.println(tag + text + throwableText)
+		System.out.println("$tag $text$throwableText")
 	}
 
 }
