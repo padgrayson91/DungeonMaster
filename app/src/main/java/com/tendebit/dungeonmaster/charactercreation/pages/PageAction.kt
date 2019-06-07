@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation2.pager
+package com.tendebit.dungeonmaster.charactercreation.pages
 
 enum class PageAction {
     NAVIGATE_BACK,

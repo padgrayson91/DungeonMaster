@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.core.viewmodel2
+package com.tendebit.dungeonmaster.core.viewmodel
 
 import com.tendebit.dungeonmaster.core.Id
 

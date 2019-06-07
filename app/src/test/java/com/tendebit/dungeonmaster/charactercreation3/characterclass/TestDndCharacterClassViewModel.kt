@@ -3,6 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation3.characterclass
 import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassViewModel
+import com.tendebit.dungeonmaster.core.viewmodel3.TextTypes
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import io.reactivex.observers.TestObserver
 import org.junit.Test
@@ -14,7 +15,7 @@ class TestDndCharacterClassViewModel {
 		val testItem = Normal(CharacterCreationRobots.standardClassListV2[0])
 		val toTest = DndCharacterClassViewModel(testItem)
 
-		assert(toTest.textType == DndCharacterClassViewModel.TextTypes.NORMAL)
+		assert(toTest.textType == TextTypes.NORMAL)
 	}
 
 	@Test
@@ -22,7 +23,7 @@ class TestDndCharacterClassViewModel {
 		val testItem = Selected(CharacterCreationRobots.standardClassListV2[0])
 		val toTest = DndCharacterClassViewModel(testItem)
 
-		assert(toTest.textType == DndCharacterClassViewModel.TextTypes.SELECTED)
+		assert(toTest.textType == TextTypes.SELECTED)
 	}
 
 

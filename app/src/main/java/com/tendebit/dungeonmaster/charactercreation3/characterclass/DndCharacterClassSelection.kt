@@ -54,6 +54,7 @@ class DndCharacterClassSelection : Parcelable {
 	}
 
 	fun select(index: Int) {
+		logger.writeDebug("Selecting item at index $index")
 		val previousSelectionIndex = selectedIndex
 		if (previousSelectionIndex == index) {
 			return

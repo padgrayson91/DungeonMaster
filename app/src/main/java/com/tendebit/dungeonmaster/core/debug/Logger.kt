@@ -17,6 +17,7 @@ class Logger(vararg tags: CharSequence) {
 
 	fun writeError(text: CharSequence, throwable: Throwable? = null) {
 		if (DebugUtils.isRunningTest()) {
+			writeForJUnit(text, throwable)
 			return
 		}
 		Log.e(tag, text.toString(), throwable)
@@ -24,6 +25,7 @@ class Logger(vararg tags: CharSequence) {
 
 	fun write(text: CharSequence) {
 		if (DebugUtils.isRunningTest()) {
+			writeForJUnit(text)
 			return
 		}
 		Log.d(tag, text.toString())
@@ -34,10 +36,20 @@ class Logger(vararg tags: CharSequence) {
 			return
 		}
 		if (DebugUtils.isRunningTest()) {
+			writeForJUnit(text)
 			return
 		}
 
 		Log.d(tag, text.toString())
+	}
+
+	private fun writeForJUnit(text: CharSequence, throwable: Throwable? = null) {
+		val throwableText = if (throwable == null) {
+			""
+		} else {
+			": $throwable"
+		}
+		System.out.println(tag + text + throwableText)
 	}
 
 }

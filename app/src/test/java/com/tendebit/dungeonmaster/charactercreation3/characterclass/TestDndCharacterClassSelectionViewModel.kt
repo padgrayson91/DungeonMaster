@@ -6,6 +6,7 @@ import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
+import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.Dispatchers
@@ -17,10 +18,12 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when` as whenever
 
+@ExperimentalCoroutinesApi
 class TestDndCharacterClassSelectionViewModel {
 
+	private val concurrency = TestConcurrency
+
 	@Before
-	@ExperimentalCoroutinesApi
 	fun configureCoroutines() {
 		Dispatchers.setMain(Dispatchers.Unconfined)
 	}
@@ -34,7 +37,7 @@ class TestDndCharacterClassSelectionViewModel {
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockClassProvider.state).thenReturn(Loading)
 
-		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider)
+		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
 		assert(toTest.showLoading)
 	}
@@ -48,7 +51,7 @@ class TestDndCharacterClassSelectionViewModel {
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockClassProvider.state).thenReturn(Loading)
 
-		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider)
+		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
 		assert(toTest.pageCount == 1)
 	}
@@ -63,13 +66,13 @@ class TestDndCharacterClassSelectionViewModel {
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
 
-		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider)
+		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 		val testObserver = TestObserver<Int>()
 		toTest.itemChanges.subscribe(testObserver)
 
 		toTest.children[1].onClick()
 
-		assert(testObserver.valueCount() == 1)
+		assert(testObserver.valueCount() == 1) { "Expected 1 but had ${testObserver.valueCount()}"}
 		assert(testObserver.values()[0] == 1)
 	}
 
@@ -83,7 +86,7 @@ class TestDndCharacterClassSelectionViewModel {
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
 
-		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider)
+		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
 		assert(toTest.itemCount == CharacterCreationRobots.blankClassStateList.size)
 	}
@@ -98,7 +101,7 @@ class TestDndCharacterClassSelectionViewModel {
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
 
-		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider)
+		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
 		assert(!toTest.showLoading)
 	}
@@ -113,7 +116,7 @@ class TestDndCharacterClassSelectionViewModel {
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
 
-		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider)
+		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
 		toTest.children[0].onClick()
 
@@ -130,7 +133,7 @@ class TestDndCharacterClassSelectionViewModel {
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
 
-		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider)
+		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
 		toTest.children[0].onClick()
 		toTest.children[0].onClick()

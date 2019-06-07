@@ -14,7 +14,7 @@ import com.tendebit.dungeonmaster.charactercreation.CharacterCreationStateFragme
 import com.tendebit.dungeonmaster.charactercreation.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation.STATE_FRAGMENT_TAG
 import com.tendebit.dungeonmaster.charactercreation.viewpager.adapter.CharacterCreationPagerAdapter
-import com.tendebit.dungeonmaster.charactercreation2.pager.PageAction
+import com.tendebit.dungeonmaster.charactercreation.pages.PageAction
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import io.reactivex.disposables.CompositeDisposable

@@ -22,7 +22,7 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 
 	val sectionsViewModel = CharacterCreationSectionsViewModel(
 			listOf(DndRaceSelectionViewModel(state.races),
-					DndCharacterClassSelectionViewModel(state.classes),
+					DndCharacterClassSelectionViewModel(state.classes, concurrency),
 					DndProficiencySelectionViewModel(state.proficiencies)))
 
 	override val changes: Observable<out ViewModel>
