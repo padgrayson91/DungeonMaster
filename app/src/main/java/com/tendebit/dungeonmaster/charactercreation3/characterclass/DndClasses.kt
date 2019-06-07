@@ -11,11 +11,12 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndChar
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.network.DndCharacterClassApiConnection
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.Selection
+import com.tendebit.dungeonmaster.core.model.SelectionProvider
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DndClasses : DndCharacterClassProvider, Parcelable {
+class DndClasses : SelectionProvider<DndCharacterClass>, Parcelable {
 
 	override var state: ItemState<out Selection<DndCharacterClass>> = Loading
 
@@ -41,7 +42,7 @@ class DndClasses : DndCharacterClassProvider, Parcelable {
 		concurrency.runDiskOrNetwork(::doLoadAvailableClasses)
 	}
 
-	override fun refreshClassState() {
+	override fun refresh() {
 		concurrency?.runCalculation(::doUpdateClassState) { internalStateChanges.onNext(state) }
 	}
 

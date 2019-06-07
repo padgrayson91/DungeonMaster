@@ -5,10 +5,10 @@ import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassProvider
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.Selection
+import com.tendebit.dungeonmaster.core.model.SelectionProvider
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
@@ -18,7 +18,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 private const val PAGE_COUNT = 1 // Always 1 page for class selection
 
-class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClassProvider, private val concurrency: Concurrency) : SingleSelectViewModel<DndCharacterClass>, PageSection, Page {
+class DndCharacterClassSelectionViewModel(private val provider: SelectionProvider<DndCharacterClass>, private val concurrency: Concurrency) : SingleSelectViewModel<DndCharacterClass>, PageSection, Page {
 
 	private val classOptionsDisposable = CompositeDisposable()
 	private var childUpdateDisposable: Disposable? = null
@@ -105,7 +105,7 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 	}
 
 	private fun checkForCompletion() {
-		provider.refreshClassState()
+		provider.refresh()
 	}
 
 }

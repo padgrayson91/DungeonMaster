@@ -6,6 +6,7 @@ import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
 import com.tendebit.dungeonmaster.core.model.Selection
+import com.tendebit.dungeonmaster.core.model.SelectionProvider
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import io.reactivex.Observable
@@ -20,6 +21,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when` as whenever
 
 @ExperimentalCoroutinesApi
+@Suppress("UNCHECKED_CAST")
 class TestDndCharacterClassSelectionViewModel {
 
 	private val concurrency = TestConcurrency
@@ -31,7 +33,7 @@ class TestDndCharacterClassSelectionViewModel {
 
 	@Test
 	fun testLoadingWhenStateIsLoading() {
-		val mockClassProvider = Mockito.mock(DndCharacterClassProvider::class.java)
+		val mockClassProvider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<DndCharacterClass>
 		val testExternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		whenever(mockClassProvider.externalStateChanges).thenReturn(testExternal)
@@ -45,7 +47,7 @@ class TestDndCharacterClassSelectionViewModel {
 
 	@Test
 	fun testInitialStateHas1Page() {
-		val mockClassProvider = Mockito.mock(DndCharacterClassProvider::class.java)
+		val mockClassProvider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<DndCharacterClass>
 		val testExternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		whenever(mockClassProvider.externalStateChanges).thenReturn(testExternal)
@@ -59,7 +61,7 @@ class TestDndCharacterClassSelectionViewModel {
 
 	@Test
 	fun testClickingChildEmitsItemChange() = runBlocking {
-		val mockClassProvider = Mockito.mock(DndCharacterClassProvider::class.java)
+		val mockClassProvider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<DndCharacterClass>
 		val testSelection = DndCharacterClassSelection(CharacterCreationRobots.blankClassStateList)
 		val testExternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
@@ -79,7 +81,7 @@ class TestDndCharacterClassSelectionViewModel {
 
 	@Test
 	fun testItemCountIsCorrect() {
-		val mockClassProvider = Mockito.mock(DndCharacterClassProvider::class.java)
+		val mockClassProvider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<DndCharacterClass>
 		val testSelection = DndCharacterClassSelection(CharacterCreationRobots.blankClassStateList)
 		val testExternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
@@ -94,7 +96,7 @@ class TestDndCharacterClassSelectionViewModel {
 
 	@Test
 	fun testNotLoadingWhenNormalStateIsProvided() {
-		val mockClassProvider = Mockito.mock(DndCharacterClassProvider::class.java)
+		val mockClassProvider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<DndCharacterClass>
 		val testSelection = DndCharacterClassSelection(CharacterCreationRobots.blankClassStateList)
 		val testExternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
@@ -109,7 +111,7 @@ class TestDndCharacterClassSelectionViewModel {
 
 	@Test
 	fun testClickingChildUpdatesChildState() {
-		val mockClassProvider = Mockito.mock(DndCharacterClassProvider::class.java)
+		val mockClassProvider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<DndCharacterClass>
 		val testSelection = DndCharacterClassSelection(CharacterCreationRobots.blankClassStateList)
 		val testExternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
@@ -126,7 +128,7 @@ class TestDndCharacterClassSelectionViewModel {
 
 	@Test
 	fun testClickingChildTwiceResetsChildState() {
-		val mockClassProvider = Mockito.mock(DndCharacterClassProvider::class.java)
+		val mockClassProvider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<DndCharacterClass>
 		val testSelection = DndCharacterClassSelection(CharacterCreationRobots.blankClassStateList)
 		val testExternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()

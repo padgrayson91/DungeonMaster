@@ -5,9 +5,9 @@ import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
-import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceProvider
 import com.tendebit.dungeonmaster.charactercreation3.race.logger
 import com.tendebit.dungeonmaster.core.model.Selection
+import com.tendebit.dungeonmaster.core.model.SelectionProvider
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 
 private const val PAGE_COUNT = 1 // Always 1 page for race selection
 
-class DndRaceSelectionViewModel(private val provider: DndRaceProvider) : SingleSelectViewModel<DndRace>, PageSection, Page {
+class DndRaceSelectionViewModel(private val provider: SelectionProvider<DndRace>) : SingleSelectViewModel<DndRace>, PageSection, Page {
 
 	private val viewModelJob = Job()
 	private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
@@ -112,7 +112,7 @@ class DndRaceSelectionViewModel(private val provider: DndRaceProvider) : SingleS
 	}
 
 	private fun checkForCompletion() {
-		provider.refreshClassState()
+		provider.refresh()
 	}
 
 }
