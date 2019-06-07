@@ -6,8 +6,8 @@ import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceProvider
-import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceSelection
 import com.tendebit.dungeonmaster.charactercreation3.race.logger
+import com.tendebit.dungeonmaster.core.model.Selection
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
@@ -68,7 +68,7 @@ class DndRaceSelectionViewModel(private val provider: DndRaceProvider) : SingleS
 
 	override fun getInstanceState(): Parcelable? = provider as? Parcelable
 
-	private fun onStateChangedExternally(newState: ItemState<out DndRaceSelection>) {
+	private fun onStateChangedExternally(newState: ItemState<out Selection<DndRace>>) {
 		logger.writeDebug("Got external state: $newState")
 		viewModelScope.launch(context = Dispatchers.Default) {
 			children.clear()
@@ -79,18 +79,18 @@ class DndRaceSelectionViewModel(private val provider: DndRaceProvider) : SingleS
 		}
 	}
 
-	private fun onStateChangedInternally(newState: ItemState<out DndRaceSelection>) {
+	private fun onStateChangedInternally(newState: ItemState<out Selection<DndRace>>) {
 		logger.writeDebug("Got internal state: $newState")
 		updateViewModelValues(newState)
 	}
 
-	private fun updateViewModelValues(state: ItemState<out DndRaceSelection>) {
+	private fun updateViewModelValues(state: ItemState<out Selection<DndRace>>) {
 		showLoading = state is Loading
 		itemCount = children.size
 		viewModelScope.launch(Dispatchers.Main) { changes.onNext(this@DndRaceSelectionViewModel) }
 	}
 
-	private fun subscribeToSelection(selection: DndRaceSelection?) {
+	private fun subscribeToSelection(selection: Selection<DndRace>?) {
 		childUpdateDisposable?.dispose()
 		childUpdateDisposable = selection?.selectionChanges?.subscribe {
 			children[it.index].state = it.state
@@ -98,7 +98,7 @@ class DndRaceSelectionViewModel(private val provider: DndRaceProvider) : SingleS
 		}
 	}
 
-	private fun subscribeToChildren(state: ItemState<out DndRaceSelection>) {
+	private fun subscribeToChildren(state: ItemState<out Selection<DndRace>>) {
 		childClickDisposable.dispose()
 		childClickDisposable = CompositeDisposable()
 		for (childItem in children.withIndex()) {

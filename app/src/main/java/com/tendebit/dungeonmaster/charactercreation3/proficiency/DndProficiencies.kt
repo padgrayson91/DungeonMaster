@@ -9,9 +9,9 @@ import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.Removed
 import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProficiencyDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
+import com.tendebit.dungeonmaster.core.model.Selection
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineScope
@@ -69,7 +69,7 @@ class DndProficiencies : ProficiencyProvider, Parcelable {
 		}
 	}
 
-	private suspend fun updateStateForClassSelectionChange(selection: ItemState<out DndCharacterClassSelection>) {
+	private suspend fun updateStateForClassSelectionChange(selection: ItemState<out Selection<DndCharacterClass>>) {
 		logger.writeDebug("Got a new class selection: $selection")
 		when(selection) {
 			is Completed -> doLoadProficienciesForSelectedClass(selection.item.selectedItem?.item)

@@ -10,16 +10,17 @@ import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRaceDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.race.data.network.DndRaceApiConnection
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
+import com.tendebit.dungeonmaster.core.model.Selection
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
 class DndRaces : DndRaceProvider, Parcelable {
 
-	override var state: ItemState<out DndRaceSelection> = Loading
+	override var state: ItemState<out Selection<DndRace>> = Loading
 
-	override val internalStateChanges = PublishSubject.create<ItemState<out DndRaceSelection>>()
-	override val externalStateChanges = PublishSubject.create<ItemState<out DndRaceSelection>>()
+	override val internalStateChanges = PublishSubject.create<ItemState<out Selection<DndRace>>>()
+	override val externalStateChanges = PublishSubject.create<ItemState<out Selection<DndRace>>>()
 
 	private val dataStore = DndRaceDataStoreImpl(DndRaceApiConnection.Impl())
 	private var concurrency: Concurrency? = null

@@ -6,9 +6,9 @@ import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassProvider
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
+import com.tendebit.dungeonmaster.core.model.Selection
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
@@ -60,7 +60,7 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 
 	override fun getInstanceState(): Parcelable? = provider as? Parcelable
 
-	private fun onStateChangedExternally(newState: ItemState<out DndCharacterClassSelection>) {
+	private fun onStateChangedExternally(newState: ItemState<out Selection<DndCharacterClass>>) {
 		logger.writeDebug("Got external state: $newState")
 		concurrency.runCalculation({
 			children.clear()
@@ -71,18 +71,18 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 		})
 	}
 
-	private fun onStateChangedInternally(newState: ItemState<out DndCharacterClassSelection>) {
+	private fun onStateChangedInternally(newState: ItemState<out Selection<DndCharacterClass>>) {
 		logger.writeDebug("Got internal state: $newState")
 		updateViewModelValues(newState)
 	}
 
-	private fun updateViewModelValues(state: ItemState<out DndCharacterClassSelection>) {
+	private fun updateViewModelValues(state: ItemState<out Selection<DndCharacterClass>>) {
 		showLoading = state is Loading
 		itemCount = children.size
 		concurrency.runImmediate { changes.onNext(this@DndCharacterClassSelectionViewModel) }
 	}
 
-	private fun subscribeToSelection(selection: DndCharacterClassSelection?) {
+	private fun subscribeToSelection(selection: Selection<DndCharacterClass>?) {
 		childUpdateDisposable?.dispose()
 		childUpdateDisposable = selection?.selectionChanges?.subscribe {
 			children[it.index].state = it.state
@@ -90,7 +90,7 @@ class DndCharacterClassSelectionViewModel(private val provider: DndCharacterClas
 		}
 	}
 
-	private fun subscribeToChildren(state: ItemState<out DndCharacterClassSelection>) {
+	private fun subscribeToChildren(state: ItemState<out Selection<DndCharacterClass>>) {
 		childClickDisposable.dispose()
 		childClickDisposable = CompositeDisposable()
 		for (childItem in children.withIndex()) {
