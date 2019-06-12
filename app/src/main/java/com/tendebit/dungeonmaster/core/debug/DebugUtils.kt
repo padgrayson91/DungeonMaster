@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 object DebugUtils {
 
+	val logger = Logger("GLOBAL")
 	private var isRunningTest: AtomicBoolean? = null
 
 	fun isRunningTest(): Boolean {

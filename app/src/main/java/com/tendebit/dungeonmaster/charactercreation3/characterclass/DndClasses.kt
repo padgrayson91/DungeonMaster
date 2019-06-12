@@ -2,13 +2,17 @@ package com.tendebit.dungeonmaster.charactercreation3.characterclass
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tendebit.dungeonmaster.App
 import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.ItemStateUtils
 import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.Normal
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndCharacterClassDataStore
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndCharacterClassDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.network.DndCharacterClassApiConnection
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.RoomCharacterClassStorage
+import com.tendebit.dungeonmaster.charactercreation3.storage.CharacterCreationDb
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.Selection
 import com.tendebit.dungeonmaster.core.model.SelectionProvider
@@ -23,27 +27,30 @@ class DndClasses : SelectionProvider<DndCharacterClass>, Parcelable {
 	override val internalStateChanges = PublishSubject.create<ItemState<out Selection<DndCharacterClass>>>()
 	override val externalStateChanges = PublishSubject.create<ItemState<out Selection<DndCharacterClass>>>()
 
-	private val dataStore = DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl())
-	private var concurrency: Concurrency? = null
+	private lateinit var dataStore: DndCharacterClassDataStore
+	private lateinit var concurrency: Concurrency
 
 	constructor()
 
 	private constructor(parcel: Parcel) {
 		state = ItemStateUtils.readItemStateFromParcel(parcel)
-		@Suppress("UNCHECKED_CAST")
-		val classesFromState = state.item?.options?.map { it.item }?.filter { it != null } as? List<DndCharacterClass>
-		if (classesFromState != null) {
-			dataStore.restoreCharacterClassList(classesFromState)
-		}
+		logger.writeDebug("Got $state from parcel")
 	}
 
 	override fun start(concurrency: Concurrency) {
 		this.concurrency = concurrency
+		dataStore = DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(CharacterCreationDb.getInstance(App.instance.applicationContext), concurrency))
+		@Suppress("UNCHECKED_CAST")
+		val classesFromState = state.item?.options?.map { it.item }?.filter { it != null } as? List<DndCharacterClass>
+		if (classesFromState != null) {
+			logger.writeDebug("Had ${classesFromState.size} classes from a parcelized state")
+			dataStore.restoreCharacterClassList(classesFromState)
+		}
 		concurrency.runDiskOrNetwork(::doLoadAvailableClasses)
 	}
 
 	override fun refresh() {
-		concurrency?.runCalculation(::doUpdateClassState) { internalStateChanges.onNext(state) }
+		concurrency.runCalculation(::doUpdateClassState) { internalStateChanges.onNext(state) }
 	}
 
 	private suspend fun doLoadAvailableClasses() {
@@ -74,6 +81,7 @@ class DndClasses : SelectionProvider<DndCharacterClass>, Parcelable {
 	}
 
 	override fun writeToParcel(dest: Parcel?, flags: Int) {
+		logger.writeDebug("Parcelizing $this")
 		dest?.let {
 			ItemStateUtils.writeItemStateToParcel(state, it)
 		}

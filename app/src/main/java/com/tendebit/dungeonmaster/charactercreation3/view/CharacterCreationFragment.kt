@@ -10,6 +10,7 @@ import androidx.viewpager2.widget.ViewPager2
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.CharacterCreation
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
+import com.tendebit.dungeonmaster.charactercreation3.logger
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationSectionsViewModel
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.core.extensions.getViewModelManager
@@ -27,6 +28,7 @@ class CharacterCreationFragment : Fragment() {
 	private class Factory : ViewModelFactory<CharacterCreationViewModel> {
 
 		override fun createNew(): CharacterCreationViewModel {
+			logger.writeDebug("Creating new ${CharacterCreationViewModel::class}")
 			return CharacterCreationViewModel(CharacterCreation())
 		}
 
@@ -74,7 +76,7 @@ class CharacterCreationFragment : Fragment() {
 		}
 
 		viewModel?.sectionsViewModel?.let { sections ->
-			adapter = CharacterCreationSectionsAdapter(this, sections, activity.getViewModelManager())
+			adapter = CharacterCreationSectionsAdapter(this, sections, ViewModels.from(activity)!!)
 			viewPager.adapter = adapter
 			pageChangeDisposable = sections.pageChanges.subscribe {
 				if (it == viewPager.currentItem) {

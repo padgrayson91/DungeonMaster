@@ -21,4 +21,6 @@ object CharacterCreationViewRobots {
 			DndCharacterClass("Rogue", "example.com/rogue"),
 			DndCharacterClass("Monk", "example.com/monk"))
 
+	val blankClassStateList = standardClassList.map { Normal(it) }
+
 }

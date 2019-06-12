@@ -18,7 +18,7 @@ class DashboardActivity : AppCompatActivity() {
         val addedFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
         if (addedFragment == null) {
             supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment_container, CharacterCreationFragment())
+                    .add(R.id.fragment_container, CharacterCreationFragment.newInstance(null))
                     .commit()
         }
     }

@@ -3,6 +3,7 @@ package com.tendebit.dungeonmaster.core.platform
 import android.os.Bundle
 import android.util.LongSparseArray
 import androidx.fragment.app.Fragment
+import com.tendebit.dungeonmaster.core.debug.DebugUtils
 import com.tendebit.dungeonmaster.core.viewmodel3.Clearable
 import com.tendebit.dungeonmaster.core.viewmodel3.ViewModel
 import com.tendebit.dungeonmaster.core.viewmodel3.ViewModelFactory
@@ -39,8 +40,10 @@ class ViewModelFragment : Fragment(), ViewModelManager {
 	}
 
 	override fun addViewModel(viewModel: ViewModel): Long {
+		DebugUtils.logger.writeDebug("${viewModels.size()} ViewModels in $this")
 		val key = if (viewModels.size() == 0) 0 else viewModels.keyAt(viewModels.size() - 1) + 1
 		viewModels.put(key, viewModel)
+		DebugUtils.logger.writeDebug("Adding $viewModel with key $key (${viewModels.size()})")
 		return key
 	}
 
