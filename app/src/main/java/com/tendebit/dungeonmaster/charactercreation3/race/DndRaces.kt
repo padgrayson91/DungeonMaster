@@ -2,13 +2,17 @@ package com.tendebit.dungeonmaster.charactercreation3.race
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tendebit.dungeonmaster.App
 import com.tendebit.dungeonmaster.charactercreation3.Completed
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.ItemStateUtils
 import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.Normal
+import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRaceDataStore
 import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRaceDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.race.data.network.DndRaceApiConnection
+import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.RoomRaceStorage
+import com.tendebit.dungeonmaster.charactercreation3.storage.CharacterCreationDb
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.Selection
 import com.tendebit.dungeonmaster.core.model.SelectionProvider
@@ -23,27 +27,28 @@ class DndRaces : SelectionProvider<DndRace>, Parcelable {
 	override val internalStateChanges = PublishSubject.create<ItemState<out Selection<DndRace>>>()
 	override val externalStateChanges = PublishSubject.create<ItemState<out Selection<DndRace>>>()
 
-	private val dataStore = DndRaceDataStoreImpl(DndRaceApiConnection.Impl())
-	private var concurrency: Concurrency? = null
+	private lateinit var dataStore: DndRaceDataStore
+	private lateinit var concurrency: Concurrency
 
 	constructor()
 
 	private constructor(parcel: Parcel) {
 		state = ItemStateUtils.readItemStateFromParcel(parcel)
+	}
+
+	override fun start(concurrency: Concurrency) {
+		this.concurrency = concurrency
+		dataStore = DndRaceDataStoreImpl(DndRaceApiConnection.Impl(), RoomRaceStorage(CharacterCreationDb.getInstance(App.instance.applicationContext), concurrency))
 		@Suppress("UNCHECKED_CAST")
 		val racesFromState = state.item?.options?.map { it.item }?.filter { it != null } as? List<DndRace>
 		if (racesFromState != null) {
 			dataStore.restoreRaceList(racesFromState)
 		}
-	}
-
-	override fun start(concurrency: Concurrency) {
-		this.concurrency = concurrency
 		concurrency.runDiskOrNetwork(::doLoadAvailableRaces)
 	}
 
 	override fun refresh() {
-		concurrency?.runCalculation(::doUpdateRaceState) { internalStateChanges.onNext(state) }
+		concurrency.runCalculation(::doUpdateRaceState) { internalStateChanges.onNext(state) }
 	}
 
 	private suspend fun doLoadAvailableRaces() {
