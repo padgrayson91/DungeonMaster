@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network
 
 import com.google.gson.annotations.SerializedName
-import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.core.model.Normal
 
 class DndProficiencyGroupDirectory {
 

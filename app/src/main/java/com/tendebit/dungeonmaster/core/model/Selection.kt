@@ -1,9 +1,6 @@
 package com.tendebit.dungeonmaster.core.model
 
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
-import com.tendebit.dungeonmaster.charactercreation3.ListItemState
-import com.tendebit.dungeonmaster.charactercreation3.Selected
 import io.reactivex.Observable
 
 interface Selection<T> : Parcelable {

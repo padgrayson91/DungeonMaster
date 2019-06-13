@@ -1,11 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation3.race.viewmodel
 
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.charactercreation3.Completed
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
-import com.tendebit.dungeonmaster.charactercreation3.Loading
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.charactercreation3.race.logger
+import com.tendebit.dungeonmaster.core.model.Completed
+import com.tendebit.dungeonmaster.core.model.ItemState
+import com.tendebit.dungeonmaster.core.model.Loading
 import com.tendebit.dungeonmaster.core.model.Selection
 import com.tendebit.dungeonmaster.core.model.SelectionProvider
 import com.tendebit.dungeonmaster.core.viewmodel3.Page

@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3
+package com.tendebit.dungeonmaster.core.model
 
 /**
  * An [ItemState] is an enumeration of possible states that a given piece of data (or lack thereof) may belong to.

@@ -1,10 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass
 
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
-import com.tendebit.dungeonmaster.charactercreation3.Loading
-import com.tendebit.dungeonmaster.charactercreation3.Normal
-import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
+import com.tendebit.dungeonmaster.core.model.ItemState
+import com.tendebit.dungeonmaster.core.model.Loading
+import com.tendebit.dungeonmaster.core.model.Normal
+import com.tendebit.dungeonmaster.core.model.Selected
 import com.tendebit.dungeonmaster.core.model.Selection
 import com.tendebit.dungeonmaster.core.model.SelectionProvider
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots

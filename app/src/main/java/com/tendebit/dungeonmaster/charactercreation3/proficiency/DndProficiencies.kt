@@ -2,16 +2,16 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.charactercreation3.Completed
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
-import com.tendebit.dungeonmaster.charactercreation3.ItemStateUtils
-import com.tendebit.dungeonmaster.charactercreation3.Normal
-import com.tendebit.dungeonmaster.charactercreation3.Removed
-import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProficiencyDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
+import com.tendebit.dungeonmaster.core.model.Completed
+import com.tendebit.dungeonmaster.core.model.ItemState
+import com.tendebit.dungeonmaster.core.model.ItemStateUtils
+import com.tendebit.dungeonmaster.core.model.Normal
+import com.tendebit.dungeonmaster.core.model.Removed
 import com.tendebit.dungeonmaster.core.model.Selection
+import com.tendebit.dungeonmaster.core.model.Undefined
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineScope

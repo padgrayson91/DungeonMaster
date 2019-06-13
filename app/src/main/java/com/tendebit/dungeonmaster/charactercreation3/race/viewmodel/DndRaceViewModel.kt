@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation3.race.viewmodel
 
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
-import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
+import com.tendebit.dungeonmaster.core.model.ItemState
+import com.tendebit.dungeonmaster.core.model.Selected
 import com.tendebit.dungeonmaster.core.viewmodel3.SelectableViewModel
 import com.tendebit.dungeonmaster.core.viewmodel3.TextTypes
 import io.reactivex.Observable

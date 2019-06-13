@@ -1,11 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
-import com.tendebit.dungeonmaster.charactercreation3.Completed
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
-import com.tendebit.dungeonmaster.charactercreation3.Undefined
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyProvider
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
+import com.tendebit.dungeonmaster.core.model.Completed
+import com.tendebit.dungeonmaster.core.model.ItemState
+import com.tendebit.dungeonmaster.core.model.Undefined
 import com.tendebit.dungeonmaster.core.viewmodel3.Clearable
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import io.reactivex.disposables.CompositeDisposable

@@ -1,9 +1,9 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
-import com.tendebit.dungeonmaster.charactercreation3.Normal
-import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyGroupViewModel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyViewModel
+import com.tendebit.dungeonmaster.core.model.Normal
+import com.tendebit.dungeonmaster.core.model.Selected
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import io.reactivex.observers.TestObserver
 import org.junit.Test

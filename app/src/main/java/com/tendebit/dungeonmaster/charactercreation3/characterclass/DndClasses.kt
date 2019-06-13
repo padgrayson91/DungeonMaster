@@ -3,17 +3,17 @@ package com.tendebit.dungeonmaster.charactercreation3.characterclass
 import android.os.Parcel
 import android.os.Parcelable
 import com.tendebit.dungeonmaster.App
-import com.tendebit.dungeonmaster.charactercreation3.Completed
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
-import com.tendebit.dungeonmaster.charactercreation3.ItemStateUtils
-import com.tendebit.dungeonmaster.charactercreation3.Loading
-import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndCharacterClassDataStore
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndCharacterClassDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.network.DndCharacterClassApiConnection
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.RoomCharacterClassStorage
 import com.tendebit.dungeonmaster.charactercreation3.storage.CharacterCreationDb
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
+import com.tendebit.dungeonmaster.core.model.Completed
+import com.tendebit.dungeonmaster.core.model.ItemState
+import com.tendebit.dungeonmaster.core.model.ItemStateUtils
+import com.tendebit.dungeonmaster.core.model.Loading
+import com.tendebit.dungeonmaster.core.model.Normal
 import com.tendebit.dungeonmaster.core.model.Selection
 import com.tendebit.dungeonmaster.core.model.SelectionProvider
 import io.reactivex.subjects.PublishSubject
@@ -39,7 +39,7 @@ class DndClasses : SelectionProvider<DndCharacterClass>, Parcelable {
 
 	override fun start(concurrency: Concurrency) {
 		this.concurrency = concurrency
-		dataStore = DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(CharacterCreationDb.getInstance(App.instance.applicationContext), concurrency))
+		dataStore = DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(CharacterCreationDb.getInstance(App.instance.applicationContext).classDao(), concurrency))
 		@Suppress("UNCHECKED_CAST")
 		val classesFromState = state.item?.options?.map { it.item }?.filter { it != null } as? List<DndCharacterClass>
 		if (classesFromState != null) {

@@ -29,7 +29,7 @@ class TestClassSelectionDb {
 	fun setup() {
 		val context = ApplicationProvider.getApplicationContext<Context>()
 		db = Room.inMemoryDatabaseBuilder(context, CharacterCreationDb::class.java).build()
-		storage = RoomCharacterClassStorage(db, TestConcurrencyUi)
+		storage = RoomCharacterClassStorage(db.classDao(), TestConcurrencyUi)
 	}
 
 	@After

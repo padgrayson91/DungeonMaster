@@ -1,6 +1,5 @@
 package com.tendebit.dungeonmaster.core.model
 
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import io.reactivex.Observable
 

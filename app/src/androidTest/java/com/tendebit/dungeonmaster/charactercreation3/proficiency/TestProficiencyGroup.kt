@@ -2,14 +2,14 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import android.os.Parcel
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.tendebit.dungeonmaster.charactercreation3.Normal
-import com.tendebit.dungeonmaster.charactercreation3.Selected
+import com.tendebit.dungeonmaster.core.model.Normal
+import com.tendebit.dungeonmaster.core.model.Selected
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import net.bytebuddy.matcher.ElementMatchers.`is` as matches
 import org.junit.Test
 import org.junit.runner.RunWith
+import net.bytebuddy.matcher.ElementMatchers.`is` as matches
 
 @RunWith(AndroidJUnit4::class)
 class TestProficiencyGroup {

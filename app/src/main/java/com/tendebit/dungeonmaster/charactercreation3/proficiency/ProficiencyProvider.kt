@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
+import com.tendebit.dungeonmaster.core.model.ItemState
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 

@@ -1,11 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation3.race.data
 
-import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceSelection
 import com.tendebit.dungeonmaster.charactercreation3.race.data.network.DndRaceApiConnection
 import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.DndRaceStorage
 import com.tendebit.dungeonmaster.charactercreation3.race.logger
+import com.tendebit.dungeonmaster.core.model.Normal
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 

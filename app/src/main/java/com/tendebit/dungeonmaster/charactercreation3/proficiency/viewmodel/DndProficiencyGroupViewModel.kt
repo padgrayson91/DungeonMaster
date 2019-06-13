@@ -1,10 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
-import com.tendebit.dungeonmaster.charactercreation3.Completed
-import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
-import com.tendebit.dungeonmaster.core.viewmodel3.Page
+import com.tendebit.dungeonmaster.core.model.Completed
+import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.viewmodel3.MultiSelectViewModel
+import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
