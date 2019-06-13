@@ -68,4 +68,22 @@ class TestClassSelectionDb {
 		testObserver.assertValue { it.selectedItem != null && it.selectedItem == selection.selectedItem }
 	}
 
+	@Test
+	fun testLateSubscribersGetData() {
+		val selection = DndCharacterClassSelection(CharacterCreationViewRobots.blankClassStateList)
+		val id = storage.storeSelection(selection)
+		assert(id.isNotEmpty())
+		val testObserver = TestObserver<DndCharacterClassSelection>()
+		val maybe = storage.findSelectionById(id)
+		maybe.subscribe(testObserver)
+		testObserver.await()
+
+		val lateObserver = TestObserver<DndCharacterClassSelection>()
+		maybe.subscribe(lateObserver)
+		lateObserver.await()
+		lateObserver.assertNoErrors()
+		lateObserver.assertValueCount(1)
+		lateObserver.assertValue { it.options == selection.options }
+	}
+
 }
