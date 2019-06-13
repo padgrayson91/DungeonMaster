@@ -4,7 +4,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
-import com.tendebit.dungeonmaster.charactercreation3.race.viewmodel.DndRaceSelectionViewModel
 import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
 import io.reactivex.disposables.Disposable
 

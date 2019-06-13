@@ -4,13 +4,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
 import com.tendebit.dungeonmaster.charactercreation3.ItemStateUtils
-import com.tendebit.dungeonmaster.charactercreation3.ListItemState
-import com.tendebit.dungeonmaster.charactercreation3.Normal
-import com.tendebit.dungeonmaster.charactercreation3.Selected
 import com.tendebit.dungeonmaster.core.model.BaseSelection
-import com.tendebit.dungeonmaster.core.model.Selection
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 
 class DndRaceSelection : BaseSelection<DndRace> {
 

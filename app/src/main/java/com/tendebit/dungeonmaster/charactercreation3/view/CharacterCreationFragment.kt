@@ -13,7 +13,6 @@ import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
 import com.tendebit.dungeonmaster.charactercreation3.logger
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationSectionsViewModel
 import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationViewModel
-import com.tendebit.dungeonmaster.core.extensions.getViewModelManager
 import com.tendebit.dungeonmaster.core.platform.ViewModels
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import com.tendebit.dungeonmaster.core.viewmodel3.ViewModelFactory

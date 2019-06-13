@@ -8,7 +8,6 @@ import com.tendebit.dungeonmaster.core.viewmodel3.SelectableViewModel
 import com.tendebit.dungeonmaster.core.viewmodel3.TextTypes
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
-import io.reactivex.subjects.PublishSubject
 
 class DndCharacterClassViewModel(initialState: ItemState<out DndCharacterClass>) : SelectableViewModel<DndCharacterClass> {
 

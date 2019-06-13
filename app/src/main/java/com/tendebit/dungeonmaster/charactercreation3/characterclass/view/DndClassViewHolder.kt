@@ -7,7 +7,6 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassViewModel
 import com.tendebit.dungeonmaster.core.viewmodel3.SelectableViewModel
 import com.tendebit.dungeonmaster.core.viewmodel3.TextTypes
 
