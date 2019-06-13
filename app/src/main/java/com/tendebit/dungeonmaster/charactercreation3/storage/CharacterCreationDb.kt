@@ -8,11 +8,23 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.StoredCharacterClassSelection
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.StoredClassDao
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.StoredSelectionCharacterClassJoin
+import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.StoredRace
+import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.StoredRaceDao
+import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.StoredRaceSelection
+import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.StoredRaceSelectionJoin
 
-@Database(entities = [StoredCharacterClass::class, StoredCharacterClassSelection::class, StoredSelectionCharacterClassJoin::class], version = 1, exportSchema = false)
+@Database(entities = [
+	StoredCharacterClass::class,
+	StoredCharacterClassSelection::class,
+	StoredSelectionCharacterClassJoin::class,
+	StoredRace::class,
+	StoredRaceSelection::class,
+	StoredRaceSelectionJoin::class
+], version = 1, exportSchema = false)
 abstract class CharacterCreationDb : RoomDatabase() {
 
 	abstract fun classDao(): StoredClassDao
+	abstract fun raceDao(): StoredRaceDao
 
 	companion object {
 		private var INSTANCE: CharacterCreationDb? = null

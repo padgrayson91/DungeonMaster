@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 
@@ -13,4 +14,5 @@ import androidx.room.ForeignKey
 					parentColumns = ["id"],
 					childColumns = ["selectionId"])
 		])
-data class StoredSelectionCharacterClassJoin(val classId: String, val selectionId: String, val selectionState: Int)
+data class StoredSelectionCharacterClassJoin(val classId: String,
+											 @ColumnInfo(index = true) val selectionId: String, val selectionState: Int)

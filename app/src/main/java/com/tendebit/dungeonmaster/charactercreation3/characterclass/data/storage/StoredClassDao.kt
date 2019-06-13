@@ -18,11 +18,11 @@ interface StoredClassDao {
 	@Insert(onConflict = REPLACE)
 	fun storeSelectionClassJoin(join: StoredSelectionCharacterClassJoin)
 
-	@Query("""SELECT * FROM classes INNER JOIN class_selection_join ON classes.id=class_selection_join.classId
+	@Query("""SELECT id,class_name FROM classes INNER JOIN class_selection_join ON classes.id=class_selection_join.classId
 		WHERE class_selection_join.selectionId=:selectionId""")
 	fun getClassesForSelection(selectionId: String): List<StoredCharacterClass>
 
-	@Query("""SELECT * FROM classes INNER JOIN class_selection_join ON classes.id=class_selection_join.classId
+	@Query("""SELECT id,class_name FROM classes INNER JOIN class_selection_join ON classes.id=class_selection_join.classId
 		WHERE class_selection_join.selectionId=:selectionId AND class_selection_join.selectionState=1""")
 	fun getSelectedClassForSelection(selectionId: String): StoredCharacterClass?
 
