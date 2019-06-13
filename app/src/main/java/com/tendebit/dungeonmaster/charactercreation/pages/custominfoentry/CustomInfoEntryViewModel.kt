@@ -34,7 +34,7 @@ class CustomInfoEntryViewModel {
     }
 
     fun setWeight(weight: CharSequence?) {
-        if (weight != null && !weight.isEmpty()) {
+        if (weight != null && weight.isNotEmpty()) {
             info.weight = weight.toString().toInt()
         } else {
             info.weight = null

@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster.testhelpers
 
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
 
 object CharacterCreationRobots {
 
@@ -14,7 +14,7 @@ object CharacterCreationRobots {
 	val standardProficiencyList = listOf(
 			DndProficiency("Stealth", "example.com/stealth"),
 			DndProficiency("Burglar's Tools", "example.com/burglar"),
-			DndProficiency("Acrobatics", "example.com/acro"),
+			DndProficiency("Acrobatics", "example.com/acrobatics"),
 			DndProficiency("Athletics", "example.com/athletics"))
 	val alternateProficiencyList = listOf(DndProficiency("Brewers Supplies", "example.com/brewers+supplies"))
 

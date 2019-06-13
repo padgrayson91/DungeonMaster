@@ -9,7 +9,7 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 object TestConcurrencyUi : Concurrency {
 
-	val scope = CoroutineScope(Dispatchers.Unconfined)
+	private val scope = CoroutineScope(Dispatchers.Unconfined)
 
 	override fun runImmediate(runnable: () -> Unit) {
 		runnable()

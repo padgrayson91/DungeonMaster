@@ -7,6 +7,7 @@ object DebugUtils {
 	val logger = Logger("GLOBAL")
 	private var isRunningTest: AtomicBoolean? = null
 
+	@Suppress("SpellCheckingInspection")
 	fun isRunningTest(): Boolean {
 		synchronized(this) {
 			if (isRunningTest == null) {

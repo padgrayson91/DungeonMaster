@@ -1,9 +1,9 @@
 package com.tendebit.dungeonmaster.testhelpers
 
 import com.tendebit.dungeonmaster.charactercreation3.ItemState
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation3.Normal
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 
 @Suppress("unused")
@@ -12,13 +12,13 @@ object CharacterCreationViewRobots {
 	val standardProficiencyList = listOf(
 			DndProficiency("Stealth", "example.com/stealth"),
 			DndProficiency("Burglar's Tools", "example.com/burglar"),
-			DndProficiency("Acrobatics", "example.com/acro"),
+			DndProficiency("Acrobatics", "example.com/acrobatics"),
 			DndProficiency("Athletics", "example.com/athletics"))
 	private val standardRaceList = listOf(
 			DndRace("Dwarf", "example.com/dwarf"),
 			DndRace("Halfling", "example.com/halfling"),
 			DndRace("Dragonborn", "example.com/dragonborn"),
-			DndRace("Half-Elf", "example.com/halfelf"),
+			DndRace("Half-Elf", "example.com/half-elf"),
 			DndRace("Gnome", "example.com/gnome"))
 	val alternateProficiencyList = listOf(DndProficiency("Brewers Supplies", "example.com/brewers+supplies"))
 

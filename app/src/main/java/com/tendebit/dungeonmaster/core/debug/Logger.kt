@@ -2,9 +2,9 @@ package com.tendebit.dungeonmaster.core.debug
 
 import android.util.Log
 import com.tendebit.dungeonmaster.BuildConfig
-import java.lang.StringBuilder
 import kotlin.math.min
 
+@Suppress("unused")
 class Logger(vararg tags: CharSequence) {
 
 	private val tag = mergeTags(tags)
