@@ -23,7 +23,7 @@ class DndCharacterClassViewModel(initialState: ItemState<out DndCharacterClass>)
 	override val text = state.item?.name
 	override val changes: Observable<DndCharacterClassViewModel> = Observable.just(this)
 	private val internalSelection = BehaviorSubject.create<Boolean>()
-	internal val selection = internalSelection.distinct()
+	internal val selection = internalSelection
 
 	private fun onStateChanged(state: ItemState<out DndCharacterClass>) {
 		internalState = state
@@ -31,6 +31,9 @@ class DndCharacterClassViewModel(initialState: ItemState<out DndCharacterClass>)
 
 	override fun onClick() {
 		logger.writeDebug("Clicked ${state.item}")
+		if (!internalSelection.hasObservers()) {
+			logger.writeError("No listeners!")
+		}
 		internalSelection.onNext(state !is Selected)
 	}
 

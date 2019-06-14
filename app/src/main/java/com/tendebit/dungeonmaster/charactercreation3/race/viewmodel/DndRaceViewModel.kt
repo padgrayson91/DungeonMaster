@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.race.viewmodel
 
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.Selected
@@ -22,13 +23,16 @@ class DndRaceViewModel(initialState: ItemState<out DndRace>) : SelectableViewMod
 	override val text = state.item?.name
 	override val changes: Observable<DndRaceViewModel> = Observable.just(this)
 	private val internalSelection = PublishSubject.create<Boolean>()
-	internal val selection = internalSelection.distinct()
+	internal val selection = internalSelection
 
 	private fun onStateChanged(state: ItemState<out DndRace>) {
 		internalState = state
 	}
 
 	override fun onClick() {
+		if (!internalSelection.hasObservers()) {
+			logger.writeError("No listeners!")
+		}
 		internalSelection.onNext(state !is Selected)
 	}
 
