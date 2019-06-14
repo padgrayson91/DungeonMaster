@@ -2,14 +2,11 @@ package com.tendebit.dungeonmaster.charactercreation3.race
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.App
 import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRaceDataStore
-import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRaceDataStoreImpl
-import com.tendebit.dungeonmaster.charactercreation3.race.data.network.DndRaceApiConnection
-import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.RoomRaceStorage
-import com.tendebit.dungeonmaster.charactercreation3.storage.CharacterCreationDb
+import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRacePrerequisites
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.Completed
+import com.tendebit.dungeonmaster.core.model.DelayedStart
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.ItemStateUtils
 import com.tendebit.dungeonmaster.core.model.Loading
@@ -20,7 +17,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DndRaces : SelectionProvider<DndRace>, Parcelable {
+class DndRaces : SelectionProvider<DndRace>, DelayedStart<DndRacePrerequisites>, Parcelable {
 
 	override var state: ItemState<out Selection<DndRace>> = Loading
 
@@ -36,9 +33,9 @@ class DndRaces : SelectionProvider<DndRace>, Parcelable {
 		state = ItemStateUtils.readItemStateFromParcel(parcel)
 	}
 
-	override fun start(concurrency: Concurrency) {
-		this.concurrency = concurrency
-		dataStore = DndRaceDataStoreImpl(DndRaceApiConnection.Impl(), RoomRaceStorage(CharacterCreationDb.getInstance(App.instance.applicationContext), concurrency))
+	override fun start(prerequisites: DndRacePrerequisites) {
+		concurrency = prerequisites.concurrency
+		dataStore = prerequisites.dataStore
 		@Suppress("UNCHECKED_CAST")
 		val racesFromState = state.item?.options?.map { it.item }?.filter { it != null } as? List<DndRace>
 		if (racesFromState != null) {

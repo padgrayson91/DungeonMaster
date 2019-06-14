@@ -2,14 +2,11 @@ package com.tendebit.dungeonmaster.charactercreation3.characterclass
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.App
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndCharacterClassDataStore
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndCharacterClassDataStoreImpl
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.network.DndCharacterClassApiConnection
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.RoomCharacterClassStorage
-import com.tendebit.dungeonmaster.charactercreation3.storage.CharacterCreationDb
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndClassPrerequisites
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.Completed
+import com.tendebit.dungeonmaster.core.model.DelayedStart
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.ItemStateUtils
 import com.tendebit.dungeonmaster.core.model.Loading
@@ -20,7 +17,7 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class DndClasses : SelectionProvider<DndCharacterClass>, Parcelable {
+class DndClasses : SelectionProvider<DndCharacterClass>, DelayedStart<DndClassPrerequisites>, Parcelable {
 
 	override var state: ItemState<out Selection<DndCharacterClass>> = Loading
 
@@ -37,14 +34,16 @@ class DndClasses : SelectionProvider<DndCharacterClass>, Parcelable {
 		logger.writeDebug("Got $state from parcel")
 	}
 
-	override fun start(concurrency: Concurrency) {
-		this.concurrency = concurrency
-		dataStore = DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(CharacterCreationDb.getInstance(App.instance.applicationContext).classDao(), concurrency))
+	override fun start(prerequisites: DndClassPrerequisites) {
+		this.concurrency = prerequisites.concurrency
+		dataStore = prerequisites.dataStore //DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(CharacterCreationDb.getInstance(App.instance.applicationContext).classDao(), concurrency))
 		@Suppress("UNCHECKED_CAST")
 		val classesFromState = state.item?.options?.map { it.item }?.filter { it != null } as? List<DndCharacterClass>
 		if (classesFromState != null) {
 			logger.writeDebug("Had ${classesFromState.size} classes from a parcelized state")
 			dataStore.restoreCharacterClassList(classesFromState)
+			externalStateChanges.onNext(state)
+			return
 		}
 		concurrency.runDiskOrNetwork(::doLoadAvailableClasses)
 	}

@@ -1,14 +1,14 @@
-package com.tendebit.dungeonmaster.charactercreation3.view
+package com.tendebit.dungeonmaster.charactercreation3.feature.view
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.view.DndClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
+import com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel.CharacterCreationSectionsViewModel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.view.DndProficiencyGroupFragment
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyGroupViewModel
 import com.tendebit.dungeonmaster.charactercreation3.race.view.DndRaceSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation3.race.viewmodel.DndRaceSelectionViewModel
-import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationSectionsViewModel
 import com.tendebit.dungeonmaster.core.platform.ViewModelManager
 import io.reactivex.disposables.Disposable
 

@@ -7,7 +7,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.DndCharacterClassStorage
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.RoomCharacterClassStorage
-import com.tendebit.dungeonmaster.charactercreation3.storage.CharacterCreationDb
+import com.tendebit.dungeonmaster.charactercreation3.feature.storage.CharacterCreationDb
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrencyUi
 import io.reactivex.observers.TestObserver

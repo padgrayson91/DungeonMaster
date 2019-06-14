@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.tendebit.dungeonmaster.charactercreation3.feature.storage.CharacterCreationDb
 import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.DndRaceStorage
 import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.RoomRaceStorage
-import com.tendebit.dungeonmaster.charactercreation3.storage.CharacterCreationDb
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrencyUi
 import io.reactivex.observers.TestObserver
@@ -28,7 +28,7 @@ class TestRaceSelectionDb {
 	fun setup() {
 		val context = ApplicationProvider.getApplicationContext<Context>()
 		db = Room.inMemoryDatabaseBuilder(context, CharacterCreationDb::class.java).build()
-		storage = RoomRaceStorage(db, TestConcurrencyUi)
+		storage = RoomRaceStorage(db.raceDao(), TestConcurrencyUi)
 	}
 
 	@After

@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3
+package com.tendebit.dungeonmaster.charactercreation3.feature
 
 import android.os.Parcel
 import android.os.Parcelable

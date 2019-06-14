@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3
 
-import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationSectionsViewModel
+import com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel.CharacterCreationSectionsViewModel
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import io.reactivex.Observable

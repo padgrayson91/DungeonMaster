@@ -2,7 +2,7 @@ package com.tendebit.dungeonmaster
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.tendebit.dungeonmaster.charactercreation3.view.CharacterCreationFragment
+import com.tendebit.dungeonmaster.charactercreation3.feature.view.CharacterCreationFragment
 import com.tendebit.dungeonmaster.core.view.BackNavigationHandler
 import io.reactivex.Observable
 

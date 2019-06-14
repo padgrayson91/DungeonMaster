@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.viewmodel
+package com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation3.PageAction
 import com.tendebit.dungeonmaster.core.extensions.addOrInsert

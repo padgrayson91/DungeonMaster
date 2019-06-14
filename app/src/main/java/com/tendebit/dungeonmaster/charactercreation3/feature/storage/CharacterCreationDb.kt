@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.storage
+package com.tendebit.dungeonmaster.charactercreation3.feature.storage
 
 import android.content.Context
 import androidx.room.Database

@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.view
+package com.tendebit.dungeonmaster.charactercreation3.feature.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,11 +8,11 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation3.CharacterCreation
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
+import com.tendebit.dungeonmaster.charactercreation3.feature.CharacterCreation
+import com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel.CharacterCreationSectionsViewModel
+import com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation3.logger
-import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationSectionsViewModel
-import com.tendebit.dungeonmaster.charactercreation3.viewmodel.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.core.platform.ViewModels
 import com.tendebit.dungeonmaster.core.view.LoadingDialog
 import com.tendebit.dungeonmaster.core.viewmodel3.ViewModelFactory
