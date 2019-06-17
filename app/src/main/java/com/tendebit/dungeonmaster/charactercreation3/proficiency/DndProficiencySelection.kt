@@ -16,6 +16,7 @@ class DndProficiencySelection : Parcelable {
 
 	constructor(forGroups: List<DndProficiencyGroup>) {
 		groupStates = ArrayList(forGroups.map { stateForGroup(it) })
+		updateGroupsToMatchExternal(forGroups)
 		subscribeToGroups(forGroups)
 	}
 
@@ -39,6 +40,16 @@ class DndProficiencySelection : Parcelable {
 	private val internalStateChanges = PublishSubject.create<ListItemState<DndProficiencyGroup>>()
 	val stateChanges = internalStateChanges as Observable<ListItemState<DndProficiencyGroup>>
 	private val disposable = CompositeDisposable()
+
+	private fun updateGroupsToMatchExternal(forGroups: List<DndProficiencyGroup>) {
+		for (group in forGroups) {
+			for (otherGroup in forGroups - group) {
+				for (selectedItem in otherGroup.selections) {
+					group.onExternalSelection(selectedItem.item!!)
+				}
+			}
+		}
+	}
 
 	private fun subscribeToGroups(forGroups: List<DndProficiencyGroup>) {
 		for (item in forGroups.withIndex()) {

@@ -1,6 +1,5 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage
 
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
@@ -23,7 +22,7 @@ class RoomCharacterClassStorage(private val dao: StoredClassDao, private val con
 			for (state in classesToStore) {
 				val stateAsInt = if (state is Selected) 1 else 0
 				val dndClass = state.item ?: continue
-				dao.storeClassInfo(StoredCharacterClass(dndClass.detailsUrl, dndClass.name))
+				dao.storeClassInfo(StoredCharacterClass.fromDndCharacterClass(dndClass))
 				dao.storeSelectionClassJoin(StoredSelectionCharacterClassJoin(dndClass.detailsUrl, createdOrExistingId.toString(), stateAsInt))
 			}
 		})
@@ -43,7 +42,7 @@ class RoomCharacterClassStorage(private val dao: StoredClassDao, private val con
 				return@runDiskOrNetwork
 			}
 			val selectedClass = dao.getSelectedClassForSelection(id.toString())
-			val dndClasses = classesForSelection.map { DndCharacterClass(it.name, it.id) }
+			val dndClasses = classesForSelection.map { it.toDndCharacterClass() }
 			val states = dndClasses.map { if (it.detailsUrl == selectedClass?.id) Selected(it) else Normal(it) }
 			subject.onSuccess(DndCharacterClassSelection(states))
 		})

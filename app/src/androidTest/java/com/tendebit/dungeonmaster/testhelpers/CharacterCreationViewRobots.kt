@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.testhelpers
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.Normal
@@ -20,9 +21,18 @@ object CharacterCreationViewRobots {
 			DndRace("Dragonborn", "example.com/dragonborn"),
 			DndRace("Half-Elf", "example.com/half-elf"),
 			DndRace("Gnome", "example.com/gnome"))
-	val alternateProficiencyList = listOf(DndProficiency("Brewers Supplies", "example.com/brewers+supplies"))
+	private val alternateProficiencyList = listOf(
+			DndProficiency("Brewers Supplies", "example.com/brewers+supplies"),
+			DndProficiency("Dulcimer", "example.com/dulcimer"),
+			DndProficiency("Acrobatics", "example.com/acrobatics"))
 
 	val blankProficiencyStateList = standardProficiencyList.map { Normal(it) }
+	val blankProficiencyGroups: List<DndProficiencyGroup>
+		get() = listOf(
+				DndProficiencyGroup(standardProficiencyList.map { Normal(it) }, 2),
+				DndProficiencyGroup(alternateProficiencyList.map { Normal(it) }, 1)
+					  )
+
 
 	val standardClassList = listOf(
 			DndCharacterClass("Wizard", "example.com/wizard"),

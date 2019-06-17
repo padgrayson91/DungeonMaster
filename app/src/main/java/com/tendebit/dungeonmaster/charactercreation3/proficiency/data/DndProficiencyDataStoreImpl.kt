@@ -1,21 +1,35 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.data
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.DndProficiencyStorage
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
-class DndProficiencyDataStoreImpl(private val apiConnection: DndProficiencyApiConnection) : DndProficiencyDataStore {
+class DndProficiencyDataStoreImpl(private val apiConnection: DndProficiencyApiConnection, private val storage: DndProficiencyStorage? = null) : DndProficiencyDataStore {
 
 	private val cachedLists = HashMap<String, List<DndProficiencyGroup>>()
 	private val networkMutex = Mutex()
 
 	override suspend fun getProficiencyList(characterClass: DndCharacterClass, forceNetwork: Boolean): List<DndProficiencyGroup> {
 		networkMutex.withLock  {
-			val cachedList = cachedLists[characterClass.detailsUrl]
+			val key = characterClass.detailsUrl
+			val cachedList = cachedLists[key]
 			if (cachedList?.isNotEmpty() == true && !forceNetwork) {
 				return cachedList
+			}
+
+			if (!forceNetwork) {
+				val storedSelection = storage?.findSelectionById(DndProficiencyStorage.getDefaultId(key))?.blockingGet()
+				if (storedSelection != null) {
+					val updatedList = ArrayList<DndProficiencyGroup>()
+					updatedList.addAll(storedSelection.groupStates.map { it.item!! })
+					cachedLists[key] = updatedList
+					logger.writeDebug("Returning selection list from db with ${updatedList.size} groups for ${characterClass.name}")
+					return updatedList
+				}
 			}
 
 			val createdList = apiConnection.getProficiencies(characterClass).map { it.toDndProficiencyGroup() }

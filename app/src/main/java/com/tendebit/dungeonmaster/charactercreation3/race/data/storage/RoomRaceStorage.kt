@@ -1,7 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.race.data.storage
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
-import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceSelection
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.Normal
@@ -23,7 +22,7 @@ class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: C
 			for (state in racesToStore) {
 				val stateAsInt = if (state is Selected) 1 else 0
 				val dndRace = state.item ?: continue
-				dao.storeRaceInfo(StoredRace(dndRace.detailsUrl, dndRace.name))
+				dao.storeRaceInfo(StoredRace.fromDndRace(dndRace))
 				dao.storeRaceSelectionJoin(StoredRaceSelectionJoin(dndRace.detailsUrl, createdOrExistingId.toString(), stateAsInt))
 			}
 		})
@@ -43,7 +42,7 @@ class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: C
 				return@runDiskOrNetwork
 			}
 			val selectedRace = dao.getSelectedRaceForSelection(id.toString())
-			val dndRaces = racesForSelection.map { DndRace(it.name, it.id) }
+			val dndRaces = racesForSelection.map { it.toDndRace() }
 			val states = dndRaces.map { if (it.detailsUrl == selectedRace?.id) Selected(it) else Normal(it) }
 			subject.onSuccess(DndRaceSelection(states))
 		})

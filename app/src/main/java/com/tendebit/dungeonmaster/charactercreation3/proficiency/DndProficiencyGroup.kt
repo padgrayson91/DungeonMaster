@@ -18,7 +18,7 @@ import io.reactivex.subjects.PublishSubject
  * should all be [Normal]
  * @param choiceCount the total number of selections that a user is allowed to make from this group
  */
-class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, private val choiceCount: Int) : Parcelable {
+class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, internal val choiceCount: Int) : Parcelable {
 
 	/**
 	 * The current [ItemState] for all the [DndProficiency] items in this group
@@ -48,6 +48,12 @@ class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, p
 
 	val remainingChoices: Int
 		get() { return choiceCount - selections.size }
+
+	init {
+		if (remainingChoices == 0) {
+			onSelectionComplete()
+		}
+	}
 
 	/**
 	 * Invoke this method when a user has selected the proficiency item at the specified index

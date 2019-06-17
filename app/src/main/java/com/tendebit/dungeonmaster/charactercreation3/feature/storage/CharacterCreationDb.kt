@@ -8,6 +8,13 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.StoredCharacterClassSelection
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.StoredClassDao
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.StoredSelectionCharacterClassJoin
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.StoredProficiency
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.StoredProficiencyDao
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.StoredProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.StoredProficiencyGroupJoin
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.StoredProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.StoredProficiencySelectionJoin
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.StoredProficiencySelectionToProficiencyJoin
 import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.StoredRace
 import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.StoredRaceDao
 import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.StoredRaceSelection
@@ -19,12 +26,19 @@ import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.StoredRac
 	StoredSelectionCharacterClassJoin::class,
 	StoredRace::class,
 	StoredRaceSelection::class,
-	StoredRaceSelectionJoin::class
-], version = 1, exportSchema = false)
+	StoredRaceSelectionJoin::class,
+	StoredProficiency::class,
+	StoredProficiencyGroup::class,
+	StoredProficiencyGroupJoin::class,
+	StoredProficiencySelection::class,
+	StoredProficiencySelectionJoin::class,
+	StoredProficiencySelectionToProficiencyJoin::class
+], version = 2, exportSchema = false)
 abstract class CharacterCreationDb : RoomDatabase() {
 
 	abstract fun classDao(): StoredClassDao
 	abstract fun raceDao(): StoredRaceDao
+	abstract fun proficiencyDao(): StoredProficiencyDao
 
 	companion object {
 		private var INSTANCE: CharacterCreationDb? = null
