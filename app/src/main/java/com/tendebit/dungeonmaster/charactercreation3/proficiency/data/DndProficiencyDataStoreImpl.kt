@@ -1,10 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.data
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.DndProficiencyStorage
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -18,6 +19,7 @@ class DndProficiencyDataStoreImpl(private val apiConnection: DndProficiencyApiCo
 			val key = characterClass.detailsUrl
 			val cachedList = cachedLists[key]
 			if (cachedList?.isNotEmpty() == true && !forceNetwork) {
+				logger.writeDebug("Returning cached proficiencies for $key")
 				return cachedList
 			}
 
@@ -32,8 +34,10 @@ class DndProficiencyDataStoreImpl(private val apiConnection: DndProficiencyApiCo
 				}
 			}
 
+			logger.writeDebug("Fetching proficiencies from network for $key")
 			val createdList = apiConnection.getProficiencies(characterClass).map { it.toDndProficiencyGroup() }
 			cachedLists[characterClass.detailsUrl] = createdList
+			storage?.storeSelection(DndProficiencySelection(createdList), DndProficiencyStorage.getDefaultId(key))
 			return createdList
 		}
 	}

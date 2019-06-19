@@ -63,7 +63,8 @@ class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, i
 	 */
 	fun select(index: Int) {
 		if (index < 0 || index >= options.size) { throw IndexOutOfBoundsException("Attempting to select a proficiency outside the list") }
-		val itemState = options[index] as? Normal<out DndProficiency> ?: throw IllegalArgumentException("Proficiency at index $index cannot be selected")
+		if (options[index] is Selected) return // Likely restoring from an old state where this item is already selected
+		val itemState = options[index] as? Normal<out DndProficiency> ?: throw IllegalArgumentException("Proficiency at index $index cannot be selected; state is ${options[index]}")
 		val selectedState = Selected(itemState.item)
 		options[index] = selectedState
 		directSelectionChanges.onNext(ListItemState(index, selectedState))

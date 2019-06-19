@@ -9,6 +9,7 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.Dn
 import com.tendebit.dungeonmaster.charactercreation3.feature.CharacterCreation
 import com.tendebit.dungeonmaster.charactercreation3.feature.storage.CharacterCreationDb
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyPrerequisites
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.RoomProficiencyStorage
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencySelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRaceDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRacePrerequisites
@@ -43,7 +44,7 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 			val db = CharacterCreationDb.getInstance(App.instance.applicationContext)
 			val racePrerequisites = DndRacePrerequisites.Impl(concurrency, DndRaceDataStoreImpl(DndRaceApiConnection.Impl(), RoomRaceStorage(db.raceDao(), concurrency)))
 			val classPrerequisites = DndClassPrerequisites.Impl(concurrency, DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(db.classDao(), concurrency)))
-			val proficiencyPrerequisites = ProficiencyPrerequisites.Impl(state.classes.externalStateChanges.mergeWith(state.classes.internalStateChanges))
+			val proficiencyPrerequisites = ProficiencyPrerequisites.Impl(state.classes.externalStateChanges.mergeWith(state.classes.internalStateChanges), RoomProficiencyStorage(db.proficiencyDao(), concurrency))
 
 			state.races.start(racePrerequisites)
 			state.classes.start(classPrerequisites)

@@ -3,6 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 import android.os.Parcel
 import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProficiencyDataStore
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProficiencyDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
 import com.tendebit.dungeonmaster.core.model.Completed
@@ -27,7 +28,7 @@ class DndProficiencies : ProficiencyProvider, Parcelable {
 
 	private var disposable: Disposable? = null
 
-	private val dataStore = DndProficiencyDataStoreImpl(DndProficiencyApiConnection.Impl())
+	private lateinit var dataStore: DndProficiencyDataStore
 
 	constructor()
 
@@ -36,6 +37,7 @@ class DndProficiencies : ProficiencyProvider, Parcelable {
 	}
 
 	override fun start(prerequisites: ProficiencyPrerequisites, scope: CoroutineScope) {
+		dataStore = DndProficiencyDataStoreImpl(DndProficiencyApiConnection.Impl(), prerequisites.storage)
 		disposable = prerequisites.classSelections.subscribe {
 			scope.launch(context = Dispatchers.IO) { updateStateForClassSelectionChange (it) }
 		}
