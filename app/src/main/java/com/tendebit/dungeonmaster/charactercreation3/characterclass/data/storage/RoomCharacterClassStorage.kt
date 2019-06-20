@@ -9,6 +9,11 @@ import io.reactivex.Maybe
 import io.reactivex.subjects.MaybeSubject
 import java.util.UUID
 
+/**
+ * Implementation of [DndCharacterClassStorage] which stores information in a Room database
+ * @param dao the DAO used to store and retrieve data
+ * @param concurrency the [Concurrency] implementation used to run DB operations off the main thread
+ */
 class RoomCharacterClassStorage(private val dao: StoredClassDao, private val concurrency: Concurrency) : DndCharacterClassStorage {
 
 	override fun storeSelection(selection: DndCharacterClassSelection, id: CharSequence?): CharSequence {

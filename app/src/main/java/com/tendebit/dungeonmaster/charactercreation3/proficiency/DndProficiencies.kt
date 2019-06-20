@@ -24,6 +24,10 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Top-level model for dealing with character proficiencies. Maintains the state of the [DndProficiencySelection]
+ * object which contains the user's currently selected and available proficiency options
+ */
 class DndProficiencies : ProficiencyProvider, Parcelable {
 
 	override var state: ItemState<out DndProficiencySelection> = Removed

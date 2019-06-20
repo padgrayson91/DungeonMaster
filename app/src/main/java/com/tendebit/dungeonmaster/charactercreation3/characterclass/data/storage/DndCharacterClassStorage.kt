@@ -3,6 +3,9 @@ package com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storag
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
 import io.reactivex.Maybe
 
+/**
+ * Abstraction for a database containing information related to [DndCharacterClassSelection] objects
+ */
 interface DndCharacterClassStorage {
 
 	companion object {
