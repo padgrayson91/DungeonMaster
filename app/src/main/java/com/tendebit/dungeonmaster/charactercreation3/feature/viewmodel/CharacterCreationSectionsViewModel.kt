@@ -9,12 +9,14 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
 import java.util.LinkedList
+import java.util.concurrent.locks.ReentrantLock
 
 class CharacterCreationSectionsViewModel(private val sections: List<PageSection>) : ViewModel {
 
 	private val offsets = calculateOffsets(sections)
 	private val pageActions = determinePageActions(sections)
 	private var sectionsDisposable = CompositeDisposable()
+	private val pageLock = ReentrantLock()
 
 	private val internalPageRemovals = PublishSubject.create<Int>()
 	val pageRemovals = internalPageRemovals as Observable<Int>
@@ -38,7 +40,9 @@ class CharacterCreationSectionsViewModel(private val sections: List<PageSection>
 	override val changes = internalChanges as Observable<CharacterCreationSectionsViewModel>
 
 	init {
+		pageLock.lock()
 		subscribeToSections(sections)
+		pageLock.unlock()
 	}
 
 	fun getPageActions(index: Int): List<PageAction> = pageActions[index]
@@ -77,6 +81,7 @@ class CharacterCreationSectionsViewModel(private val sections: List<PageSection>
 	}
 
 	private fun onPageRemoved(index: Int, sectionIndex: Int) {
+		pageLock.lock()
 		for (i in sectionIndex + 1 until offsets.size) {
 			offsets[i] -= 1
 		}
@@ -84,9 +89,11 @@ class CharacterCreationSectionsViewModel(private val sections: List<PageSection>
 		pageActions.removeAt(index)
 		pages.removeAt(index)
 		internalPageRemovals.onNext(index)
+		pageLock.unlock()
 	}
 
 	private fun onPageAdded(index: Int, sectionIndex: Int, page: Page) {
+		pageLock.lock()
 		for (i in sectionIndex + 1 until offsets.size) {
 			offsets[i] += 1
 		}
@@ -96,14 +103,17 @@ class CharacterCreationSectionsViewModel(private val sections: List<PageSection>
 		pages.addOrInsert(index, page)
 
 		internalPageAdditions.onNext(index)
+		pageLock.unlock()
 	}
 
 	private fun onSectionChanged(section: PageSection, sectionOffset: Int) {
+		pageLock.lock()
 		for (i in 0 until section.pageCount) {
 			pageActions[i] = determineActionsForSinglePage(section, i)
 			internalPageChanges.onNext(sectionOffset + i)
 		}
 		updateViewModelValues()
+		pageLock.unlock()
 	}
 
 	private fun getUpdatedPages(sections: List<PageSection>): List<Page> {
