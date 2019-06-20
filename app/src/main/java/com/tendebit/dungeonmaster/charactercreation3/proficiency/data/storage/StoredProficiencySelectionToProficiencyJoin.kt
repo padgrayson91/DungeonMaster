@@ -16,5 +16,5 @@ import androidx.room.ForeignKey
 			ForeignKey(entity = StoredProficiency::class,
 					parentColumns = ["id"],
 					childColumns = ["proficiencyId"])])
-data class StoredProficiencySelectionToProficiencyJoin(@ColumnInfo(index = true) val selectionId: String, val groupId: String,
+data class StoredProficiencySelectionToProficiencyJoin(@ColumnInfo(index = true) val selectionId: String, @ColumnInfo(index = true) val groupId: String,
 													   @ColumnInfo(index = true) val proficiencyId: String, val selectionState: Int)

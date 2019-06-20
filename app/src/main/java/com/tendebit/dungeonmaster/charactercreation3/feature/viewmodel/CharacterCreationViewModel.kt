@@ -44,14 +44,14 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 			val db = CharacterCreationDb.getInstance(App.instance.applicationContext)
 			val racePrerequisites = DndRacePrerequisites.Impl(concurrency, DndRaceDataStoreImpl(DndRaceApiConnection.Impl(), RoomRaceStorage(db.raceDao(), concurrency)))
 			val classPrerequisites = DndClassPrerequisites.Impl(concurrency, DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(db.classDao(), concurrency)))
-			val proficiencyPrerequisites = ProficiencyPrerequisites.Impl(
+			val proficiencyPrerequisites = ProficiencyPrerequisites.Impl(concurrency,
 					state.classes.externalStateChanges.mergeWith(state.classes.internalStateChanges),
 					state.races.externalStateChanges.mergeWith(state.races.internalStateChanges),
 					RoomProficiencyStorage(db.proficiencyDao(), concurrency))
 
 			state.races.start(racePrerequisites)
 			state.classes.start(classPrerequisites)
-			state.proficiencies.start(proficiencyPrerequisites, viewModelScope)
+			state.proficiencies.start(proficiencyPrerequisites)
 		}
 	}
 

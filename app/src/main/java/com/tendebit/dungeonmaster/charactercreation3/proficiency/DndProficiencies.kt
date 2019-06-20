@@ -8,6 +8,7 @@ import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProfici
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.core.model.Completed
+import com.tendebit.dungeonmaster.core.model.DelayedStart
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.ItemStateUtils
 import com.tendebit.dungeonmaster.core.model.Normal
@@ -18,17 +19,14 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 
 /**
  * Top-level model for dealing with character proficiencies. Maintains the state of the [DndProficiencySelection]
  * object which contains the user's currently selected and available proficiency options
  */
-class DndProficiencies : ProficiencyProvider, Parcelable {
+class DndProficiencies : ProficiencyProvider, Parcelable, DelayedStart<ProficiencyPrerequisites> {
 
 	override var state: ItemState<out DndProficiencySelection> = Removed
 
@@ -45,15 +43,15 @@ class DndProficiencies : ProficiencyProvider, Parcelable {
 		state = ItemStateUtils.readItemStateFromParcel(parcel)
 	}
 
-	override fun start(prerequisites: ProficiencyPrerequisites, scope: CoroutineScope) {
+	override fun start(prerequisites: ProficiencyPrerequisites) {
 		dataStore = DndProficiencyDataStoreImpl(DndProficiencyApiConnection.Impl(), prerequisites.storage)
 		val prereqObservable: Observable<Pair<ItemState<out Selection<DndCharacterClass>>, ItemState<out Selection<DndRace>>>> = Observable.combineLatest(
 				prerequisites.classSelections, prerequisites.raceSelections,
 				BiFunction { t1: ItemState<out Selection<DndCharacterClass>>, t2: ItemState<out Selection<DndRace>> -> Pair(t1, t2) })
 		disposable = prereqObservable.subscribe {
-			scope.launch(context = Dispatchers.IO) {
+			prerequisites.concurrency.runDiskOrNetwork({
 				updateStateForPrerequisiteChange(it.first, it.second)
-			}
+			})
 		}
 	}
 
