@@ -56,6 +56,31 @@ class TestDndProficiencySelection {
 	}
 
 	@Test
+	fun testLockedProficiencyIsUnlockedWhenAddedToAnotherSelection() {
+		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
+		val groupB = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
+
+		DndProficiencySelection(listOf(groupA, groupB))
+		groupA.select(0)
+
+		assert(groupB.options[0] is Locked)
+
+		DndProficiencySelection(listOf(groupB))
+		assert(groupB.options[0] is Normal)
+	}
+
+	@Test
+	fun testSelectionFromGroupLocksOtherGroupWhenAddedToSelection() {
+		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
+		val groupB = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
+
+		groupA.select(0)
+		DndProficiencySelection(listOf(groupA, groupB))
+
+		assert(groupB.options[0] is Locked)
+	}
+
+	@Test
 	fun testDeselectionFromOneGroupUnlocksSameItemInAnotherGroup() {
 		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
 		val groupB = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)

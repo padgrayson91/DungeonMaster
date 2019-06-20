@@ -7,6 +7,7 @@ import com.tendebit.dungeonmaster.core.model.Normal
 import com.tendebit.dungeonmaster.core.model.Removed
 import com.tendebit.dungeonmaster.core.model.Undefined
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
+import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
@@ -18,10 +19,12 @@ import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when` as whenever
 
+@ExperimentalCoroutinesApi
 class TestDndProficiencySelectionViewModel {
 
+	private val concurrency = TestConcurrency
+
 	@Before
-	@ExperimentalCoroutinesApi
 	fun configureCoroutines() {
 		Dispatchers.setMain(Dispatchers.Unconfined)
 	}
@@ -35,7 +38,7 @@ class TestDndProficiencySelectionViewModel {
 		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockProvider.state).thenReturn(Removed)
 
-		val toTest = DndProficiencySelectionViewModel(mockProvider)
+		val toTest = DndProficiencySelectionViewModel(mockProvider, concurrency)
 		assert(toTest.pageCount == 0)
 	}
 
@@ -48,7 +51,7 @@ class TestDndProficiencySelectionViewModel {
 		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockProvider.state).thenReturn(testExternal.mergeWith(testInternal).last(Removed).blockingGet())
 
-		val toTest = DndProficiencySelectionViewModel(mockProvider)
+		val toTest = DndProficiencySelectionViewModel(mockProvider, concurrency)
 		assert(!toTest.showLoading)
 	}
 
@@ -61,7 +64,7 @@ class TestDndProficiencySelectionViewModel {
 		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockProvider.state).thenReturn(Undefined)
 
-		val toTest = DndProficiencySelectionViewModel(mockProvider)
+		val toTest = DndProficiencySelectionViewModel(mockProvider, concurrency)
 
 		assert(toTest.showLoading)
 		assert(toTest.pageCount == 0)
@@ -81,7 +84,7 @@ class TestDndProficiencySelectionViewModel {
 		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockProvider.state).thenReturn(Normal(testSelection))
 
-		val toTest = DndProficiencySelectionViewModel(mockProvider)
+		val toTest = DndProficiencySelectionViewModel(mockProvider, concurrency)
 		assert(toTest.pageCount == 2)
 	}
 
@@ -100,7 +103,7 @@ class TestDndProficiencySelectionViewModel {
 		whenever(mockProvider.state).thenReturn(Normal(testSelection))
 
 
-		val toTest = DndProficiencySelectionViewModel(mockProvider)
+		val toTest = DndProficiencySelectionViewModel(mockProvider, concurrency)
 		groupA.select(0)
 		groupA.select(1)
 
@@ -124,7 +127,7 @@ class TestDndProficiencySelectionViewModel {
 		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockProvider.state).thenAnswer { state }
 
-		val toTest = DndProficiencySelectionViewModel(mockProvider)
+		val toTest = DndProficiencySelectionViewModel(mockProvider, concurrency)
 		val testObserver = TestObserver<Int>()
 		toTest.pageAdditions.subscribe(testObserver)
 		state = Normal(testSelection2)
@@ -153,7 +156,7 @@ class TestDndProficiencySelectionViewModel {
 		whenever(mockProvider.internalStateChanges).thenReturn(testInternal)
 		whenever(mockProvider.state).thenAnswer { state }
 
-		val toTest = DndProficiencySelectionViewModel(mockProvider)
+		val toTest = DndProficiencySelectionViewModel(mockProvider, concurrency)
 		val testObserver = TestObserver<Int>()
 		toTest.pageRemovals.subscribe(testObserver)
 		state = Normal(testSelection)

@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.Completed
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.viewmodel3.MultiSelectViewModel
@@ -13,7 +14,7 @@ import io.reactivex.subjects.PublishSubject
 /**
  * ViewModel for displaying a selection of proficiencies
  */
-class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGroup>) : MultiSelectViewModel, Page {
+class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGroup>, private val concurrency: Concurrency) : MultiSelectViewModel, Page {
 
 	private var internalState = initialState
 	var state: ItemState<out DndProficiencyGroup>
@@ -30,7 +31,7 @@ class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGro
 	 * The [DndProficiencyViewModel] items which serve as children of this ViewModel, representing
 	 * each individual proficiency
 	 */
-	override val children = ArrayList(state.item?.options?.map { DndProficiencyViewModel(it) } ?: emptyList())
+	override val children = ArrayList(state.item?.options?.map { DndProficiencyViewModel(it, concurrency) } ?: emptyList())
 
 	/**
 	 * The number of remaining choices for this group, which should be displayed by the view
@@ -85,4 +86,7 @@ class DndProficiencyGroupViewModel(initialState: ItemState<out DndProficiencyGro
 		}
 	}
 
+	override fun toString(): String {
+		return "ViewModel for $state"
+	}
 }

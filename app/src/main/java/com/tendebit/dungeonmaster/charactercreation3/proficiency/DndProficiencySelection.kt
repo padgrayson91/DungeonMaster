@@ -43,6 +43,11 @@ class DndProficiencySelection : Parcelable {
 
 	private fun updateGroupsToMatchExternal(forGroups: List<DndProficiencyGroup>) {
 		for (group in forGroups) {
+			// Mark all items as deselected externally; external selections might be stale
+			for (item in group.options) {
+				group.onExternalDeselection(item.item ?: continue)
+			}
+
 			for (otherGroup in forGroups - group) {
 				for (selectedItem in otherGroup.selections) {
 					group.onExternalSelection(selectedItem.item!!)

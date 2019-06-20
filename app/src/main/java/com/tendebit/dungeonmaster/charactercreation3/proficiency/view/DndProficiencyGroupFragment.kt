@@ -9,8 +9,9 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
-import com.tendebit.dungeonmaster.core.viewmodel3.MultiSelectViewModel
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
 import com.tendebit.dungeonmaster.core.platform.ViewModels
+import com.tendebit.dungeonmaster.core.viewmodel3.MultiSelectViewModel
 import io.reactivex.disposables.Disposable
 import java.text.MessageFormat
 
@@ -41,6 +42,7 @@ class DndProficiencyGroupFragment : Fragment() {
 
 	private fun subscribeToViewModel(viewModel: MultiSelectViewModel?) {
 		disposable?.dispose()
+		logger.writeDebug("Subscribing to $viewModel")
 		disposable = viewModel?.changes?.subscribe { updateFromViewModel(it) }
 	}
 

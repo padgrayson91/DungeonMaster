@@ -62,8 +62,9 @@ class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, i
 	 * @throws IllegalArgumentException if the [ItemState] at the provided index is not [Normal]
 	 */
 	fun select(index: Int) {
+		logger.writeDebug("Selecting proficiency $index out of ${options.size}")
 		if (index < 0 || index >= options.size) { throw IndexOutOfBoundsException("Attempting to select a proficiency outside the list") }
-		if (options[index] is Selected) return // Likely restoring from an old state where this item is already selected
+		if (options[index] is Selected || options[index] is Locked) return // Likely restoring from an old state where this item is already selected
 		val itemState = options[index] as? Normal<out DndProficiency> ?: throw IllegalArgumentException("Proficiency at index $index cannot be selected; state is ${options[index]}")
 		val selectedState = Selected(itemState.item)
 		options[index] = selectedState
@@ -81,8 +82,8 @@ class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, i
 	 */
 	fun deselect(index: Int) {
 		if (index < 0 || index >= options.size) { throw IndexOutOfBoundsException("Attempting to deselect a proficiency outside the list") }
-		val itemState = options[index] as? Selected<out DndProficiency> ?: throw IllegalArgumentException("Proficiency at index $index cannot be deselected")
-		val normalState = Normal(itemState.item)
+		val item = options[index].item ?: throw IllegalStateException("Cannot deselect ${options[index]} at $index")
+		val normalState = Normal(item)
 		options[index] = normalState
 		directSelectionChanges.onNext(ListItemState(index, normalState))
 		if (remainingChoices == 1) {

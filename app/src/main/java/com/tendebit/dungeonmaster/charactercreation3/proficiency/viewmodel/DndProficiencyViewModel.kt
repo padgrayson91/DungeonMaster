@@ -1,7 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
-import com.tendebit.dungeonmaster.core.debug.DebugUtils
+import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
+import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.Locked
 import com.tendebit.dungeonmaster.core.model.Normal
@@ -10,7 +11,7 @@ import com.tendebit.dungeonmaster.core.viewmodel3.CheckableViewModel
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
-class DndProficiencyViewModel(initialState: ItemState<out DndProficiency>) : CheckableViewModel {
+class DndProficiencyViewModel(initialState: ItemState<out DndProficiency>, private val concurrency: Concurrency) : CheckableViewModel {
 
 	private var internalState = initialState
 	var state: ItemState<out DndProficiency>
@@ -28,18 +29,19 @@ class DndProficiencyViewModel(initialState: ItemState<out DndProficiency>) : Che
 	override val changes = internalChanges as Observable<DndProficiencyViewModel>
 
 	private val internalSelection = PublishSubject.create<Boolean>()
-	internal val selection = internalSelection.distinct()
+	internal val selection = internalSelection
 
 	override fun changeSelection(selected: Boolean) {
+		logger.writeDebug("Changed selection for $state to $selected")
 		internalSelection.onNext(selected)
 	}
 
 	private fun onStateChanged(state: ItemState<out DndProficiency>) {
 		internalState = state
-		if (!internalChanges.hasObservers() && !DebugUtils.isRunningTest()) {
-			throw IllegalStateException("Nobody is listening...")
-		}
-		internalChanges.onNext(this)
+		concurrency.runImmediate { internalChanges.onNext(this) }
 	}
 
+	override fun toString(): String {
+		return "ViewModel for $state"
+	}
 }

@@ -5,15 +5,20 @@ import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndPr
 import com.tendebit.dungeonmaster.core.model.Normal
 import com.tendebit.dungeonmaster.core.model.Selected
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
+import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import io.reactivex.observers.TestObserver
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class TestDndProficiencyGroupViewModel {
+
+	private val concurrency = TestConcurrency
 
 	@Test
 	fun testInitialViewModelRemainingChoicesMatchGroup() {
 		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
-		val toTest = DndProficiencyGroupViewModel(Normal(groupA))
+		val toTest = DndProficiencyGroupViewModel(Normal(groupA), concurrency)
 
 		assert(toTest.remainingChoices == 2)
 	}
@@ -21,7 +26,7 @@ class TestDndProficiencyGroupViewModel {
 	@Test
 	fun testViewModelChildCountMatchesGroupOptionCount() {
 		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
-		val toTest = DndProficiencyGroupViewModel(Normal(groupA))
+		val toTest = DndProficiencyGroupViewModel(Normal(groupA), concurrency)
 
 		assert(toTest.children.size == groupA.options.size)
 	}
@@ -29,7 +34,7 @@ class TestDndProficiencyGroupViewModel {
 	@Test
 	fun testUpdatingGroupSelectionUpdatesViewModelRemainingChoices() {
 		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
-		val toTest = DndProficiencyGroupViewModel(Normal(groupA))
+		val toTest = DndProficiencyGroupViewModel(Normal(groupA), concurrency)
 
 		groupA.select(0)
 		assert(toTest.remainingChoices == 1)
@@ -38,7 +43,7 @@ class TestDndProficiencyGroupViewModel {
 	@Test
 	fun testUpdatingGroupSelectionCausesViewModelChangeToEmit() {
 		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
-		val toTest = DndProficiencyGroupViewModel(Normal(groupA))
+		val toTest = DndProficiencyGroupViewModel(Normal(groupA), concurrency)
 		val testObserver = TestObserver<DndProficiencyGroupViewModel>()
 		toTest.changes.subscribe(testObserver)
 		groupA.select(0)
@@ -48,7 +53,7 @@ class TestDndProficiencyGroupViewModel {
 	@Test
 	fun testDeselectingFromGroupUpdatesViewModelRemainingChoices() {
 		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
-		val toTest = DndProficiencyGroupViewModel(Normal(groupA))
+		val toTest = DndProficiencyGroupViewModel(Normal(groupA), concurrency)
 
 		groupA.select(0)
 		groupA.deselect(0)
@@ -58,7 +63,7 @@ class TestDndProficiencyGroupViewModel {
 	@Test
 	fun testDeselectingFromGroupCausesViewModelChangeToEmit() {
 		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
-		val toTest = DndProficiencyGroupViewModel(Normal(groupA))
+		val toTest = DndProficiencyGroupViewModel(Normal(groupA), concurrency)
 		val testObserver = TestObserver<DndProficiencyGroupViewModel>()
 		toTest.changes.subscribe(testObserver)
 		groupA.select(0)
@@ -69,7 +74,7 @@ class TestDndProficiencyGroupViewModel {
 	@Test
 	fun testSelectionFromChildUpdatesChildAndSelf() {
 		val groupA = DndProficiencyGroup(CharacterCreationRobots.blankProficiencyStateList, 2)
-		val toTest = DndProficiencyGroupViewModel(Normal(groupA))
+		val toTest = DndProficiencyGroupViewModel(Normal(groupA), concurrency)
 		val testObserver = TestObserver<DndProficiencyGroupViewModel>()
 		val childTestObserver = TestObserver<DndProficiencyViewModel>()
 		toTest.changes.subscribe(testObserver)

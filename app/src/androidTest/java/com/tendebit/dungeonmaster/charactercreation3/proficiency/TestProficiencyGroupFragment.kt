@@ -16,21 +16,26 @@ import com.tendebit.dungeonmaster.core.platform.ViewModelManager
 import com.tendebit.dungeonmaster.core.platform.ViewModels
 import com.tendebit.dungeonmaster.core.viewmodel3.MultiSelectViewModel
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
+import com.tendebit.dungeonmaster.testhelpers.TestConcurrencyUi
 import io.reactivex.Observable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito
 import org.mockito.Mockito.`when` as whenever
 
 @RunWith(AndroidJUnit4::class)
+@ExperimentalCoroutinesApi
 class TestProficiencyGroupFragment {
+
+	private val concurrency = TestConcurrencyUi
 
 	@Test
 	fun testHeaderTextIsCorrectForSingleRemainingChoice() {
 		val viewModel = Mockito.mock(MultiSelectViewModel::class.java)
 		val children = listOf(
-				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[0])),
-				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[1])))
+				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[0]), concurrency),
+				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[1]), concurrency))
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.remainingChoices).thenReturn(1)
@@ -46,8 +51,8 @@ class TestProficiencyGroupFragment {
 	fun testHeaderTextIsCorrectForMultipleRemainingChoices() {
 		val viewModel = Mockito.mock(MultiSelectViewModel::class.java)
 		val children = listOf(
-				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[0])),
-				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[1])))
+				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[0]), concurrency),
+				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[1]), concurrency))
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.remainingChoices).thenReturn(2)
@@ -63,8 +68,8 @@ class TestProficiencyGroupFragment {
 	fun testHeaderTextIsCorrectForNoRemainingChoices() {
 		val viewModel = Mockito.mock(MultiSelectViewModel::class.java)
 		val children = listOf(
-				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[0])),
-				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[1])))
+				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[0]), concurrency),
+				DndProficiencyViewModel(Normal(CharacterCreationViewRobots.standardProficiencyList[1]), concurrency))
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.remainingChoices).thenReturn(0)

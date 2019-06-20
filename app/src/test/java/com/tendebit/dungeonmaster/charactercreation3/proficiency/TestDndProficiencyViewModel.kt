@@ -6,15 +6,20 @@ import com.tendebit.dungeonmaster.core.model.Locked
 import com.tendebit.dungeonmaster.core.model.Normal
 import com.tendebit.dungeonmaster.core.model.Selected
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
+import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import io.reactivex.observers.TestObserver
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class TestDndProficiencyViewModel {
+
+	private val concurrency = TestConcurrency
 
 	@Test
 	fun testNormalItemYieldsEnabledUnchecked() {
 		val testItem = Normal(CharacterCreationRobots.standardProficiencyList[0])
-		val toTest = DndProficiencyViewModel(testItem)
+		val toTest = DndProficiencyViewModel(testItem, concurrency)
 
 		assert(toTest.enabled)
 		assert(!toTest.checked)
@@ -23,7 +28,7 @@ class TestDndProficiencyViewModel {
 	@Test
 	fun testSelectedItemYieldsEnabledChecked() {
 		val testItem = Selected(CharacterCreationRobots.standardProficiencyList[0])
-		val toTest = DndProficiencyViewModel(testItem)
+		val toTest = DndProficiencyViewModel(testItem, concurrency)
 
 		assert(toTest.enabled)
 		assert(toTest.checked)
@@ -32,7 +37,7 @@ class TestDndProficiencyViewModel {
 	@Test
 	fun testLockedItemYieldsDisabledChecked() {
 		val testItem = Locked(CharacterCreationRobots.standardProficiencyList[0])
-		val toTest = DndProficiencyViewModel(testItem)
+		val toTest = DndProficiencyViewModel(testItem, concurrency)
 
 		assert(!toTest.enabled)
 		assert(toTest.checked)
@@ -41,7 +46,7 @@ class TestDndProficiencyViewModel {
 	@Test
 	fun testSelectionEmits() {
 		val testItem = Locked(CharacterCreationRobots.standardProficiencyList[0])
-		val toTest = DndProficiencyViewModel(testItem)
+		val toTest = DndProficiencyViewModel(testItem, concurrency)
 		val testObserver = TestObserver<Boolean>()
 		toTest.selection.subscribe(testObserver)
 
@@ -54,7 +59,7 @@ class TestDndProficiencyViewModel {
 	@Test
 	fun testDuplicateSelectionsDoNotEmit() {
 		val testItem = Locked(CharacterCreationRobots.standardProficiencyList[0])
-		val toTest = DndProficiencyViewModel(testItem)
+		val toTest = DndProficiencyViewModel(testItem, concurrency)
 		val testObserver = TestObserver<Boolean>()
 		toTest.selection.subscribe(testObserver)
 
@@ -68,7 +73,7 @@ class TestDndProficiencyViewModel {
 	@Test
 	fun testExternalStateChangeEmits() {
 		val testInitial = Normal(CharacterCreationRobots.standardProficiencyList[0])
-		val toTest = DndProficiencyViewModel(testInitial)
+		val toTest = DndProficiencyViewModel(testInitial, concurrency)
 		val testObserver = TestObserver<DndProficiencyViewModel>()
 		toTest.changes.subscribe(testObserver)
 

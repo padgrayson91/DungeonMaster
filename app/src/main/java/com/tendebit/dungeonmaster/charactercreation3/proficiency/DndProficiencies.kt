@@ -6,6 +6,7 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacter
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProficiencyDataStore
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProficiencyDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
+import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.core.model.Completed
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.ItemStateUtils
@@ -13,10 +14,14 @@ import com.tendebit.dungeonmaster.core.model.Normal
 import com.tendebit.dungeonmaster.core.model.Removed
 import com.tendebit.dungeonmaster.core.model.Selection
 import com.tendebit.dungeonmaster.core.model.Undefined
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import io.reactivex.functions.BiFunction
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 class DndProficiencies : ProficiencyProvider, Parcelable {
@@ -38,15 +43,20 @@ class DndProficiencies : ProficiencyProvider, Parcelable {
 
 	override fun start(prerequisites: ProficiencyPrerequisites, scope: CoroutineScope) {
 		dataStore = DndProficiencyDataStoreImpl(DndProficiencyApiConnection.Impl(), prerequisites.storage)
-		disposable = prerequisites.classSelections.subscribe {
-			scope.launch(context = Dispatchers.IO) { updateStateForClassSelectionChange (it) }
+		val prereqObservable: Observable<Pair<ItemState<out Selection<DndCharacterClass>>, ItemState<out Selection<DndRace>>>> = Observable.combineLatest(
+				prerequisites.classSelections, prerequisites.raceSelections,
+				BiFunction { t1: ItemState<out Selection<DndCharacterClass>>, t2: ItemState<out Selection<DndRace>> -> Pair(t1, t2) })
+		disposable = prereqObservable.subscribe {
+			scope.launch(context = Dispatchers.IO) {
+				updateStateForPrerequisiteChange(it.first, it.second)
+			}
 		}
 	}
 
 	override fun refreshProficiencyState() {
 		val oldState = state
 		logger.writeDebug("Performing state check. Current state is $oldState")
-		val newState = when(oldState) {
+		val newState = when (oldState) {
 			is Normal -> {
 				if (oldState.item.groupStates.all { it is Completed }) {
 					Completed(oldState.item)
@@ -71,31 +81,29 @@ class DndProficiencies : ProficiencyProvider, Parcelable {
 		}
 	}
 
-	private suspend fun updateStateForClassSelectionChange(selection: ItemState<out Selection<DndCharacterClass>>) {
-		logger.writeDebug("Got a new class selection: $selection")
-		when(selection) {
-			is Completed -> doLoadProficienciesForSelectedClass(selection.item.selectedItem?.item)
-			else -> {
-				state = Removed
-				externalStateChanges.onNext(state)
-			}
+	private suspend fun updateStateForPrerequisiteChange(classSelection: ItemState<out Selection<DndCharacterClass>>, raceSelection: ItemState<out Selection<DndRace>>) = coroutineScope {
+		logger.writeDebug("Either class selection $classSelection or race selection $raceSelection has changed")
+		if (classSelection !is Completed && raceSelection !is Completed) {
+			state = Removed
+			externalStateChanges.onNext(state)
+			return@coroutineScope
 		}
-	}
 
-	private suspend fun doLoadProficienciesForSelectedClass(dndClass: DndCharacterClass?) {
-		if (dndClass == null) {
-			if (state !is Removed) {
-				state = Removed
-				externalStateChanges.onNext(state)
-			}
-			return
+		val selectedClass = classSelection.item?.selectedItem?.item
+		val selectedRace = raceSelection.item?.selectedItem?.item
+
+		if (selectedClass == null && selectedRace == null) {
+			state = Removed
+			externalStateChanges.onNext(state)
+			return@coroutineScope
 		}
 
 		state = Undefined
 		externalStateChanges.onNext(state)
 
-		val proficiencies = dataStore.getProficiencyList(dndClass)
-		state = Normal(DndProficiencySelection(proficiencies))
+		val classProficiencies = async { if (selectedClass == null) emptyList() else dataStore.getProficiencyList(selectedClass) }
+		val raceProficiencies = async { if (selectedRace == null) emptyList() else dataStore.getProficiencyList(selectedRace) }
+		state = Normal(DndProficiencySelection(ArrayList<DndProficiencyGroup>().apply { addAll(classProficiencies.await()); addAll(raceProficiencies.await())}))
 		externalStateChanges.onNext(state)
 	}
 

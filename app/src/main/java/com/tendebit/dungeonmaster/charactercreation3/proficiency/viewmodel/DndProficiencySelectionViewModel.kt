@@ -3,6 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyProvider
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
+import com.tendebit.dungeonmaster.core.concurrency.Concurrency
 import com.tendebit.dungeonmaster.core.model.Completed
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.Undefined
@@ -21,7 +22,7 @@ import kotlinx.coroutines.launch
  * ViewModel for the entire proficiency selection process. This ViewModel indicates how many
  * pages
  */
-class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider) : PageSection, Clearable {
+class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider, private val concurrency: Concurrency) : PageSection, Clearable {
 
 	private val job = Job()
 	private val viewModelScope = CoroutineScope(Dispatchers.Main + job)
@@ -31,7 +32,7 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 
 	override var showLoading = provider.state is Undefined
 		private set
-	override val pages = ArrayList<DndProficiencyGroupViewModel>(provider.state.item?.groupStates?.map { DndProficiencyGroupViewModel(it) } ?: emptyList())
+	override val pages = ArrayList<DndProficiencyGroupViewModel>(provider.state.item?.groupStates?.map { DndProficiencyGroupViewModel(it, concurrency) } ?: emptyList())
 	override var pageCount = pages.size
 		private set
 	override val isComplete: Boolean
@@ -57,7 +58,7 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 		logger.writeDebug("Got external state: $newState")
 		viewModelScope.launch(context = Dispatchers.Main) {
 			pages.clear()
-			pages.addAll(newState.item?.groupStates?.map { DndProficiencyGroupViewModel(it) } ?: emptyList())
+			pages.addAll(newState.item?.groupStates?.map { DndProficiencyGroupViewModel(it, concurrency) } ?: emptyList())
 			subscribeToSelection(newState.item)
 			updateViewModelValues(newState)
 		}
