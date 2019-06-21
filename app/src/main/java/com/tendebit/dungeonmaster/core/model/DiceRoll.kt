@@ -1,11 +1,7 @@
 package com.tendebit.dungeonmaster.core.model
 
-import kotlin.random.Random
+interface DiceRoll {
 
-class DiceRoll(private val numSides: Int) {
-
-	fun roll(): Int {
-		return Random.nextInt(1, numSides + 1)
-	}
+	fun roll(): Int
 
 }

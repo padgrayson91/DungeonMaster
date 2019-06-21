@@ -1,14 +1,14 @@
 package com.tendebit.dungeonmaster.core
 
-import com.tendebit.dungeonmaster.core.model.DiceRoll
+import com.tendebit.dungeonmaster.core.model.SingleDiceRoll
 import org.junit.Test
 
-class TestDiceRoll {
+class TestSingleDiceRoll {
 
 	@Test
 	fun testD20DiceRollInBounds() {
 		val upperBound = 20
-		val toTest = DiceRoll(upperBound)
+		val toTest = SingleDiceRoll(upperBound)
 		val rolls = ArrayList<Int>()
 		for (i in 0..100) {
 			rolls.add(toTest.roll())
@@ -22,7 +22,7 @@ class TestDiceRoll {
 	@Test
 	fun testD12DiceRollInBounds() {
 		val upperBound = 12
-		val toTest = DiceRoll(upperBound)
+		val toTest = SingleDiceRoll(upperBound)
 		val rolls = ArrayList<Int>()
 		for (i in 0..100) {
 			rolls.add(toTest.roll())
@@ -36,7 +36,7 @@ class TestDiceRoll {
 	@Test
 	fun testD10DiceRollInBounds() {
 		val upperBound = 10
-		val toTest = DiceRoll(upperBound)
+		val toTest = SingleDiceRoll(upperBound)
 		val rolls = ArrayList<Int>()
 		for (i in 0..100) {
 			rolls.add(toTest.roll())
@@ -50,7 +50,7 @@ class TestDiceRoll {
 	@Test
 	fun testD8DiceRollInBounds() {
 		val upperBound = 8
-		val toTest = DiceRoll(upperBound)
+		val toTest = SingleDiceRoll(upperBound)
 		val rolls = ArrayList<Int>()
 		for (i in 0..100) {
 			rolls.add(toTest.roll())
@@ -64,7 +64,7 @@ class TestDiceRoll {
 	@Test
 	fun testD6DiceRollInBounds() {
 		val upperBound = 6
-		val toTest = DiceRoll(upperBound)
+		val toTest = SingleDiceRoll(upperBound)
 		val rolls = ArrayList<Int>()
 		for (i in 0..100) {
 			rolls.add(toTest.roll())
@@ -78,7 +78,7 @@ class TestDiceRoll {
 	@Test
 	fun testD4DiceRollInBounds() {
 		val upperBound = 4
-		val toTest = DiceRoll(upperBound)
+		val toTest = SingleDiceRoll(upperBound)
 		val rolls = ArrayList<Int>()
 		for (i in 0..100) {
 			rolls.add(toTest.roll())
