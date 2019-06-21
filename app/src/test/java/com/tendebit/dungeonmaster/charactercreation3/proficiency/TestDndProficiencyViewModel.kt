@@ -57,20 +57,6 @@ class TestDndProficiencyViewModel {
 	}
 
 	@Test
-	fun testDuplicateSelectionsDoNotEmit() {
-		val testItem = Locked(CharacterCreationRobots.standardProficiencyList[0])
-		val toTest = DndProficiencyViewModel(testItem, concurrency)
-		val testObserver = TestObserver<Boolean>()
-		toTest.selection.subscribe(testObserver)
-
-		toTest.changeSelection(false)
-		toTest.changeSelection(false)
-
-		assert(testObserver.valueCount() == 1)
-		testObserver.assertValue { !it }
-	}
-
-	@Test
 	fun testExternalStateChangeEmits() {
 		val testInitial = Normal(CharacterCreationRobots.standardProficiencyList[0])
 		val toTest = DndProficiencyViewModel(testInitial, concurrency)

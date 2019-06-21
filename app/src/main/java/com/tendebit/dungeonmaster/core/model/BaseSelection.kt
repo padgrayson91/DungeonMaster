@@ -8,11 +8,11 @@ abstract class BaseSelection<T> : Selection<T> {
 	abstract override val options: MutableList<ItemState<out T>>
 	override val selectedItem: Selected<out T>?
 		get() = options.find { it is Selected } as? Selected<out T>
-	private val indirectSelectionChanges = PublishSubject.create<ListItemState<T>>()
-	private val directSelectionChanges = PublishSubject.create<ListItemState<T>>()
+	protected val indirectSelectionChanges = PublishSubject.create<ListItemState<T>>()
+	protected val directSelectionChanges = PublishSubject.create<ListItemState<T>>()
 	override val selectionChanges: Observable<ListItemState<T>> = directSelectionChanges.mergeWith(indirectSelectionChanges)
 	override val outboundSelectionChanges = directSelectionChanges as Observable<ListItemState<T>>
-	private val selectedIndex: Int
+	protected val selectedIndex: Int
 		get() = options.indexOfFirst { it is Selected }
 
 	override fun deselect(index: Int) {

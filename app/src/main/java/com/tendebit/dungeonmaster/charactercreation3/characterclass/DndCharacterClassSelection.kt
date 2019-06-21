@@ -6,7 +6,7 @@ import com.tendebit.dungeonmaster.core.model.BaseSelection
 import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.ItemStateUtils
 
-class DndCharacterClassSelection : BaseSelection<DndCharacterClass> {
+class DndCharacterClassSelection : BaseSelection<DndCharacterClass>, Parcelable {
 
 	override val options: MutableList<ItemState<out DndCharacterClass>>
 

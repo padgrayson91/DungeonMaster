@@ -1,9 +1,8 @@
 package com.tendebit.dungeonmaster.core.model
 
-import android.os.Parcelable
 import io.reactivex.Observable
 
-interface Selection<T> : Parcelable {
+interface Selection<T> {
 
 	val options: List<ItemState<out T>>
 	val selectedItem: Selected<out T>?

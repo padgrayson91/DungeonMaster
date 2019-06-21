@@ -10,6 +10,7 @@
 
 	<LinearLayout
 		android:layout_alignParentBottom="true"
+		android:visibility="gone"
 		android:id="@+id/button_wrapper"
 		android:orientation="horizontal"
 		android:layout_width="match_parent"
