@@ -2,23 +2,15 @@ package com.tendebit.dungeonmaster.charactercreation3.ability
 
 import java.io.Serializable
 
-data class DndAbility(val type: Type, val rawScore: Int) : Serializable {
-
-	enum class Type {
-		STR,
-		DEX,
-		CON,
-		INT,
-		WIS,
-		CHA
-	}
+data class DndAbility(val type: DndAbilityType, val rawScore: Int, val bonus: DndAbilityBonus = DndAbilityBonus(type)) : Serializable {
 
 	fun getModifier(): Int {
-		val isEven = rawScore and 0x1 == 0
+		val scoreWithBonus = rawScore + bonus.value
+		val isEven = scoreWithBonus and 0x1 == 0
 		return if (isEven) {
-			(rawScore - 10)/2
+			(scoreWithBonus - 10)/2
 		} else {
-			(rawScore - 11)/2
+			(scoreWithBonus - 11)/2
 		}
 	}
 

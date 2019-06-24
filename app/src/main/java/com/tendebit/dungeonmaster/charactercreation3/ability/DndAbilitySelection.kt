@@ -5,9 +5,10 @@ import com.tendebit.dungeonmaster.core.model.ItemState
 import com.tendebit.dungeonmaster.core.model.Removed
 import com.tendebit.dungeonmaster.core.model.Selected
 
-class DndAbilitySelection(private val concurrency: Concurrency, initialState: Array<ItemState<out DndAbility>>? = null, initialRolls: DndAbilityRollSelection? = null) {
+class DndAbilitySelection(private val concurrency: Concurrency, private val bonuses: List<DndAbilityBonus> = emptyList(),
+						  initialState: Array<ItemState<out DndAbility>>? = null, initialRolls: DndAbilityRollSelection? = null) {
 
-	private val abilitySlots = DndAbility.Type.values()
+	private val abilitySlots = DndAbilityType.values()
 	val options = initialState ?: Array<ItemState<out DndAbility>>(abilitySlots.size) { Removed }
 	private val rolls = initialRolls ?: DndAbilityRollSelection(abilitySlots.size)
 	val scoreOptions: List<ItemState<out Int>>
@@ -30,7 +31,9 @@ class DndAbilitySelection(private val concurrency: Concurrency, initialState: Ar
 	fun performAssignment(index: Int) {
 		concurrency.runCalculation({
 			val item = rolls.selectedItem ?: throw IllegalStateException("Cannot perform assignment without making a selection")
-			options[index] = Selected(DndAbility(abilitySlots[index], item.item))
+			val abilityType = abilitySlots[index]
+			val bonus = bonuses.find { it.type == abilityType }
+			options[index] = Selected(DndAbility(abilitySlots[index], item.item, bonus ?: DndAbilityBonus(abilityType)))
 			rolls.onAssigned()
 		})
 	}
