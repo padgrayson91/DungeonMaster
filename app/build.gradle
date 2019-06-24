@@ -27,8 +27,6 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$kotlinxCoroutinesVersion"
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$kotlinxCoroutinesVersion"
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
@@ -37,9 +35,6 @@ dependencies {
     implementation "android.arch.persistence.room:rxjava2:1.1.1"
     implementation "androidx.room:room-runtime:2.1.0-alpha04"
     implementation 'org.koin:koin-android:1.0.1'
-
-    // RxJava2
-    implementation "io.reactivex.rxjava2:rxjava:2.2.1"
 
     // ViewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0-alpha05"
