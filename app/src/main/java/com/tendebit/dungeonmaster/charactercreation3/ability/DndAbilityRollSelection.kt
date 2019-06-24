@@ -1,11 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
-import com.tendebit.dungeonmaster.core.model.BaseSelection
-import com.tendebit.dungeonmaster.core.model.ItemState
-import com.tendebit.dungeonmaster.core.model.ListItemState
-import com.tendebit.dungeonmaster.core.model.Locked
-import com.tendebit.dungeonmaster.core.model.Normal
-import com.tendebit.dungeonmaster.core.model.Removed
+import com.tendebit.dungeonmaster.core.model.state.BaseSelection
+import com.tendebit.dungeonmaster.core.model.state.ItemState
+import com.tendebit.dungeonmaster.core.model.state.ListItemState
+import com.tendebit.dungeonmaster.core.model.state.Locked
+import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmaster.core.model.state.Removed
 
 class DndAbilityRollSelection(abilityCount: Int, initialState: List<ItemState<out Int>>? = null) : BaseSelection<Int>() {
 

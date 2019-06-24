@@ -4,8 +4,8 @@ import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyG
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
-import com.tendebit.dungeonmaster.core.model.Normal
-import com.tendebit.dungeonmaster.core.model.Selected
+import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmaster.core.model.state.Selected
 import io.reactivex.Maybe
 import io.reactivex.subjects.MaybeSubject
 import java.util.UUID

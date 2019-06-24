@@ -1,11 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencySelectionViewModel
-import com.tendebit.dungeonmaster.core.model.Completed
-import com.tendebit.dungeonmaster.core.model.ItemState
-import com.tendebit.dungeonmaster.core.model.Normal
-import com.tendebit.dungeonmaster.core.model.Removed
-import com.tendebit.dungeonmaster.core.model.Undefined
+import com.tendebit.dungeonmaster.core.model.state.Completed
+import com.tendebit.dungeonmaster.core.model.state.ItemState
+import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmaster.core.model.state.Removed
+import com.tendebit.dungeonmaster.core.model.state.Undefined
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import io.reactivex.Observable

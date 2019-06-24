@@ -9,12 +9,6 @@ import com.tendebit.dungeonmaster.core.viewmodel.DisplayableElement
 class SimpleElementAdapter<T : DisplayableElement> : RecyclerView.Adapter<SimpleTextViewHolder<T>>() {
     private val items = ArrayList<T>()
 
-    fun update(newOptions: Collection<T>) {
-        items.clear()
-        items.addAll(newOptions)
-        notifyDataSetChanged()
-    }
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SimpleTextViewHolder<T> {
         return SimpleTextViewHolder(LayoutInflater.from(parent.context), parent)
     }

@@ -1,11 +1,10 @@
 package com.tendebit.dungeonmaster.core.debug
 
 import android.util.Log
-import com.tendebit.dungeonmaster.BuildConfig
 import kotlin.math.min
 
 @Suppress("unused")
-class Logger(vararg tags: CharSequence) {
+class Logger(vararg tags: CharSequence, private val debug: Boolean = false) {
 
 	private val tag = mergeTags(tags)
 
@@ -32,7 +31,7 @@ class Logger(vararg tags: CharSequence) {
 	}
 
 	fun writeDebug(text: CharSequence) {
-		if (!BuildConfig.DEBUG) {
+		if (!debug) {
 			return
 		}
 		if (DebugUtils.isRunningTest()) {

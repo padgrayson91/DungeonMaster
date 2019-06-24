@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.core.viewmodel3
 
-import com.tendebit.dungeonmaster.core.model.ItemState
+import com.tendebit.dungeonmaster.core.model.state.ItemState
 
 interface SelectableViewModel<T> : ViewModel {
 

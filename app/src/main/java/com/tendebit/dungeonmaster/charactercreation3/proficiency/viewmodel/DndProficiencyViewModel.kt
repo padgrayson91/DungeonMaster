@@ -3,10 +3,10 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
-import com.tendebit.dungeonmaster.core.model.ItemState
-import com.tendebit.dungeonmaster.core.model.Locked
-import com.tendebit.dungeonmaster.core.model.Normal
-import com.tendebit.dungeonmaster.core.model.Selected
+import com.tendebit.dungeonmaster.core.model.state.ItemState
+import com.tendebit.dungeonmaster.core.model.state.Locked
+import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmaster.core.model.state.Selected
 import com.tendebit.dungeonmaster.core.viewmodel3.CheckableViewModel
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject

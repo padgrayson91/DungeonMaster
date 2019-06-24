@@ -2,8 +2,8 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import android.os.Parcel
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.tendebit.dungeonmaster.core.model.Normal
-import com.tendebit.dungeonmaster.core.model.Selected
+import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmaster.core.model.state.Selected
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue

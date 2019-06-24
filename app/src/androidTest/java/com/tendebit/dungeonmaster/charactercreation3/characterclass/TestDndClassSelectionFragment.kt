@@ -14,7 +14,7 @@ import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.view.DndClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassViewModel
-import com.tendebit.dungeonmaster.core.model.Normal
+import com.tendebit.dungeonmaster.core.model.state.Normal
 import com.tendebit.dungeonmaster.core.platform.ViewModelManager
 import com.tendebit.dungeonmaster.core.platform.ViewModels
 import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel

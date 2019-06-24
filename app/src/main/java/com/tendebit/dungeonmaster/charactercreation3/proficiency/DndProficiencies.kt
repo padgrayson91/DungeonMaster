@@ -7,14 +7,14 @@ import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProfici
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProficiencyDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
-import com.tendebit.dungeonmaster.core.model.Completed
 import com.tendebit.dungeonmaster.core.model.DelayedStart
-import com.tendebit.dungeonmaster.core.model.ItemState
-import com.tendebit.dungeonmaster.core.model.ItemStateUtils
-import com.tendebit.dungeonmaster.core.model.Normal
-import com.tendebit.dungeonmaster.core.model.Removed
-import com.tendebit.dungeonmaster.core.model.Selection
-import com.tendebit.dungeonmaster.core.model.Undefined
+import com.tendebit.dungeonmaster.core.model.state.Completed
+import com.tendebit.dungeonmaster.core.model.state.ItemState
+import com.tendebit.dungeonmaster.core.model.state.ItemStateUtils
+import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmaster.core.model.state.Removed
+import com.tendebit.dungeonmaster.core.model.state.Selection
+import com.tendebit.dungeonmaster.core.model.state.Undefined
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
@@ -105,7 +105,7 @@ class DndProficiencies : ProficiencyProvider, Parcelable, DelayedStart<Proficien
 
 		val classProficiencies = async { if (selectedClass == null) emptyList() else dataStore.getProficiencyList(selectedClass) }
 		val raceProficiencies = async { if (selectedRace == null) emptyList() else dataStore.getProficiencyList(selectedRace) }
-		state = Normal(DndProficiencySelection(ArrayList<DndProficiencyGroup>().apply { addAll(classProficiencies.await()); addAll(raceProficiencies.await())}))
+		state = Normal(DndProficiencySelection(ArrayList<DndProficiencyGroup>().apply { addAll(classProficiencies.await()); addAll(raceProficiencies.await()) }))
 		externalStateChanges.onNext(state)
 	}
 

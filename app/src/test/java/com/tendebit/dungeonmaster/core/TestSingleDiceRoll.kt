@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.core
 
-import com.tendebit.dungeonmaster.core.model.SingleDiceRoll
+import com.tendebit.dungeonmaster.core.model.dice.SingleDiceRoll
 import org.junit.Test
 
 class TestSingleDiceRoll {

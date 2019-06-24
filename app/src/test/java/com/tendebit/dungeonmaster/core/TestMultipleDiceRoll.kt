@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.core
 
-import com.tendebit.dungeonmaster.core.model.DiceRoll
-import com.tendebit.dungeonmaster.core.model.MultipleDiceRoll
+import com.tendebit.dungeonmaster.core.model.dice.DiceRoll
+import com.tendebit.dungeonmaster.core.model.dice.MultipleDiceRoll
 import org.junit.Test
 import org.mockito.Mockito
 import org.mockito.Mockito.`when` as whenever

@@ -4,8 +4,8 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacter
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
-import com.tendebit.dungeonmaster.core.model.ItemState
-import com.tendebit.dungeonmaster.core.model.Normal
+import com.tendebit.dungeonmaster.core.model.state.ItemState
+import com.tendebit.dungeonmaster.core.model.state.Normal
 
 @Suppress("unused")
 object CharacterCreationViewRobots {

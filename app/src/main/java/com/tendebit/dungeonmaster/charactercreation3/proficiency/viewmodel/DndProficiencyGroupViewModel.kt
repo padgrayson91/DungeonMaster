@@ -2,8 +2,8 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
-import com.tendebit.dungeonmaster.core.model.Completed
-import com.tendebit.dungeonmaster.core.model.ItemState
+import com.tendebit.dungeonmaster.core.model.state.Completed
+import com.tendebit.dungeonmaster.core.model.state.ItemState
 import com.tendebit.dungeonmaster.core.viewmodel3.MultiSelectViewModel
 import com.tendebit.dungeonmaster.core.viewmodel3.Page
 import io.reactivex.Observable

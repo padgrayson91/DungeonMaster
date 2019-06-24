@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.core.model
+package com.tendebit.dungeonmaster.core.model.state
 
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject

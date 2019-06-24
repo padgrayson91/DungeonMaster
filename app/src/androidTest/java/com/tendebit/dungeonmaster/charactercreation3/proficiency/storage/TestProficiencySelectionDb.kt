@@ -8,7 +8,7 @@ import com.tendebit.dungeonmaster.charactercreation3.feature.storage.CharacterCr
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.DndProficiencyStorage
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.RoomProficiencyStorage
-import com.tendebit.dungeonmaster.core.model.Locked
+import com.tendebit.dungeonmaster.core.model.state.Locked
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrencyUi
 import io.reactivex.observers.TestObserver

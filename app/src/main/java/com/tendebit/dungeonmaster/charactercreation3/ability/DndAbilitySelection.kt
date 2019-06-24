@@ -1,9 +1,9 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
-import com.tendebit.dungeonmaster.core.model.ItemState
-import com.tendebit.dungeonmaster.core.model.Removed
-import com.tendebit.dungeonmaster.core.model.Selected
+import com.tendebit.dungeonmaster.core.model.state.ItemState
+import com.tendebit.dungeonmaster.core.model.state.Removed
+import com.tendebit.dungeonmaster.core.model.state.Selected
 
 class DndAbilitySelection(private val concurrency: Concurrency, private val bonuses: List<DndAbilityBonus> = emptyList(),
 						  initialState: Array<ItemState<out DndAbility>>? = null, initialRolls: DndAbilityRollSelection? = null) {

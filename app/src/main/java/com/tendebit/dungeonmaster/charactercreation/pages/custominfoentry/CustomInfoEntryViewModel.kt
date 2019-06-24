@@ -13,11 +13,6 @@ class CustomInfoEntryViewModel {
     val changes = stateSubject as Observable<CustomInfoEntryViewModel>
     val info = CustomInfo()
 
-
-    fun isEntryComplete() : Boolean {
-        return info.isComplete()
-    }
-
     fun setName(name: CharSequence?) {
         info.name = name
         notifyDataChanged()

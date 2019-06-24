@@ -1,12 +1,12 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
-import com.tendebit.dungeonmaster.core.model.ItemState
-import com.tendebit.dungeonmaster.core.model.Loading
-import com.tendebit.dungeonmaster.core.model.Normal
-import com.tendebit.dungeonmaster.core.model.Selected
-import com.tendebit.dungeonmaster.core.model.Selection
-import com.tendebit.dungeonmaster.core.model.SelectionProvider
+import com.tendebit.dungeonmaster.core.model.state.ItemState
+import com.tendebit.dungeonmaster.core.model.state.Loading
+import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmaster.core.model.state.Selected
+import com.tendebit.dungeonmaster.core.model.state.Selection
+import com.tendebit.dungeonmaster.core.model.state.SelectionProvider
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import io.reactivex.Observable

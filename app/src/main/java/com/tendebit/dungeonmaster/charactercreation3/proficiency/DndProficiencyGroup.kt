@@ -2,13 +2,13 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.core.model.Disabled
-import com.tendebit.dungeonmaster.core.model.ItemState
-import com.tendebit.dungeonmaster.core.model.ItemStateUtils
-import com.tendebit.dungeonmaster.core.model.ListItemState
-import com.tendebit.dungeonmaster.core.model.Locked
-import com.tendebit.dungeonmaster.core.model.Normal
-import com.tendebit.dungeonmaster.core.model.Selected
+import com.tendebit.dungeonmaster.core.model.state.Disabled
+import com.tendebit.dungeonmaster.core.model.state.ItemState
+import com.tendebit.dungeonmaster.core.model.state.ItemStateUtils
+import com.tendebit.dungeonmaster.core.model.state.ListItemState
+import com.tendebit.dungeonmaster.core.model.state.Locked
+import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmaster.core.model.state.Selected
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 

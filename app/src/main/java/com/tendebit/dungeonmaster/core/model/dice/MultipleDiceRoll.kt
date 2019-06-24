@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.core.model
+package com.tendebit.dungeonmaster.core.model.dice
 
 class MultipleDiceRoll(private val rolls: List<DiceRoll>) : DiceRoll {
 

@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
-import com.tendebit.dungeonmaster.core.model.Normal
-import com.tendebit.dungeonmaster.core.model.Removed
+import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmaster.core.model.state.Removed
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test

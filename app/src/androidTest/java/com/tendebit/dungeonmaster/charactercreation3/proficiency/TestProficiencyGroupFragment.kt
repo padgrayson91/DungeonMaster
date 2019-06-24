@@ -11,7 +11,7 @@ import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.view.DndProficiencyGroupFragment
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyViewModel
-import com.tendebit.dungeonmaster.core.model.Normal
+import com.tendebit.dungeonmaster.core.model.state.Normal
 import com.tendebit.dungeonmaster.core.platform.ViewModelManager
 import com.tendebit.dungeonmaster.core.platform.ViewModels
 import com.tendebit.dungeonmaster.core.viewmodel3.MultiSelectViewModel

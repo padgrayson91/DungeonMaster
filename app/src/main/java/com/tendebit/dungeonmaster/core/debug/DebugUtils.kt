@@ -1,10 +1,11 @@
 package com.tendebit.dungeonmaster.core.debug
 
+import com.tendebit.dungeonmaster.BuildConfig
 import java.util.concurrent.atomic.AtomicBoolean
 
 object DebugUtils {
 
-	val logger = Logger("GLOBAL")
+	val logger = Logger("GLOBAL", debug = BuildConfig.DEBUG)
 	private var isRunningTest: AtomicBoolean? = null
 
 	@Suppress("SpellCheckingInspection")

@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.core.model
+package com.tendebit.dungeonmaster.core.model.state
 
 import android.os.Parcel
 import android.os.Parcelable

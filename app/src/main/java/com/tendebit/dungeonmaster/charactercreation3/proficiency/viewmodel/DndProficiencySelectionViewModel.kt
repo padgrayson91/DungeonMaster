@@ -4,9 +4,9 @@ import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyS
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyProvider
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
 import com.tendebit.dungeonmaster.core.concurrency.Concurrency
-import com.tendebit.dungeonmaster.core.model.Completed
-import com.tendebit.dungeonmaster.core.model.ItemState
-import com.tendebit.dungeonmaster.core.model.Undefined
+import com.tendebit.dungeonmaster.core.model.state.Completed
+import com.tendebit.dungeonmaster.core.model.state.ItemState
+import com.tendebit.dungeonmaster.core.model.state.Undefined
 import com.tendebit.dungeonmaster.core.viewmodel3.Clearable
 import com.tendebit.dungeonmaster.core.viewmodel3.PageSection
 import io.reactivex.disposables.CompositeDisposable
