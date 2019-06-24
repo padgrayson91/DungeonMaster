@@ -4,7 +4,7 @@ import android.content.Context
 import android.view.View
 import com.google.android.material.chip.Chip
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
-import com.tendebit.dungeonmaster.core.viewmodel3.CheckableViewModel
+import com.tendebit.dungeonmastercore.viewmodel3.CheckableViewModel
 import io.reactivex.disposables.Disposable
 import java.lang.ref.WeakReference
 

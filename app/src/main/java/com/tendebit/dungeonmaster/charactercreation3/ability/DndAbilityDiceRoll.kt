@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
-import com.tendebit.dungeonmaster.core.model.dice.DiceRoll
-import com.tendebit.dungeonmaster.core.model.dice.MultipleDiceRoll
-import com.tendebit.dungeonmaster.core.model.dice.SingleDiceRoll
+import com.tendebit.dungeonmastercore.model.dice.DiceRoll
+import com.tendebit.dungeonmastercore.model.dice.MultipleDiceRoll
+import com.tendebit.dungeonmastercore.model.dice.SingleDiceRoll
 
 class DndAbilityDiceRoll : DiceRoll {
 

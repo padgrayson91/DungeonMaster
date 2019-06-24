@@ -16,9 +16,9 @@ import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRacePrerequisi
 import com.tendebit.dungeonmaster.charactercreation3.race.data.network.DndRaceApiConnection
 import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.RoomRaceStorage
 import com.tendebit.dungeonmaster.charactercreation3.race.viewmodel.DndRaceSelectionViewModel
-import com.tendebit.dungeonmaster.core.concurrency.CoroutineConcurrency
-import com.tendebit.dungeonmaster.core.viewmodel3.Clearable
-import com.tendebit.dungeonmaster.core.viewmodel3.ViewModel
+import com.tendebit.dungeonmastercore.concurrency.CoroutineConcurrency
+import com.tendebit.dungeonmastercore.viewmodel3.Clearable
+import com.tendebit.dungeonmastercore.viewmodel3.ViewModel
 import io.reactivex.Observable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

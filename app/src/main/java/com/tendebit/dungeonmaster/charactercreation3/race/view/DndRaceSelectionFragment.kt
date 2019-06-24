@@ -10,9 +10,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
-import com.tendebit.dungeonmaster.core.platform.ViewModels
-import com.tendebit.dungeonmaster.core.view.LoadingDialog
-import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
+import com.tendebit.dungeonmastercore.platform.ViewModels
+import com.tendebit.dungeonmastercore.view.LoadingDialog
+import com.tendebit.dungeonmastercore.viewmodel3.SingleSelectViewModel
 import io.reactivex.disposables.Disposable
 
 class DndRaceSelectionFragment : Fragment() {

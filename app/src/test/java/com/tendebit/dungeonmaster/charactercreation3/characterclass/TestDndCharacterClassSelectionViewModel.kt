@@ -1,14 +1,14 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
-import com.tendebit.dungeonmaster.core.model.state.ItemState
-import com.tendebit.dungeonmaster.core.model.state.Loading
-import com.tendebit.dungeonmaster.core.model.state.Normal
-import com.tendebit.dungeonmaster.core.model.state.Selected
-import com.tendebit.dungeonmaster.core.model.state.Selection
-import com.tendebit.dungeonmaster.core.model.state.SelectionProvider
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
+import com.tendebit.dungeonmastercore.model.state.ItemState
+import com.tendebit.dungeonmastercore.model.state.Loading
+import com.tendebit.dungeonmastercore.model.state.Normal
+import com.tendebit.dungeonmastercore.model.state.Selected
+import com.tendebit.dungeonmastercore.model.state.Selection
+import com.tendebit.dungeonmastercore.model.state.SelectionProvider
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.Dispatchers

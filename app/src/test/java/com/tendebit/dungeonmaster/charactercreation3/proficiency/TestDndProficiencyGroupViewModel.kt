@@ -2,10 +2,10 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyGroupViewModel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyViewModel
-import com.tendebit.dungeonmaster.core.model.state.Normal
-import com.tendebit.dungeonmaster.core.model.state.Selected
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
+import com.tendebit.dungeonmastercore.model.state.Normal
+import com.tendebit.dungeonmastercore.model.state.Selected
 import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test

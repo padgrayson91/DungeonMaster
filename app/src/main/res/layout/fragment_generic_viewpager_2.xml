@@ -32,7 +32,7 @@
 			android:layout_weight="1"/>
 	</LinearLayout>
 
-	<com.tendebit.dungeonmaster.core.view.LoadingDialog
+	<com.tendebit.dungeonmastercore.view.LoadingDialog
 		android:id="@+id/loading_dialog"
 		android:layout_width="match_parent"
 		android:layout_height="match_parent"

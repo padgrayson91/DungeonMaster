@@ -1,10 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassViewModel
-import com.tendebit.dungeonmaster.core.model.state.Normal
-import com.tendebit.dungeonmaster.core.model.state.Selected
-import com.tendebit.dungeonmaster.core.viewmodel3.TextTypes
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
+import com.tendebit.dungeonmastercore.model.state.Normal
+import com.tendebit.dungeonmastercore.model.state.Selected
+import com.tendebit.dungeonmastercore.viewmodel3.TextTypes
 import io.reactivex.observers.TestObserver
 import org.junit.Test
 

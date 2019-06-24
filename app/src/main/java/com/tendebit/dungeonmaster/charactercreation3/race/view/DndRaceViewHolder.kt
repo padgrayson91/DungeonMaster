@@ -7,8 +7,8 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
-import com.tendebit.dungeonmaster.core.viewmodel3.SelectableViewModel
-import com.tendebit.dungeonmaster.core.viewmodel3.TextTypes
+import com.tendebit.dungeonmastercore.viewmodel3.SelectableViewModel
+import com.tendebit.dungeonmastercore.viewmodel3.TextTypes
 
 class DndRaceViewHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_generic_selection, parent, false)) {
 	private val raceNameText = itemView.findViewById<TextView>(R.id.primary_item_text)

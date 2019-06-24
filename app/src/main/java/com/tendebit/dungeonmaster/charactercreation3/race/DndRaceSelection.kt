@@ -2,9 +2,9 @@ package com.tendebit.dungeonmaster.charactercreation3.race
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.core.model.state.BaseSelection
-import com.tendebit.dungeonmaster.core.model.state.ItemState
-import com.tendebit.dungeonmaster.core.model.state.ItemStateUtils
+import com.tendebit.dungeonmastercore.model.state.BaseSelection
+import com.tendebit.dungeonmastercore.model.state.ItemState
+import com.tendebit.dungeonmastercore.model.state.ItemStateUtils
 
 class DndRaceSelection : BaseSelection<DndRace>, Parcelable {
 

@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster
 
 import android.app.Application
+import com.tendebit.dungeonmastercore.debug.DebugUtils
 import org.koin.android.ext.android.startKoin
 
 @Suppress("Unused")
@@ -66,6 +67,8 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
         instance = this
+        DebugUtils.logger.debug = BuildConfig.DEBUG
+        DebugUtils.logger.writeDebug("Creating application")
         startKoin(this, emptyList())
     }
 }

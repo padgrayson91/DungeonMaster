@@ -9,7 +9,7 @@ import com.tendebit.dungeonmaster.charactercreation3.proficiency.view.DndProfici
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyGroupViewModel
 import com.tendebit.dungeonmaster.charactercreation3.race.view.DndRaceSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation3.race.viewmodel.DndRaceSelectionViewModel
-import com.tendebit.dungeonmaster.core.platform.ViewModelManager
+import com.tendebit.dungeonmastercore.platform.ViewModelManager
 import io.reactivex.disposables.Disposable
 
 class CharacterCreationSectionsAdapter(fragment: Fragment, private val viewModel: CharacterCreationSectionsViewModel, private val viewModelManager: ViewModelManager) : FragmentStateAdapter(fragment) {
@@ -21,7 +21,7 @@ class CharacterCreationSectionsAdapter(fragment: Fragment, private val viewModel
 		notifyItemRemoved(it)
 	}
 
-	override fun getItem(position: Int): Fragment {
+	override fun createFragment(position: Int): Fragment {
 		return when (val childViewModel = viewModel.pages[position]) {
 			is DndProficiencyGroupViewModel -> DndProficiencyGroupFragment.newInstance(viewModelManager.addViewModel(childViewModel))
 			is DndCharacterClassSelectionViewModel -> DndClassSelectionFragment.newInstance(viewModelManager.addViewModel(childViewModel))

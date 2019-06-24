@@ -2,7 +2,7 @@ package com.tendebit.dungeonmaster.testhelpers
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
-import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmastercore.model.state.Normal
 
 object CharacterCreationRobots {
 

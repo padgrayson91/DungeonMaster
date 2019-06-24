@@ -1,10 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
-import com.tendebit.dungeonmaster.core.model.state.Completed
-import com.tendebit.dungeonmaster.core.model.state.ListItemState
-import com.tendebit.dungeonmaster.core.model.state.Locked
-import com.tendebit.dungeonmaster.core.model.state.Normal
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
+import com.tendebit.dungeonmastercore.model.state.Completed
+import com.tendebit.dungeonmastercore.model.state.ListItemState
+import com.tendebit.dungeonmastercore.model.state.Locked
+import com.tendebit.dungeonmastercore.model.state.Normal
 import io.reactivex.observers.TestObserver
 import org.junit.Test
 

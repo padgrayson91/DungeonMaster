@@ -2,10 +2,10 @@ package com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
-import com.tendebit.dungeonmaster.core.model.state.ItemState
-import com.tendebit.dungeonmaster.core.model.state.Selected
-import com.tendebit.dungeonmaster.core.viewmodel3.SelectableViewModel
-import com.tendebit.dungeonmaster.core.viewmodel3.TextTypes
+import com.tendebit.dungeonmastercore.model.state.ItemState
+import com.tendebit.dungeonmastercore.model.state.Selected
+import com.tendebit.dungeonmastercore.viewmodel3.SelectableViewModel
+import com.tendebit.dungeonmastercore.viewmodel3.TextTypes
 import io.reactivex.Observable
 import io.reactivex.subjects.BehaviorSubject
 

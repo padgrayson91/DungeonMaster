@@ -13,9 +13,9 @@ import com.tendebit.dungeonmaster.charactercreation3.feature.CharacterCreation
 import com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel.CharacterCreationSectionsViewModel
 import com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel.CharacterCreationViewModel
 import com.tendebit.dungeonmaster.charactercreation3.logger
-import com.tendebit.dungeonmaster.core.platform.ViewModels
-import com.tendebit.dungeonmaster.core.view.LoadingDialog
-import com.tendebit.dungeonmaster.core.viewmodel3.ViewModelFactory
+import com.tendebit.dungeonmastercore.platform.ViewModels
+import com.tendebit.dungeonmastercore.view.LoadingDialog
+import com.tendebit.dungeonmastercore.viewmodel3.ViewModelFactory
 import io.reactivex.disposables.Disposable
 
 class CharacterCreationFragment : Fragment() {

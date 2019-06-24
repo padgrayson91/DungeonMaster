@@ -1,11 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
-import com.tendebit.dungeonmaster.core.concurrency.Concurrency
-import com.tendebit.dungeonmaster.core.model.state.Completed
-import com.tendebit.dungeonmaster.core.model.state.ItemState
-import com.tendebit.dungeonmaster.core.viewmodel3.MultiSelectViewModel
-import com.tendebit.dungeonmaster.core.viewmodel3.Page
+import com.tendebit.dungeonmastercore.concurrency.Concurrency
+import com.tendebit.dungeonmastercore.model.state.Completed
+import com.tendebit.dungeonmastercore.model.state.ItemState
+import com.tendebit.dungeonmastercore.viewmodel3.MultiSelectViewModel
+import com.tendebit.dungeonmastercore.viewmodel3.Page
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable

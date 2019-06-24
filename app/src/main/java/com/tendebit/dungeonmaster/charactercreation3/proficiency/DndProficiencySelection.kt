@@ -2,12 +2,12 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.core.model.state.Completed
-import com.tendebit.dungeonmaster.core.model.state.ItemState
-import com.tendebit.dungeonmaster.core.model.state.ItemStateUtils
-import com.tendebit.dungeonmaster.core.model.state.ListItemState
-import com.tendebit.dungeonmaster.core.model.state.Normal
-import com.tendebit.dungeonmaster.core.model.state.Selected
+import com.tendebit.dungeonmastercore.model.state.Completed
+import com.tendebit.dungeonmastercore.model.state.ItemState
+import com.tendebit.dungeonmastercore.model.state.ItemStateUtils
+import com.tendebit.dungeonmastercore.model.state.ListItemState
+import com.tendebit.dungeonmastercore.model.state.Normal
+import com.tendebit.dungeonmastercore.model.state.Selected
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.subjects.PublishSubject
@@ -61,15 +61,15 @@ class DndProficiencySelection : Parcelable {
 			val group = item.value
 			disposable.add(group.outboundSelectionChanges.subscribe {
 				performStateCheck(item.index, item.value)
-				when (it.state) {
+				when (val state = it.state) {
 					is Selected -> {
 						for (otherGroup in forGroups - group) {
-							otherGroup.onExternalSelection(it.state.item)
+							otherGroup.onExternalSelection(state.item)
 						}
 					}
 					is Normal -> {
 						for (otherGroup in forGroups - group) {
-							otherGroup.onExternalDeselection(it.state.item)
+							otherGroup.onExternalDeselection(state.item)
 						}
 					}
 					else -> {

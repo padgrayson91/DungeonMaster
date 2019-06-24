@@ -5,7 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceSelection
 import com.tendebit.dungeonmaster.charactercreation3.race.data.network.DndRaceApiConnection
 import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.DndRaceStorage
 import com.tendebit.dungeonmaster.charactercreation3.race.logger
-import com.tendebit.dungeonmaster.core.model.state.Normal
+import com.tendebit.dungeonmastercore.model.state.Normal
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 

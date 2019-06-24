@@ -1,9 +1,9 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass
 
-import com.tendebit.dungeonmaster.core.model.state.ListItemState
-import com.tendebit.dungeonmaster.core.model.state.Normal
-import com.tendebit.dungeonmaster.core.model.state.Selected
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
+import com.tendebit.dungeonmastercore.model.state.ListItemState
+import com.tendebit.dungeonmastercore.model.state.Normal
+import com.tendebit.dungeonmastercore.model.state.Selected
 import io.reactivex.observers.TestObserver
 import org.junit.Test
 

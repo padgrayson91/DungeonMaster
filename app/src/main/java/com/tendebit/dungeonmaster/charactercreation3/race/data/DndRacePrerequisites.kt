@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.race.data
 
-import com.tendebit.dungeonmaster.core.concurrency.Concurrency
+import com.tendebit.dungeonmastercore.concurrency.Concurrency
 
 interface DndRacePrerequisites {
 

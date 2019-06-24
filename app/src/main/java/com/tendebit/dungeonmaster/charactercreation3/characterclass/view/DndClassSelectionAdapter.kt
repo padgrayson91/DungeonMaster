@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.core.viewmodel3.SingleSelectViewModel
+import com.tendebit.dungeonmastercore.viewmodel3.SingleSelectViewModel
 import io.reactivex.disposables.Disposable
 
 class DndClassSelectionAdapter(private val viewModel: SingleSelectViewModel<DndCharacterClass>?) : RecyclerView.Adapter<DndClassViewHolder>() {

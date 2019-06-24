@@ -3,9 +3,9 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.DndProficiencyStorage
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
-import com.tendebit.dungeonmaster.core.concurrency.Concurrency
-import com.tendebit.dungeonmaster.core.model.state.ItemState
-import com.tendebit.dungeonmaster.core.model.state.Selection
+import com.tendebit.dungeonmastercore.concurrency.Concurrency
+import com.tendebit.dungeonmastercore.model.state.ItemState
+import com.tendebit.dungeonmastercore.model.state.Selection
 import io.reactivex.Observable
 
 interface ProficiencyPrerequisites {

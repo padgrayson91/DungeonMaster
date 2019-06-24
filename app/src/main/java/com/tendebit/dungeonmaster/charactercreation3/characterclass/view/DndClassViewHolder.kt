@@ -8,8 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
-import com.tendebit.dungeonmaster.core.viewmodel3.SelectableViewModel
-import com.tendebit.dungeonmaster.core.viewmodel3.TextTypes
+import com.tendebit.dungeonmastercore.viewmodel3.SelectableViewModel
+import com.tendebit.dungeonmastercore.viewmodel3.TextTypes
 
 class DndClassViewHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.list_item_generic_selection, parent, false)) {
 	private val classNameText = itemView.findViewById<TextView>(R.id.primary_item_text)
