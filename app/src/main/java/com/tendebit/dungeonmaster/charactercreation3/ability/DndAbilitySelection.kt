@@ -1,16 +1,14 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
+import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.ItemState
-import com.tendebit.dungeonmastercore.model.state.Removed
-import com.tendebit.dungeonmastercore.model.state.Selected
 
-class DndAbilitySelection(private val concurrency: Concurrency, private val bonuses: List<DndAbilityBonus> = emptyList(),
-						  initialState: Array<ItemState<out DndAbility>>? = null, initialRolls: DndAbilityRollSelection? = null) {
+class DndAbilitySelection(private val concurrency: Concurrency, initialState: Array<ItemState<out DndAbilitySlot>>,
+						  initialRolls: DndAbilityRollSelection? = null) {
 
-	private val abilitySlots = DndAbilityType.values()
-	val options = initialState ?: Array<ItemState<out DndAbility>>(abilitySlots.size) { Removed }
-	private val rolls = initialRolls ?: DndAbilityRollSelection(abilitySlots.size)
+	val options = initialState
+	private val rolls = initialRolls ?: DndAbilityRollSelection(options.size)
 	val scoreOptions: List<ItemState<out Int>>
 		get() = rolls.options
 
@@ -30,10 +28,10 @@ class DndAbilitySelection(private val concurrency: Concurrency, private val bonu
 
 	fun performAssignment(index: Int) {
 		concurrency.runCalculation({
-			val item = rolls.selectedItem ?: throw IllegalStateException("Cannot perform assignment without making a selection")
-			val abilityType = abilitySlots[index]
-			val bonus = bonuses.find { it.type == abilityType }
-			options[index] = Selected(DndAbility(abilitySlots[index], item.item, bonus ?: DndAbilityBonus(abilityType)))
+			val rollState = rolls.selectedItem ?: throw IllegalStateException("Cannot perform assignment without making a selection")
+			val oldSlot = options[index].item ?: throw IllegalArgumentException("Unable to apply roll to slot at index $index")
+			oldSlot.applyRoll(rollState.item)
+			options[index] = Completed(oldSlot)
 			rolls.onAssigned()
 		})
 	}

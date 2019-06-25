@@ -26,7 +26,7 @@ class DndCharacterClassSelectionViewModel(private val provider: SelectionProvide
 	private var childClickDisposable = CompositeDisposable()
 
 	override val pages = listOf(this)
-	override val children = ArrayList<DndCharacterClassViewModel>(provider.state.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
+	override val children = ArrayList(provider.state.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
 
 	override var itemCount: Int = children.size
 		private set
