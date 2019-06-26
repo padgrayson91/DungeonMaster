@@ -11,10 +11,7 @@ import io.reactivex.subjects.BehaviorSubject
 
 class DndCharacterClassViewModel(initialState: ItemState<out DndCharacterClass>) : SelectableViewModel<DndCharacterClass> {
 
-	private var internalState = initialState
-	override var state: ItemState<out DndCharacterClass>
-		get() = internalState
-		set(value) = onStateChanged(value)
+	override var state: ItemState<out DndCharacterClass> = initialState
 	override val textType: TextTypes
 		get() = when(state) {
 			is Selected -> TextTypes.SELECTED
@@ -23,11 +20,7 @@ class DndCharacterClassViewModel(initialState: ItemState<out DndCharacterClass>)
 	override val text = state.item?.name
 	override val changes: Observable<DndCharacterClassViewModel> = Observable.just(this)
 	private val internalSelection = BehaviorSubject.create<Boolean>()
-	internal val selection = internalSelection
-
-	private fun onStateChanged(state: ItemState<out DndCharacterClass>) {
-		internalState = state
-	}
+	internal val selection = internalSelection as Observable<Boolean>
 
 	override fun onClick() {
 		logger.writeDebug("Clicked ${state.item}")
