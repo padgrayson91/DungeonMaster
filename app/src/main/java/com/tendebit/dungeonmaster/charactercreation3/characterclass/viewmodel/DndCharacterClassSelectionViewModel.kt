@@ -36,8 +36,7 @@ class DndCharacterClassSelectionViewModel(private val provider: SelectionProvide
 
 	override val changes = PublishSubject.create<DndCharacterClassSelectionViewModel>()
 
-	private val internalItemChanges = PublishSubject.create<Int>()
-	override val itemChanges = internalItemChanges as Observable<Int>
+	override val itemChanges = PublishSubject.create<Int>()
 
 	override val isComplete: Boolean
 		get() = provider.state is Completed
@@ -87,7 +86,7 @@ class DndCharacterClassSelectionViewModel(private val provider: SelectionProvide
 		childUpdateDisposable?.dispose()
 		childUpdateDisposable = selection?.selectionChanges?.subscribe {
 			children[it.index].state = it.state
-			internalItemChanges.onNext(it.index)
+			itemChanges.onNext(it.index)
 		}
 	}
 
