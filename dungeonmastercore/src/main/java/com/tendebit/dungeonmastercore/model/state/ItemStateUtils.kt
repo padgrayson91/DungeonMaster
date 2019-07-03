@@ -6,6 +6,14 @@ import java.io.Serializable
 
 object ItemStateUtils {
 
+	private const val INDICATE_PARCELABLE = 0
+	private const val INDICATE_INT = 1
+	private const val INDICATE_STRING = 2
+	private const val INDICATE_LONG = 3
+	private const val INDICATE_BOOL = 4
+	private const val INDICATE_NULL = 99
+	private const val INDICATE_SERIALIZABLE = 98
+
 	fun <T> writeItemStateToParcel(itemState: ItemState<T>, parcel: Parcel) {
 		val memberAsInt = when(itemState) {
 			Loading -> 0
@@ -18,26 +26,63 @@ object ItemStateUtils {
 			is Completed -> 7
 		}
 		parcel.writeInt(memberAsInt)
-		val item = itemState.item
-		if (item is Parcelable) {
-			parcel.writeInt(0)
-			parcel.writeSerializable(item.javaClass)
-			parcel.writeParcelable(item, 0)
-		} else {
-			parcel.writeInt(1)
-			parcel.writeSerializable(item as? Serializable)
+		when (val item = itemState.item) {
+			is Parcelable -> {
+				parcel.writeInt(INDICATE_PARCELABLE)
+				parcel.writeSerializable(item.javaClass)
+				parcel.writeParcelable(item, 0)
+			}
+			is Int -> {
+				parcel.writeInt(INDICATE_INT)
+				parcel.writeInt(item)
+			}
+			is String -> {
+				parcel.writeInt(INDICATE_STRING)
+				parcel.writeString(item)
+			}
+			is Long -> {
+				parcel.writeInt(INDICATE_LONG)
+				parcel.writeLong(item)
+			}
+			is Boolean -> {
+				parcel.writeInt(INDICATE_BOOL)
+				parcel.writeBoolean(item)
+			}
+			is Serializable -> {
+				parcel.writeInt(INDICATE_SERIALIZABLE)
+				parcel.writeSerializable(item as? Serializable)
+			}
+			else -> {
+				parcel.writeInt(INDICATE_NULL)
+			}
 		}
 	}
 
 	@Suppress("UNCHECKED_CAST", "IMPLICIT_CAST_TO_ANY")
 	fun <T> readItemStateFromParcel(parcel: Parcel): ItemState<out T> {
 		val memberAsInt = parcel.readInt()
-		val isItemParcelable = parcel.readInt() == 0
-		val item = if (isItemParcelable) {
-			val type = parcel.readSerializable() as Class<T>
-			parcel.readParcelable(type.classLoader) as? Parcelable
-		} else {
-			parcel.readSerializable()
+		val itemTypeAsInt = parcel.readInt()
+		val item = when(itemTypeAsInt) {
+			INDICATE_PARCELABLE -> {
+				val type = parcel.readSerializable() as Class<T>
+				parcel.readParcelable(type.classLoader) as? Parcelable
+			}
+			INDICATE_INT -> {
+				parcel.readInt()
+			}
+			INDICATE_LONG -> {
+				parcel.readLong()
+			}
+			INDICATE_STRING -> {
+				parcel.readString()
+			}
+			INDICATE_BOOL -> {
+				parcel.readBoolean()
+			}
+			INDICATE_SERIALIZABLE -> {
+				parcel.readSerializable()
+			}
+			else -> null
 		} as? T
 
 		return when(memberAsInt) {
