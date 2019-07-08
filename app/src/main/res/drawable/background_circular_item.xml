@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:color="?attr/colorAccent">
+
+	<item
+		android:id="@android:id/mask">
+		<shape
+			android:shape="oval">
+			<solid
+				android:color="#ff000000"/>
+		</shape>
+	</item>
+
+	<item>
+		<selector>
+			<item
+				android:state_enabled="false">
+				<shape
+					android:shape="oval">
+					<stroke
+						android:color="?attr/colorPrimaryDark"
+						android:width="@dimen/outline_width"/>
+				</shape>
+			</item>
+
+			<item>
+				<shape
+					android:shape="oval">
+					<stroke
+						android:color="?attr/colorAccent"
+						android:width="@dimen/outline_width"/>
+				</shape>
+			</item>
+		</selector>
+	</item>
+</ripple>

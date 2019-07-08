@@ -15,4 +15,8 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="Round" parent="Widget.MaterialComponents.CardView">
+        <item name="android:background">@drawable/background_circular_item</item>
+    </style>
+
 </resources>
