@@ -36,9 +36,8 @@ class DndClasses : SelectionProvider<DndCharacterClass>, DelayedStart<DndClassPr
 
 	override fun start(prerequisites: DndClassPrerequisites) {
 		this.concurrency = prerequisites.concurrency
-		dataStore = prerequisites.dataStore //DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(CharacterCreationDb.getInstance(App.instance.applicationContext).classDao(), concurrency))
-		@Suppress("UNCHECKED_CAST")
-		val classesFromState = state.item?.options?.map { it.item }?.filter { it != null } as? List<DndCharacterClass>
+		dataStore = prerequisites.dataStore
+		val classesFromState = state.item?.options?.mapNotNull { it.item }
 		if (classesFromState != null) {
 			logger.writeDebug("Had ${classesFromState.size} classes from a parcelized state")
 			dataStore.restoreCharacterClassList(classesFromState)

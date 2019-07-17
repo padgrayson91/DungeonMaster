@@ -4,7 +4,7 @@ import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.ItemState
 import com.tendebit.dungeonmastercore.model.state.Removed
 
-class DndAbilitySlot(initialState: ItemState<out DndAbility>, val type: DndAbilityType, private val bonus: Int) {
+class DndAbilitySlot(initialState: ItemState<out DndAbility>, private val type: DndAbilityType, private val bonus: Int) {
 
 	var state: ItemState<out DndAbility> = initialState
 		private set

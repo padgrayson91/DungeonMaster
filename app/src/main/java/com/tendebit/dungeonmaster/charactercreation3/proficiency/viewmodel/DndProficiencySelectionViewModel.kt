@@ -32,7 +32,7 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 
 	override var showLoading = provider.state is Undefined
 		private set
-	override val pages = ArrayList<DndProficiencyGroupViewModel>(provider.state.item?.groupStates?.map { DndProficiencyGroupViewModel(it, concurrency) } ?: emptyList())
+	override val pages = ArrayList(provider.state.item?.groupStates?.map { DndProficiencyGroupViewModel(it, concurrency) } ?: emptyList())
 	override var pageCount = pages.size
 		private set
 	override val isComplete: Boolean

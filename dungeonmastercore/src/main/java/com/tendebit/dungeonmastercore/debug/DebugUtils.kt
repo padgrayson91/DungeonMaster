@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmastercore.debug
 
+import android.util.Log
 import java.util.concurrent.atomic.AtomicBoolean
 
 object DebugUtils {
@@ -12,10 +13,10 @@ object DebugUtils {
 		synchronized(this) {
 			if (isRunningTest == null) {
 				val isTest = try {
-					Class.forName("com.tendebit.dungeonmastercore.TestDebugUtils")
-					true
-				} catch (ex: ClassNotFoundException) {
+					Log.getStackTraceString(RuntimeException())
 					false
+				} catch (ex: RuntimeException) {
+					true
 				}
 				isRunningTest = AtomicBoolean(isTest)
 			}

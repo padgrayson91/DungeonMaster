@@ -48,7 +48,7 @@ class Logger(vararg tags: CharSequence, var debug: Boolean = false) {
 		} else {
 			": $throwable"
 		}
-		System.out.println("$tag $text$throwableText")
+		println("$tag $text$throwableText")
 	}
 
 }

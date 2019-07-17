@@ -30,7 +30,4 @@ class CustomInfo {
         return result
     }
 
-    fun isComplete() : Boolean {
-        return !name.isNullOrEmpty() && weight != null
-    }
 }

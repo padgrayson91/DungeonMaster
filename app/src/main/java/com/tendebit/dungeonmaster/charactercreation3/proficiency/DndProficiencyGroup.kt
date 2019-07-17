@@ -29,7 +29,7 @@ class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, i
 	 * A list of all [Selected] items from this group
 	 */
 	val selections : List<ItemState<out DndProficiency>>
-		get() { return options.filter { it is Selected }}
+		get() { return options.filterIsInstance<Selected<out DndProficiency>>() }
 
 	private val indirectSelectionChanges = PublishSubject.create<ListItemState<DndProficiency>>()
 	private val directSelectionChanges = PublishSubject.create<ListItemState<DndProficiency>>()

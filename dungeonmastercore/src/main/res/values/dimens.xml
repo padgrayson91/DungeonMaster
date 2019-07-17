@@ -17,6 +17,5 @@
     <dimen name="form_element_divider_height">2dp</dimen>
 
     <!-- Misc -->
-    <dimen name="round_item_corner_radius">10dp</dimen>
     <dimen name="outline_width">2dp</dimen>
 </resources>

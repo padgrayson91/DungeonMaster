@@ -36,8 +36,7 @@ class DndRaces : SelectionProvider<DndRace>, DelayedStart<DndRacePrerequisites>,
 	override fun start(prerequisites: DndRacePrerequisites) {
 		concurrency = prerequisites.concurrency
 		dataStore = prerequisites.dataStore
-		@Suppress("UNCHECKED_CAST")
-		val racesFromState = state.item?.options?.map { it.item }?.filter { it != null } as? List<DndRace>
+		val racesFromState = state.item?.options?.mapNotNull { it.item }
 		if (racesFromState != null) {
 			dataStore.restoreRaceList(racesFromState)
 		}
