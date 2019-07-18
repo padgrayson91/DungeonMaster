@@ -1,13 +1,15 @@
-package com.tendebit.dungeonmaster.charactercreation3.ability
+package com.tendebit.dungeonmaster.charactercreation3.abilitycore
 
 import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.ItemState
 import com.tendebit.dungeonmastercore.model.state.Removed
 
-class DndAbilitySlot(initialState: ItemState<out DndAbility>, private val type: DndAbilityType, private val bonus: Int) {
+class DndAbilitySlot(initialState: ItemState<out DndAbility>, private val bonus: DndAbilityBonus) {
 
 	var state: ItemState<out DndAbility> = initialState
 		private set
+	private val type: DndAbilityType
+		get() = bonus.type
 
 	init {
 		val typeForState = state.item?.type
@@ -15,7 +17,7 @@ class DndAbilitySlot(initialState: ItemState<out DndAbility>, private val type: 
 	}
 
 	fun applyRoll(roll: Int) {
-		val ability = DndAbility(type, roll, bonus)
+		val ability = DndAbility(bonus, roll)
 		state = Completed(ability)
 	}
 

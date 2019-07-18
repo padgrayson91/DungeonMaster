@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmaster.charactercreation3.ability.logger
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.logger
 import com.tendebit.dungeonmastercore.viewmodel3.SelectableViewModel
 import com.tendebit.dungeonmastercore.viewmodel3.TextTypes
 

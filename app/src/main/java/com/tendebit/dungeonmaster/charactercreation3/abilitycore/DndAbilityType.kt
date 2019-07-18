@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.ability
+package com.tendebit.dungeonmaster.charactercreation3.abilitycore
 
 enum class DndAbilityType {
 

@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel
 
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.charactercreation3.ability.logger
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.logger
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.ItemState
 import com.tendebit.dungeonmastercore.model.state.Loading
