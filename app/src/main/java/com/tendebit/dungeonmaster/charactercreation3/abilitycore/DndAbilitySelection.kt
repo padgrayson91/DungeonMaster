@@ -1,6 +1,5 @@
-package com.tendebit.dungeonmaster.charactercreation3.ability
+package com.tendebit.dungeonmaster.charactercreation3.abilitycore
 
-import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySlot
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.ItemState

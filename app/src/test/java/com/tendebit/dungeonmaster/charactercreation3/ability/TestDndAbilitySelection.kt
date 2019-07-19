@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySelection
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import com.tendebit.dungeonmastercore.model.state.Normal

@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.ability
 
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityBonus
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityPrerequisites
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySelection
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySource
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
@@ -12,6 +13,7 @@ import com.tendebit.dungeonmastercore.model.state.Loading
 import com.tendebit.dungeonmastercore.model.state.Normal
 import com.tendebit.dungeonmastercore.model.state.Waiting
 import io.reactivex.Observable
+import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Test
@@ -79,6 +81,51 @@ class TestDndAbilities {
 			assert(bonus?.type == bonusList1[index].type)
 			assert(bonus?.value == bonusList1[index].value + bonusList2[index].value) { "Expected ${bonusList1[index].value + bonusList2[index].value} but had ${bonus?.value}"}
 		}
+	}
+
+	@Test
+	fun testStateChangesInternallyOnStart() {
+		val prereq = TestPrerequisites()
+		val toTest = DndAbilities()
+		val testObserver = TestObserver<ItemState<out DndAbilitySelection>>()
+		toTest.internalStateChanges.subscribe(testObserver)
+		toTest.start(prereq)
+
+		assert(testObserver.valueCount() == 1)
+	}
+
+	@Test
+	fun testStateChangesExternallyOnceForFirstSourceEmission() {
+		val bonusList1 = CharacterCreationRobots.arbitraryBonusList
+		val bonusList2 = CharacterCreationRobots.arbitraryBonusList2
+		val prereq = TestPrerequisites()
+		val toTest = DndAbilities()
+		val testObserver = TestObserver<ItemState<out DndAbilitySelection>>()
+		toTest.externalStateChanges.subscribe(testObserver)
+		toTest.start(prereq)
+
+		prereq.emitCompleted(0, bonusList1)
+		prereq.emitCompleted(1, bonusList2)
+
+		assert(testObserver.valueCount() == 1)
+	}
+
+	@Test
+	fun testStateChangesExternallyForIndividualSourceEmissionAfterFirst() {
+		val bonusList1 = CharacterCreationRobots.arbitraryBonusList
+		val bonusList2 = CharacterCreationRobots.arbitraryBonusList2
+		val prereq = TestPrerequisites()
+		val toTest = DndAbilities()
+		val testObserver = TestObserver<ItemState<out DndAbilitySelection>>()
+		toTest.externalStateChanges.subscribe(testObserver)
+		toTest.start(prereq)
+
+		prereq.emitLoading(0)
+		prereq.emitLoading(1)
+		prereq.emitCompleted(0, bonusList1)
+		prereq.emitNormal(1)
+
+		assert(testObserver.valueCount() == 3)
 	}
 
 	class TestPrerequisites : DndAbilityPrerequisites {

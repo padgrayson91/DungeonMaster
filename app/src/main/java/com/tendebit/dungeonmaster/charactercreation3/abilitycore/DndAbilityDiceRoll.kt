@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.ability
+package com.tendebit.dungeonmaster.charactercreation3.abilitycore
 
 import com.tendebit.dungeonmastercore.model.dice.DiceRoll
 import com.tendebit.dungeonmastercore.model.dice.MultipleDiceRoll

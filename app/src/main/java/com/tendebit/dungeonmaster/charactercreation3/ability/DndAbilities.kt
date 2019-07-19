@@ -1,8 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.AbilityProvider
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbility
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityBonus
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityPrerequisites
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySelection
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySlot
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySource
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityType
@@ -23,16 +25,20 @@ import com.tendebit.dungeonmastercore.model.state.Undefined
 import com.tendebit.dungeonmastercore.model.state.Waiting
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import io.reactivex.subjects.BehaviorSubject
 
-class DndAbilities : DelayedStart<DndAbilityPrerequisites> {
+class DndAbilities : DelayedStart<DndAbilityPrerequisites>, AbilityProvider {
 
-	var state: ItemState<out DndAbilitySelection> = Loading
+	override var state: ItemState<out DndAbilitySelection> = Loading
 		private set
+	override val internalStateChanges = BehaviorSubject.create<ItemState<out DndAbilitySelection>>()
+	override val externalStateChanges = BehaviorSubject.create<ItemState<out DndAbilitySelection>>()
 	private var disposable: Disposable? = null
 	private lateinit var concurrency: Concurrency
 
 	override fun start(prerequisites: DndAbilityPrerequisites) {
 		state = Normal(DndAbilitySelection(prerequisites.concurrency, EMPTY_ABILITY_SLOTS))
+		internalStateChanges.onNext(state)
 		concurrency = prerequisites.concurrency
 		disposable = Observable.combineLatest(prerequisites.sources) {
 			sourceStates ->
@@ -41,6 +47,7 @@ class DndAbilities : DelayedStart<DndAbilityPrerequisites> {
 		}.subscribe {
 			val oldState = state
 			state = getStateForBonuses(it, oldState)
+			externalStateChanges.onNext(state)
 			logger.writeDebug("Updated state is: $state")
 		}
 	}

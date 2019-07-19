@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
 import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilityDiceRollSelectionViewModel
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityRollSelection
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import com.tendebit.dungeonmastercore.model.state.ItemState
 import com.tendebit.dungeonmastercore.model.state.Normal

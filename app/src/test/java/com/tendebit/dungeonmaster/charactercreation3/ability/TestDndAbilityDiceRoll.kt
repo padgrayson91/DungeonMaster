@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityDiceRoll
 import org.junit.Test
 
 class TestDndAbilityDiceRoll {

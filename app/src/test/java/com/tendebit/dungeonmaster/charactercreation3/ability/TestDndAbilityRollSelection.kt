@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityRollSelection
 import com.tendebit.dungeonmastercore.model.state.Locked
 import com.tendebit.dungeonmastercore.model.state.Normal
 import com.tendebit.dungeonmastercore.model.state.Selected
