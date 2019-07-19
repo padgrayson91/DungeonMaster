@@ -113,7 +113,6 @@ class TestDndAbilities {
 	@Test
 	fun testStateChangesExternallyForIndividualSourceEmissionAfterFirst() {
 		val bonusList1 = CharacterCreationRobots.arbitraryBonusList
-		val bonusList2 = CharacterCreationRobots.arbitraryBonusList2
 		val prereq = TestPrerequisites()
 		val toTest = DndAbilities()
 		val testObserver = TestObserver<ItemState<out DndAbilitySelection>>()
