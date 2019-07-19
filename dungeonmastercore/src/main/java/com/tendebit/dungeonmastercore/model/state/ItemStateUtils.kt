@@ -24,6 +24,7 @@ object ItemStateUtils {
 			is Locked -> 5
 			is Normal -> 6
 			is Completed -> 7
+			is Waiting -> 8
 		}
 		parcel.writeInt(memberAsInt)
 		when (val item = itemState.item) {
@@ -94,6 +95,7 @@ object ItemStateUtils {
 			5 -> Locked(item!!)
 			6 -> Normal(item!!)
 			7 -> Completed(item!!)
+			8 -> Waiting(item!!)
 			else -> Undefined
 		}
 	}

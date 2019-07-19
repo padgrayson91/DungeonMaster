@@ -57,6 +57,7 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 
 	override fun clear() {
 		job.cancel()
+		state.proficiencies.stop()
 	}
 
 }

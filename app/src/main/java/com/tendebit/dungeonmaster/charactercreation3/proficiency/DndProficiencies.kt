@@ -55,6 +55,10 @@ class DndProficiencies : ProficiencyProvider, Parcelable, DelayedStart<Proficien
 		}
 	}
 
+	fun stop() {
+		disposable?.dispose()
+	}
+
 	override fun refreshProficiencyState() {
 		val oldState = state
 		logger.writeDebug("Performing state check. Current state is $oldState")

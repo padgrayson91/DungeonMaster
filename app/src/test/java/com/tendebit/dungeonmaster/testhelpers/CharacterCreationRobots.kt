@@ -22,13 +22,36 @@ object CharacterCreationRobots {
 			DndProficiency("Acrobatics", "example.com/acrobatics"),
 			DndProficiency("Athletics", "example.com/athletics"))
 	val alternateProficiencyList = listOf(DndProficiency("Brewers Supplies", "example.com/brewers+supplies"))
+	val defaultBonusList = arrayOf(
+			DndAbilityBonus(DndAbilityType.STR, 0),
+			DndAbilityBonus(DndAbilityType.DEX, 0),
+			DndAbilityBonus(DndAbilityType.CON, 0),
+			DndAbilityBonus(DndAbilityType.INT, 0),
+			DndAbilityBonus(DndAbilityType.WIS, 0),
+			DndAbilityBonus(DndAbilityType.CHA, 0))
+	val arbitraryBonusList = arrayOf(
+			DndAbilityBonus(DndAbilityType.STR, 1),
+			DndAbilityBonus(DndAbilityType.DEX, 2),
+			DndAbilityBonus(DndAbilityType.CON, 1),
+			DndAbilityBonus(DndAbilityType.INT, -2),
+			DndAbilityBonus(DndAbilityType.WIS, 0),
+			DndAbilityBonus(DndAbilityType.CHA, 0))
+	val arbitraryBonusList2 = arrayOf(
+			DndAbilityBonus(DndAbilityType.STR, 0),
+			DndAbilityBonus(DndAbilityType.DEX, 0),
+			DndAbilityBonus(DndAbilityType.CON, 0),
+			DndAbilityBonus(DndAbilityType.INT, 0),
+			DndAbilityBonus(DndAbilityType.WIS, 1),
+			DndAbilityBonus(DndAbilityType.CHA, 2))
 	val emptyAbilitySlotStateList = arrayOf<ItemState<out DndAbilitySlot>>(
-			Normal(DndAbilitySlot(Removed, DndAbilityBonus(DndAbilityType.STR, 1))),
-			Normal(DndAbilitySlot(Removed, DndAbilityBonus(DndAbilityType.DEX, 2))),
-			Normal(DndAbilitySlot(Removed, DndAbilityBonus(DndAbilityType.CON, 1))),
-			Normal(DndAbilitySlot(Removed, DndAbilityBonus(DndAbilityType.INT, -2))),
-			Normal(DndAbilitySlot(Removed, DndAbilityBonus(DndAbilityType.WIS, 0))),
-			Normal(DndAbilitySlot(Removed, DndAbilityBonus(DndAbilityType.CHA, 0))))
+			Normal(DndAbilitySlot(Removed, arbitraryBonusList[0])),
+			Normal(DndAbilitySlot(Removed, arbitraryBonusList[1])),
+			Normal(DndAbilitySlot(Removed, arbitraryBonusList[2])),
+			Normal(DndAbilitySlot(Removed, arbitraryBonusList[3])),
+			Normal(DndAbilitySlot(Removed, arbitraryBonusList[4])),
+			Normal(DndAbilitySlot(Removed, arbitraryBonusList[5])))
+
+
 
 	val blankProficiencyStateList = standardProficiencyList.map { Normal(it) }
 	val blankClassStateList = standardClassListV2.map { Normal(it) }

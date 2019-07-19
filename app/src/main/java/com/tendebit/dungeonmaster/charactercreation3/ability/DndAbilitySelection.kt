@@ -37,4 +37,7 @@ class DndAbilitySelection(private val concurrency: Concurrency, initialState: Ar
 		})
 	}
 
+	override fun toString(): String {
+		return "User rolls: ${rolls.options} \n - Current Slots: $options"
+	}
 }

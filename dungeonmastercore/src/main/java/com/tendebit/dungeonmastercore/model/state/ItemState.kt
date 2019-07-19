@@ -30,6 +30,12 @@ object Undefined : ItemState<Nothing>()
 object Removed : ItemState<Nothing>()
 
 /**
+ * An item is [Waiting] if data was previously provided but is now stale. Data is still preserved,
+ * but it may change soon
+ */
+data class Waiting<T>(override val item : T): ItemState<T>()
+
+/**
  * An item is [Selected] if a user has interacted with it in a context where a selection is required
  * (e.g. a list of character feature choices)
  */
