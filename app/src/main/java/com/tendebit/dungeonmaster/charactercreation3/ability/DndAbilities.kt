@@ -34,22 +34,22 @@ class DndAbilities : DelayedStart<DndAbilityPrerequisites>, AbilityProvider {
 	override val internalStateChanges = BehaviorSubject.create<ItemState<out DndAbilitySelection>>()
 	override val externalStateChanges = BehaviorSubject.create<ItemState<out DndAbilitySelection>>()
 	private var disposable: Disposable? = null
-	private lateinit var concurrency: Concurrency
 
 	override fun start(prerequisites: DndAbilityPrerequisites) {
 		state = Normal(DndAbilitySelection(prerequisites.concurrency, EMPTY_ABILITY_SLOTS))
 		internalStateChanges.onNext(state)
-		concurrency = prerequisites.concurrency
-		disposable = Observable.combineLatest(prerequisites.sources) {
-			sourceStates ->
-			@Suppress("UNCHECKED_CAST")
-			mergeBonuses((sourceStates.map { it as ItemState<out DndAbilitySource> }))
-		}.subscribe {
-			val oldState = state
-			state = getStateForBonuses(it, oldState)
-			externalStateChanges.onNext(state)
-			logger.writeDebug("Updated state is: $state")
-		}
+		prerequisites.concurrency.runCalculation({
+			disposable = Observable.combineLatest(prerequisites.sources) {
+				sourceStates ->
+				@Suppress("UNCHECKED_CAST")
+				mergeBonuses((sourceStates.map { it as ItemState<out DndAbilitySource> }))
+			}.subscribe {
+				val oldState = state
+				state = getStateForBonuses(it, oldState, prerequisites.concurrency)
+				externalStateChanges.onNext(state)
+				logger.writeDebug("Updated state is: $state")
+			}
+		})
 	}
 
 	fun stop() {
@@ -86,7 +86,7 @@ class DndAbilities : DelayedStart<DndAbilityPrerequisites>, AbilityProvider {
 		return result
 	}
 
-	private fun getStateForBonuses(bonuses: ItemState<out Array<DndAbilityBonus>>, oldState: ItemState<out DndAbilitySelection>): ItemState<out DndAbilitySelection> {
+	private fun getStateForBonuses(bonuses: ItemState<out Array<DndAbilityBonus>>, oldState: ItemState<out DndAbilitySelection>, concurrency: Concurrency): ItemState<out DndAbilitySelection> {
 		val updatedSlotStates = getNewSlots(oldState.item?.options ?: EMPTY_ABILITY_SLOTS, bonuses.item ?: EMPTY_BONUS_ARRAY)
 		return when (bonuses) {
 			is Loading, Undefined -> Waiting(DndAbilitySelection(concurrency, updatedSlotStates))

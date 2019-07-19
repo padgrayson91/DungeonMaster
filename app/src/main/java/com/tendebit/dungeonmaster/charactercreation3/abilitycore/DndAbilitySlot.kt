@@ -8,7 +8,11 @@ class DndAbilitySlot(initialState: ItemState<out DndAbility>, val bonus: DndAbil
 
 	var state: ItemState<out DndAbility> = initialState
 		private set
-	private val type: DndAbilityType
+	val modifier: Int?
+		get() = state.item?.getModifier()
+	val rawScore: Int?
+		get() = state.item?.rawScore
+	val type: DndAbilityType
 		get() = bonus.type
 
 	init {

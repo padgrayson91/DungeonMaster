@@ -19,4 +19,13 @@
     <!-- Accessibility -->
     <string name="add_character_button_accessible">Create New Character</string>
     <string name="delete_character_button_accessible">Delete Character</string>
+
+    <!-- Ability Scores -->
+    <string name="ability_str">Strength</string>
+    <string name="ability_dex">Dexterity</string>
+    <string name="ability_con">Constitution</string>
+    <string name="ability_int">Intelligence</string>
+    <string name="ability_wis">Wisdom</string>
+    <string name="ability_cha">Charisma</string>
+
 </resources>
