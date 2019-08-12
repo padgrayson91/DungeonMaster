@@ -56,6 +56,34 @@ class DndAbilities : DelayedStart<DndAbilityPrerequisites>, AbilityProvider {
 		disposable?.dispose()
 	}
 
+	override fun refreshAbilityState() {
+		val oldState = state
+		logger.writeDebug("Performing state check. Current state is $oldState")
+		val newState = when (oldState) {
+			is Normal -> {
+				if (oldState.item.options.all { it is Completed }) {
+					Completed(oldState.item)
+				} else {
+					oldState
+				}
+			}
+			is Completed -> {
+				if (oldState.item.options.all { it is Completed }) {
+					oldState
+				} else {
+					Normal(oldState.item)
+				}
+			}
+			else -> oldState
+		}
+		logger.writeDebug("State has been updated to $newState")
+
+		if (oldState != newState) {
+			state = newState
+			internalStateChanges.onNext(state)
+		}
+	}
+
 	private fun mergeBonuses(toMerge: List<ItemState<out DndAbilitySource>>): ItemState<out Array<DndAbilityBonus>> {
 		return when {
 			toMerge.any { it.item == null } -> Loading

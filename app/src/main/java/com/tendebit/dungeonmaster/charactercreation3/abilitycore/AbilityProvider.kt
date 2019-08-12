@@ -9,4 +9,6 @@ interface AbilityProvider {
 	val internalStateChanges: Observable<ItemState<out DndAbilitySelection>>
 	val externalStateChanges: Observable<ItemState<out DndAbilitySelection>>
 
+	fun refreshAbilityState()
+
 }

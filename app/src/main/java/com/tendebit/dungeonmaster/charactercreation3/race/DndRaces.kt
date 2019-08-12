@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 
 class DndRaces : SelectionProvider<DndRace>, DelayedStart<DndRacePrerequisites>, Parcelable {
 
-	override var state: ItemState<out Selection<DndRace>> = Loading
+	override var selectionState: ItemState<out Selection<DndRace>> = Loading
 
 	override val internalStateChanges = PublishSubject.create<ItemState<out Selection<DndRace>>>()
 	override val externalStateChanges = PublishSubject.create<ItemState<out Selection<DndRace>>>()
@@ -30,13 +30,13 @@ class DndRaces : SelectionProvider<DndRace>, DelayedStart<DndRacePrerequisites>,
 	constructor()
 
 	private constructor(parcel: Parcel) {
-		state = ItemStateUtils.readItemStateFromParcel(parcel)
+		selectionState = ItemStateUtils.readItemStateFromParcel(parcel)
 	}
 
 	override fun start(prerequisites: DndRacePrerequisites) {
 		concurrency = prerequisites.concurrency
 		dataStore = prerequisites.dataStore
-		val racesFromState = state.item?.options?.mapNotNull { it.item }
+		val racesFromState = selectionState.item?.options?.mapNotNull { it.item }
 		if (racesFromState != null) {
 			dataStore.restoreRaceList(racesFromState)
 		}
@@ -44,17 +44,17 @@ class DndRaces : SelectionProvider<DndRace>, DelayedStart<DndRacePrerequisites>,
 	}
 
 	override fun refresh() {
-		concurrency.runCalculation(::doUpdateRaceState) { internalStateChanges.onNext(state) }
+		concurrency.runCalculation(::doUpdateRaceState) { internalStateChanges.onNext(selectionState) }
 	}
 
 	private suspend fun doLoadAvailableRaces() {
 		val races = dataStore.getRaceList()
-		state = Normal(DndRaceSelection(races.map { Normal(it) }))
-		externalStateChanges.onNext(state)
+		selectionState = Normal(DndRaceSelection(races.map { Normal(it) }))
+		externalStateChanges.onNext(selectionState)
 	}
 
 	private suspend fun doUpdateRaceState() = withContext(Dispatchers.Default) {
-		val newState = when(val oldState = state) {
+		val newState = when(val oldState = selectionState) {
 			is Completed -> {
 				if (oldState.item.selectedItem != null) {
 					oldState
@@ -71,12 +71,12 @@ class DndRaces : SelectionProvider<DndRace>, DelayedStart<DndRacePrerequisites>,
 			}
 			else -> oldState
 		}
-		state = newState
+		selectionState = newState
 	}
 
 	override fun writeToParcel(dest: Parcel?, flags: Int) {
 		dest?.let {
-			ItemStateUtils.writeItemStateToParcel(state, it)
+			ItemStateUtils.writeItemStateToParcel(selectionState, it)
 		}
 	}
 

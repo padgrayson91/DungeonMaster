@@ -26,11 +26,11 @@ class DndCharacterClassSelectionViewModel(private val provider: SelectionProvide
 	private var childClickDisposable = CompositeDisposable()
 
 	override val pages = listOf(this)
-	override val children = ArrayList(provider.state.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
+	override val children = ArrayList(provider.selectionState.item?.options?.map { DndCharacterClassViewModel(it) } ?: emptyList())
 
 	override var itemCount: Int = children.size
 		private set
-	override var showLoading: Boolean = provider.state is Loading
+	override var showLoading: Boolean = provider.selectionState is Loading
 		private set
 	override val pageCount = PAGE_COUNT
 
@@ -39,13 +39,13 @@ class DndCharacterClassSelectionViewModel(private val provider: SelectionProvide
 	override val itemChanges = PublishSubject.create<Int>()
 
 	override val isComplete: Boolean
-		get() = provider.state is Completed
+		get() = provider.selectionState is Completed
 
 	override val pageAdditions: Observable<Int> = Observable.empty()
 	override val pageRemovals: Observable<Int> = Observable.empty()
 
 	init {
-		onStateChangedExternally(provider.state)
+		onStateChangedExternally(provider.selectionState)
 		classOptionsDisposable.addAll(
 				provider.externalStateChanges.subscribe { onStateChangedExternally(it) },
 				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })

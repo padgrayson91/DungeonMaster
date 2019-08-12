@@ -38,7 +38,7 @@ class TestDndCharacterClassSelectionViewModel {
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		whenever(mockClassProvider.externalStateChanges).thenReturn(testExternal)
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
-		whenever(mockClassProvider.state).thenReturn(Loading)
+		whenever(mockClassProvider.selectionState).thenReturn(Loading)
 
 		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
@@ -52,7 +52,7 @@ class TestDndCharacterClassSelectionViewModel {
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		whenever(mockClassProvider.externalStateChanges).thenReturn(testExternal)
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
-		whenever(mockClassProvider.state).thenReturn(Loading)
+		whenever(mockClassProvider.selectionState).thenReturn(Loading)
 
 		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
@@ -67,7 +67,7 @@ class TestDndCharacterClassSelectionViewModel {
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		whenever(mockClassProvider.externalStateChanges).thenReturn(testExternal)
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
-		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
+		whenever(mockClassProvider.selectionState).thenReturn(Normal(testSelection))
 
 		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 		val testObserver = TestObserver<Int>()
@@ -87,7 +87,7 @@ class TestDndCharacterClassSelectionViewModel {
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		whenever(mockClassProvider.externalStateChanges).thenReturn(testExternal)
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
-		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
+		whenever(mockClassProvider.selectionState).thenReturn(Normal(testSelection))
 
 		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
@@ -102,7 +102,7 @@ class TestDndCharacterClassSelectionViewModel {
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		whenever(mockClassProvider.externalStateChanges).thenReturn(testExternal)
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
-		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
+		whenever(mockClassProvider.selectionState).thenReturn(Normal(testSelection))
 
 		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
@@ -117,7 +117,7 @@ class TestDndCharacterClassSelectionViewModel {
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		whenever(mockClassProvider.externalStateChanges).thenReturn(testExternal)
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
-		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
+		whenever(mockClassProvider.selectionState).thenReturn(Normal(testSelection))
 
 		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 
@@ -134,7 +134,7 @@ class TestDndCharacterClassSelectionViewModel {
 		val testInternal = Observable.empty<ItemState<out Selection<DndCharacterClass>>>()
 		whenever(mockClassProvider.externalStateChanges).thenReturn(testExternal)
 		whenever(mockClassProvider.internalStateChanges).thenReturn(testInternal)
-		whenever(mockClassProvider.state).thenReturn(Normal(testSelection))
+		whenever(mockClassProvider.selectionState).thenReturn(Normal(testSelection))
 
 		val toTest = DndCharacterClassSelectionViewModel(mockClassProvider, concurrency)
 

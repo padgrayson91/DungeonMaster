@@ -19,7 +19,7 @@ class DndAbilityDiceRollSelectionViewModel(private val provider: SelectionProvid
 	private var childClickDisposable = CompositeDisposable()
 
 	private val state
-		get() = provider.state
+		get() = provider.selectionState
 	override val children = ArrayList(state.item?.options?.map { DndAbilityDiceRollViewModel(it) } ?: emptyList())
 	override var itemCount = children.size
 	override var showLoading = state is Loading
@@ -27,7 +27,7 @@ class DndAbilityDiceRollSelectionViewModel(private val provider: SelectionProvid
 	override val itemChanges = PublishSubject.create<Int>()
 
 	init {
-		onStateChangedExternally(provider.state)
+		onStateChangedExternally(provider.selectionState)
 		diceRollOptionsDisposable.addAll(
 				provider.externalStateChanges.subscribe { onStateChangedExternally(it) },
 				provider.internalStateChanges.subscribe { onStateChangedInternally(it) })

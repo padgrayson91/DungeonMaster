@@ -27,7 +27,7 @@ class TestDndAbilityDiceRollSelectionViewModel {
 		val provider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<Int>
 		val internalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
 		val externalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
-		whenever(provider.state).thenReturn(initialState)
+		whenever(provider.selectionState).thenReturn(initialState)
 		whenever(provider.internalStateChanges).thenReturn(internalStateChanges)
 		whenever(provider.externalStateChanges).thenReturn(externalStateChanges)
 
@@ -42,7 +42,7 @@ class TestDndAbilityDiceRollSelectionViewModel {
 		val provider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<Int>
 		val internalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
 		val externalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
-		whenever(provider.state).thenReturn(initialState)
+		whenever(provider.selectionState).thenReturn(initialState)
 		whenever(provider.internalStateChanges).thenReturn(internalStateChanges)
 		whenever(provider.externalStateChanges).thenReturn(externalStateChanges)
 
@@ -62,7 +62,7 @@ class TestDndAbilityDiceRollSelectionViewModel {
 		val provider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<Int>
 		val internalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
 		val externalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
-		whenever(provider.state).thenReturn(initialState)
+		whenever(provider.selectionState).thenReturn(initialState)
 		whenever(provider.internalStateChanges).thenReturn(internalStateChanges)
 		whenever(provider.externalStateChanges).thenReturn(externalStateChanges)
 
@@ -84,7 +84,7 @@ class TestDndAbilityDiceRollSelectionViewModel {
 		val provider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<Int>
 		val internalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
 		val externalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
-		whenever(provider.state).thenReturn(initialState)
+		whenever(provider.selectionState).thenReturn(initialState)
 		whenever(provider.internalStateChanges).thenReturn(internalStateChanges)
 		whenever(provider.externalStateChanges).thenReturn(externalStateChanges)
 
@@ -108,7 +108,7 @@ class TestDndAbilityDiceRollSelectionViewModel {
 		val provider = Mockito.mock(SelectionProvider::class.java) as SelectionProvider<Int>
 		val internalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
 		val externalStateChanges = Observable.empty<ItemState<out Selection<Int>>>()
-		whenever(provider.state).thenReturn(initialState)
+		whenever(provider.selectionState).thenReturn(initialState)
 		whenever(provider.internalStateChanges).thenReturn(internalStateChanges)
 		whenever(provider.externalStateChanges).thenReturn(externalStateChanges)
 

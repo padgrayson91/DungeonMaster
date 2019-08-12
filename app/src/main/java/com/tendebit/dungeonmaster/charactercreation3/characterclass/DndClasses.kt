@@ -19,7 +19,7 @@ import kotlinx.coroutines.withContext
 
 class DndClasses : SelectionProvider<DndCharacterClass>, DelayedStart<DndClassPrerequisites>, Parcelable {
 
-	override var state: ItemState<out Selection<DndCharacterClass>> = Loading
+	override var selectionState: ItemState<out Selection<DndCharacterClass>> = Loading
 
 	override val internalStateChanges = PublishSubject.create<ItemState<out Selection<DndCharacterClass>>>()
 	override val externalStateChanges = PublishSubject.create<ItemState<out Selection<DndCharacterClass>>>()
@@ -30,35 +30,35 @@ class DndClasses : SelectionProvider<DndCharacterClass>, DelayedStart<DndClassPr
 	constructor()
 
 	private constructor(parcel: Parcel) {
-		state = ItemStateUtils.readItemStateFromParcel(parcel)
-		logger.writeDebug("Got $state from parcel")
+		selectionState = ItemStateUtils.readItemStateFromParcel(parcel)
+		logger.writeDebug("Got $selectionState from parcel")
 	}
 
 	override fun start(prerequisites: DndClassPrerequisites) {
 		this.concurrency = prerequisites.concurrency
 		dataStore = prerequisites.dataStore
-		val classesFromState = state.item?.options?.mapNotNull { it.item }
+		val classesFromState = selectionState.item?.options?.mapNotNull { it.item }
 		if (classesFromState != null) {
 			logger.writeDebug("Had ${classesFromState.size} classes from a parcelized state")
 			dataStore.restoreCharacterClassList(classesFromState)
-			externalStateChanges.onNext(state)
+			externalStateChanges.onNext(selectionState)
 			return
 		}
 		concurrency.runDiskOrNetwork(::doLoadAvailableClasses)
 	}
 
 	override fun refresh() {
-		concurrency.runCalculation(::doUpdateClassState) { internalStateChanges.onNext(state) }
+		concurrency.runCalculation(::doUpdateClassState) { internalStateChanges.onNext(selectionState) }
 	}
 
 	private suspend fun doLoadAvailableClasses() {
 		val characterClasses = dataStore.getCharacterClassList()
-		state = Normal(DndCharacterClassSelection(characterClasses.map { Normal(it) }))
-		externalStateChanges.onNext(state)
+		selectionState = Normal(DndCharacterClassSelection(characterClasses.map { Normal(it) }))
+		externalStateChanges.onNext(selectionState)
 	}
 
 	private suspend fun doUpdateClassState() = withContext(Dispatchers.Default) {
-		val newState = when(val oldState = state) {
+		val newState = when(val oldState = selectionState) {
 			is Completed -> {
 				if (oldState.item.selectedItem != null) {
 					oldState
@@ -75,13 +75,13 @@ class DndClasses : SelectionProvider<DndCharacterClass>, DelayedStart<DndClassPr
 			}
 			else -> oldState
 		}
-		state = newState
+		selectionState = newState
 	}
 
 	override fun writeToParcel(dest: Parcel?, flags: Int) {
 		logger.writeDebug("Parcelizing $this")
 		dest?.let {
-			ItemStateUtils.writeItemStateToParcel(state, it)
+			ItemStateUtils.writeItemStateToParcel(selectionState, it)
 		}
 	}
 

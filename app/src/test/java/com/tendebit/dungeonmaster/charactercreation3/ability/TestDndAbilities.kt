@@ -31,7 +31,7 @@ class TestDndAbilities {
 
 	@Test
 	fun testStateIsNormalAfterPrerequisitesAreProvided() {
-		val prereq = TestPrerequisites()
+		val prereq = TestAbilityPrerequisites()
 		val toTest = DndAbilities()
 		toTest.start(prereq)
 
@@ -40,7 +40,7 @@ class TestDndAbilities {
 
 	@Test
 	fun testStateIsWaitingIfOneObservableYieldsLoading() {
-		val prereq = TestPrerequisites()
+		val prereq = TestAbilityPrerequisites()
 		val toTest = DndAbilities()
 		toTest.start(prereq)
 
@@ -52,7 +52,7 @@ class TestDndAbilities {
 
 	@Test
 	fun testStateIsNormalIfBothStatesAreNormal() {
-		val prereq = TestPrerequisites()
+		val prereq = TestAbilityPrerequisites()
 		val toTest = DndAbilities()
 		toTest.start(prereq)
 
@@ -66,7 +66,7 @@ class TestDndAbilities {
 	fun testAbilityBonusesAreMerged() {
 		val bonusList1 = CharacterCreationRobots.arbitraryBonusList
 		val bonusList2 = CharacterCreationRobots.arbitraryBonusList2
-		val prereq = TestPrerequisites()
+		val prereq = TestAbilityPrerequisites()
 		val toTest = DndAbilities()
 		toTest.start(prereq)
 
@@ -85,7 +85,7 @@ class TestDndAbilities {
 
 	@Test
 	fun testStateChangesInternallyOnStart() {
-		val prereq = TestPrerequisites()
+		val prereq = TestAbilityPrerequisites()
 		val toTest = DndAbilities()
 		val testObserver = TestObserver<ItemState<out DndAbilitySelection>>()
 		toTest.internalStateChanges.subscribe(testObserver)
@@ -98,7 +98,7 @@ class TestDndAbilities {
 	fun testStateChangesExternallyOnceForFirstSourceEmission() {
 		val bonusList1 = CharacterCreationRobots.arbitraryBonusList
 		val bonusList2 = CharacterCreationRobots.arbitraryBonusList2
-		val prereq = TestPrerequisites()
+		val prereq = TestAbilityPrerequisites()
 		val toTest = DndAbilities()
 		val testObserver = TestObserver<ItemState<out DndAbilitySelection>>()
 		toTest.externalStateChanges.subscribe(testObserver)
@@ -113,7 +113,7 @@ class TestDndAbilities {
 	@Test
 	fun testStateChangesExternallyForIndividualSourceEmissionAfterFirst() {
 		val bonusList1 = CharacterCreationRobots.arbitraryBonusList
-		val prereq = TestPrerequisites()
+		val prereq = TestAbilityPrerequisites()
 		val toTest = DndAbilities()
 		val testObserver = TestObserver<ItemState<out DndAbilitySelection>>()
 		toTest.externalStateChanges.subscribe(testObserver)
@@ -127,7 +127,7 @@ class TestDndAbilities {
 		assert(testObserver.valueCount() == 3)
 	}
 
-	class TestPrerequisites : DndAbilityPrerequisites {
+	class TestAbilityPrerequisites : DndAbilityPrerequisites {
 
 		override val sources: List<Observable<ItemState<out DndAbilitySource>>>
 		override val concurrency: Concurrency = TestConcurrency

@@ -3,12 +3,20 @@ package com.tendebit.dungeonmaster.charactercreation3.abilitycore
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.ItemState
+import com.tendebit.dungeonmastercore.model.state.Locked
+import com.tendebit.dungeonmastercore.model.state.Normal
+import com.tendebit.dungeonmastercore.model.state.Selection
+import com.tendebit.dungeonmastercore.model.state.SelectionProvider
+import io.reactivex.subjects.PublishSubject
 
 class DndAbilitySelection(private val concurrency: Concurrency, initialState: Array<ItemState<out DndAbilitySlot>>,
-						  initialRolls: DndAbilityRollSelection? = null) {
+						  initialRolls: DndAbilityRollSelection? = null) : SelectionProvider<Int> {
 
+	override val internalStateChanges = PublishSubject.create<ItemState<out Selection<Int>>>()
+	override val externalStateChanges = PublishSubject.create<ItemState<out Selection<Int>>>()
 	val options = initialState
 	private val rolls = initialRolls ?: DndAbilityRollSelection(options.size)
+	override var selectionState = calculateRollState(rolls)
 	val scoreOptions: List<ItemState<out Int>>
 		get() = rolls.options
 
@@ -18,6 +26,10 @@ class DndAbilitySelection(private val concurrency: Concurrency, initialState: Ar
 
 	fun manualRoll(index: Int, value: Int) {
 		concurrency.runCalculation({ rolls.manualSet(index, value) })
+	}
+
+	override fun refresh() {
+		selectionState = calculateRollState(rolls)
 	}
 
 	fun performScoreSelection(index: Int) {
@@ -36,7 +48,16 @@ class DndAbilitySelection(private val concurrency: Concurrency, initialState: Ar
 		})
 	}
 
+	private fun calculateRollState(rolls: DndAbilityRollSelection): ItemState<out DndAbilityRollSelection> {
+		return if (rolls.options.all { it is Locked }) {
+			Completed(rolls)
+		} else {
+			Normal(rolls)
+		}
+	}
+
 	override fun toString(): String {
 		return "User rolls: ${rolls.options} \n - Current Slots: $options"
 	}
+
 }

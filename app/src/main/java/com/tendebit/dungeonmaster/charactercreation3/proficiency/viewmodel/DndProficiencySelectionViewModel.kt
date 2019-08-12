@@ -13,19 +13,12 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 /**
  * ViewModel for the entire proficiency selection process. This ViewModel indicates how many
  * pages
  */
 class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider, private val concurrency: Concurrency) : PageSection, Clearable {
-
-	private val job = Job()
-	private val viewModelScope = CoroutineScope(Dispatchers.Main + job)
 
 	private val proficiencyOptionsDisposable: CompositeDisposable = CompositeDisposable()
 	private var childUpdateDisposable: Disposable? = null
@@ -51,12 +44,13 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 	}
 
 	override fun clear() {
-		job.cancel()
+		proficiencyOptionsDisposable.dispose()
+		childUpdateDisposable?.dispose()
 	}
 
 	private fun onStateChangedExternally(newState: ItemState<out DndProficiencySelection>) {
 		logger.writeDebug("Got external state: $newState")
-		viewModelScope.launch(context = Dispatchers.Main) {
+		concurrency.runImmediate {
 			pages.clear()
 			pages.addAll(newState.item?.groupStates?.map { DndProficiencyGroupViewModel(it, concurrency) } ?: emptyList())
 			subscribeToSelection(newState.item)
@@ -90,7 +84,7 @@ class DndProficiencySelectionViewModel(private val provider: ProficiencyProvider
 				pageRemovals.onNext(i)
 			}
 		}
-		viewModelScope.launch(Dispatchers.Main) { changes.onNext(this@DndProficiencySelectionViewModel) }
+		concurrency.runImmediate { changes.onNext(this@DndProficiencySelectionViewModel) }
 	}
 
 	private fun subscribeToSelection(selection: DndProficiencySelection?) {
