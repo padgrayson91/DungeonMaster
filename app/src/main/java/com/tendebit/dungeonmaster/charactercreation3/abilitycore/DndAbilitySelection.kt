@@ -21,11 +21,19 @@ class DndAbilitySelection(private val concurrency: Concurrency, initialState: Ar
 		get() = rolls.options
 
 	fun autoRoll() {
-		concurrency.runCalculation({ rolls.autoRollAll() })
+		concurrency.runCalculation({
+			rolls.autoRollAll()
+			selectionState = calculateRollState(rolls)
+			internalStateChanges.onNext(selectionState)
+		})
 	}
 
 	fun manualRoll(index: Int, value: Int) {
-		concurrency.runCalculation({ rolls.manualSet(index, value) })
+		concurrency.runCalculation({
+			rolls.manualSet(index, value)
+			selectionState = calculateRollState(rolls)
+			internalStateChanges.onNext(selectionState)
+		})
 	}
 
 	override fun refresh() {
@@ -34,13 +42,17 @@ class DndAbilitySelection(private val concurrency: Concurrency, initialState: Ar
 
 	fun performScoreSelection(index: Int) {
 		concurrency.runCalculation({
-			rolls.select(index)
+			if (rolls.selectedIndex == index) {
+				rolls.deselect(index)
+			} else {
+				rolls.select(index)
+			}
 		})
 	}
 
 	fun performAssignment(index: Int) {
 		concurrency.runCalculation({
-			val rollState = rolls.selectedItem ?: throw IllegalStateException("Cannot perform assignment without making a selection")
+			val rollState = rolls.selectedItem ?: return@runCalculation // No selected roll to apply
 			val oldSlot = options[index].item ?: throw IllegalArgumentException("Unable to apply roll to slot at index $index")
 			oldSlot.applyRoll(rollState.item)
 			options[index] = Completed(oldSlot)

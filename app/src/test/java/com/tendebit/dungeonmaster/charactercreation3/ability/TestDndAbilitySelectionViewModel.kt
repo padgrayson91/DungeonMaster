@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
+import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilityDiceRollSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilitySelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.AbilityProvider
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySelection
@@ -75,6 +76,25 @@ class TestDndAbilitySelectionViewModel {
 		val previousCount = testObserver.valueCount()
 		internalStateChanges.onNext(Completed(defaultState.item))
 		assert(testObserver.valueCount() == previousCount + 1) { "Expected ${previousCount + 1} updated but had ${testObserver.valueCount()}"}
+	}
+
+	@Test
+	fun testPerformAutoRollDoesNotChangeOuterViewModel() {
+		val toTest = DndAbilitySelectionViewModel(abilities, concurrency)
+		val testObserver = TestObserver<DndAbilitySelectionViewModel>()
+		toTest.changes.subscribe(testObserver)
+		val previousCount = testObserver.valueCount()
+		toTest.performAutoRoll()
+		assert(testObserver.valueCount() == previousCount) { "Expected $previousCount updated but had ${testObserver.valueCount()}"}
+	}
+
+	@Test
+	fun testPerformAutoRollChangesRollViewModel() {
+		val toTest = DndAbilitySelectionViewModel(abilities, concurrency)
+		val testObserver = TestObserver<DndAbilityDiceRollSelectionViewModel>()
+		toTest.rolls?.changes?.subscribe(testObserver)
+		toTest.performAutoRoll()
+		assert(testObserver.valueCount() == 1)
 	}
 
 }

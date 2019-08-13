@@ -36,6 +36,7 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 		private set
 
 	private var childUpdateDisposable: Disposable? = null
+	private var rollClickDisposable: Disposable? = null
 	private var mainDisposable: Disposable? = null
 
 	init {
@@ -46,6 +47,10 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 	override fun clear() {
 		mainDisposable?.dispose()
 		childUpdateDisposable?.dispose()
+	}
+
+	fun performAutoRoll() {
+		provider.state.item?.autoRoll()
 	}
 
 	private fun onStateChangedExternally(newState: ItemState<out DndAbilitySelection>) {
@@ -73,14 +78,25 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 	}
 
 	private fun subscribeToSelection(selection: DndAbilitySelection?) {
+		rollClickDisposable?.dispose()
 		if (selection != null) {
 			rolls = DndAbilityDiceRollSelectionViewModel(selection, concurrency)
+			rollClickDisposable = CompositeDisposable().apply {
+				rolls?.children?.forEachIndexed { index, roll ->
+					add(roll.selection.subscribe { selection.performScoreSelection(index) })
+				}
+			}
 		} else {
 			rolls = null
 		}
 		childUpdateDisposable?.dispose()
 		if (selection == null) {
 			return
+		}
+		childUpdateDisposable = CompositeDisposable().apply {
+			children.forEachIndexed { index, child ->
+				add(child.clicks.subscribe { selection.performAssignment(index) })
+			}
 		}
 	}
 
