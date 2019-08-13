@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Text -->
+    <dimen name="text_size_xxlarge">48sp</dimen>
     <dimen name="text_size_xlarge">24sp</dimen>
     <dimen name="text_size_large">20sp</dimen>
     <dimen name="text_size_medium">16sp</dimen>
@@ -8,6 +9,8 @@
     <!-- Images -->
     <dimen name="list_action_icon_width">48dp</dimen>
     <dimen name="list_action_icon_height">48dp</dimen>
+    <dimen name="list_static_icon_width">48dp</dimen>
+    <dimen name="list_static_icon_height">48dp</dimen>
 
     <!-- Padding -->
     <dimen name="padding_xsmall">4dp</dimen>

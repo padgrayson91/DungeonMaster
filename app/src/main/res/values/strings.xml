@@ -19,6 +19,7 @@
     <!-- Accessibility -->
     <string name="add_character_button_accessible">Create New Character</string>
     <string name="delete_character_button_accessible">Delete Character</string>
+    <string name="indicator_arrow_accessible">Arrow facing right</string>
 
     <!-- Ability Scores -->
     <string name="ability_str">Strength</string>
