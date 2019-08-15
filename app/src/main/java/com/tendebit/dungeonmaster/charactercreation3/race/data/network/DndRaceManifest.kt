@@ -11,7 +11,7 @@ internal class DndRaceManifest {
     lateinit var characterRaceDirectories: List<DndRaceDirectory>
 
     fun toClassList(): List<DndRace> {
-        return characterRaceDirectories.map { it.toDndCharacterClass() }
+        return characterRaceDirectories.map { it.toDndCharacterRace() }
     }
 
 }

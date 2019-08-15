@@ -8,17 +8,17 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
-import com.tendebit.dungeonmastercore.viewmodel3.SingleSelectViewModel
+import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilitySelectionViewModel
 
-class DndAbilityDiceRollSelectionFragment : Fragment() {
+class DndAbilitySlotFragment : Fragment() {
 
 	companion object {
-		fun newInstance() = DndAbilityDiceRollSelectionFragment()
+		fun newInstance() = DndAbilitySlotFragment()
 	}
 
 	private var recycler: RecyclerView? = null
-	private var adapter: DndAbilityDiceRollAdapter? = null
-	var viewModel: SingleSelectViewModel<Int>? = null
+	private var adapter: DndAbilitySlotAdapter? = null
+	var viewModel: DndAbilitySelectionViewModel? = null
 		set(value) { field = value; onAttachViewModel(field) }
 
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -28,21 +28,17 @@ class DndAbilityDiceRollSelectionFragment : Fragment() {
 		return root
 	}
 
-	override fun onResume() {
-		super.onResume()
-		adapter?.resume()
-		recycler?.adapter = adapter
-	}
-
 	override fun onPause() {
 		super.onPause()
 		adapter?.clear()
+		recycler?.adapter = adapter
 	}
 
-	private fun onAttachViewModel(viewModel: SingleSelectViewModel<Int>?) {
+	private fun onAttachViewModel(viewModel: DndAbilitySelectionViewModel?) {
 		adapter?.clear()
-		adapter = DndAbilityDiceRollAdapter(viewModel)
+		adapter = DndAbilitySlotAdapter(viewModel)
 		recycler?.adapter = adapter
+
 	}
 
 }

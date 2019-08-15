@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel
 
+import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySlot
 import com.tendebit.dungeonmastercore.model.state.ItemState
 import com.tendebit.dungeonmastercore.viewmodel3.ViewModel
@@ -14,14 +15,15 @@ class DndAbilitySlotViewModel(initialState: ItemState<out DndAbilitySlot>) : Vie
 	val clicks = internalClicks as Observable<Unit>
 
 	val modifierText: CharSequence
-			get() = getModifierText(state.item?.modifier)
+		get() = getModifierText(state.item?.modifier)
 	val rawScoreText: CharSequence
-			get() = state.item?.rawScore?.toString() ?: ""
+		get() = state.item?.rawScore?.toString() ?: ""
+	val showIndicator: Boolean
+		get() = state.item?.modifier != null
 	val bonusText: CharSequence
-			get() = getModifierText(state.item?.bonus?.value)
-	val abilityNameTextRes: Int?
-			get() = state.item?.type?.nameResId
-
+		get() = getModifierText(state.item?.bonus?.value)
+	val abilityNameTextRes: Int
+		get() = state.item?.type?.nameResId ?: R.string.ability_loading
 
 	fun onClick() {
 		internalClicks.onNext(Unit)

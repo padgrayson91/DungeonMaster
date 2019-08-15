@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
 			  xmlns:tools="http://schemas.android.com/tools"
 			  android:orientation="vertical"
-			  android:layout_width="match_parent"
+			  android:layout_width="wrap_content"
 			  android:layout_height="match_parent">
 	<androidx.recyclerview.widget.RecyclerView
 		android:id="@+id/small_recycler"
@@ -10,6 +10,6 @@
 		android:layout_height="match_parent"
 		tools:orientation="vertical"
 		tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-		tools:listitem="@layout/item_ability_roll"/>
+		tools:listitem="@layout/item_ability_slot"/>
 
 </LinearLayout>

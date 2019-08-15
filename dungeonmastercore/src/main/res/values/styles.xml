@@ -25,4 +25,8 @@
 		<item name="android:textSize">@dimen/text_size_xxlarge</item>
 	</style>
 
+	<style name="HeaderText" parent="AppTheme">
+		<item name="android:textSize">@dimen/text_size_large</item>
+	</style>
+
 </resources>

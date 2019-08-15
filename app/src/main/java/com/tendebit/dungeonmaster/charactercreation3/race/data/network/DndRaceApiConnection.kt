@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.race.data.network
 
 import com.google.gson.Gson
+import com.tendebit.dungeonmaster.charactercreation3.race.DndDetailedRace
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -10,25 +11,36 @@ import okhttp3.Request
  */
 interface DndRaceApiConnection {
 
-    suspend fun getRaces() : List<DndRace>
+	suspend fun getRaces(): List<DndRace>
 
-    class Impl : DndRaceApiConnection {
-        private companion object {
-            const val BASE_URL = "http://dnd5eapi.co/api/"
-            const val RACES_PATH = "races/"
-        }
+	suspend fun getRaceDetails(race: DndRace): DndDetailedRace?
 
-        private val client = OkHttpClient()
-        private val gson = Gson()
+	class Impl : DndRaceApiConnection {
+		private companion object {
+			const val BASE_URL = "http://dnd5eapi.co/api/"
+			const val RACES_PATH = "races/"
+		}
 
-        override suspend fun getRaces(): List<DndRace> {
-            val request = Request.Builder()
-                    .url(BASE_URL + RACES_PATH)
-                    .build()
+		private val client = OkHttpClient()
+		private val gson = Gson()
 
-            val response = client.newCall(request).execute()?.body()?.string() ?: return emptyList()
-            return gson.fromJson(response, DndRaceManifest::class.java).toClassList()
-        }
-    }
+		override suspend fun getRaces(): List<DndRace> {
+			val request = Request.Builder()
+					.url(BASE_URL + RACES_PATH)
+					.build()
+
+			val response = client.newCall(request).execute()?.body()?.string() ?: return emptyList()
+			return gson.fromJson(response, DndRaceManifest::class.java).toClassList()
+		}
+
+		override suspend fun getRaceDetails(race: DndRace): DndDetailedRace? {
+			val request = Request.Builder()
+					.url(race.detailsUrl)
+					.build()
+
+			val response = client.newCall(request).execute()?.body()?.string() ?: return null
+			return gson.fromJson(response, DndRaceInfo::class.java).toDetailedRace()
+		}
+	}
 
 }

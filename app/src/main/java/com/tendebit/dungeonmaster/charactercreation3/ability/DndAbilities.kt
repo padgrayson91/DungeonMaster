@@ -1,5 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.ability
 
+import android.os.Parcel
+import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.AbilityProvider
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbility
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityBonus
@@ -16,6 +18,7 @@ import com.tendebit.dungeonmastercore.model.DelayedStart
 import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.Disabled
 import com.tendebit.dungeonmastercore.model.state.ItemState
+import com.tendebit.dungeonmastercore.model.state.ItemStateUtils
 import com.tendebit.dungeonmastercore.model.state.Loading
 import com.tendebit.dungeonmastercore.model.state.Locked
 import com.tendebit.dungeonmastercore.model.state.Normal
@@ -27,13 +30,20 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
 
-class DndAbilities : DelayedStart<DndAbilityPrerequisites>, AbilityProvider {
+class DndAbilities : DelayedStart<DndAbilityPrerequisites>, AbilityProvider, Parcelable {
 
 	override var state: ItemState<out DndAbilitySelection> = Loading
 		private set
 	override val internalStateChanges = BehaviorSubject.create<ItemState<out DndAbilitySelection>>()
 	override val externalStateChanges = BehaviorSubject.create<ItemState<out DndAbilitySelection>>()
 	private var disposable: Disposable? = null
+
+	constructor()
+
+	private constructor(parcel: Parcel) {
+		state = ItemStateUtils.readItemStateFromParcel(parcel)
+		logger.writeDebug("Got $state from parcel")
+	}
 
 	override fun start(prerequisites: DndAbilityPrerequisites) {
 		state = Normal(DndAbilitySelection(prerequisites.concurrency, EMPTY_ABILITY_SLOTS))
@@ -154,6 +164,26 @@ class DndAbilities : DelayedStart<DndAbilityPrerequisites>, AbilityProvider {
 			is Locked -> Locked(DndAbility(bonus, abilityState.item.rawScore))
 			is Normal -> Normal(DndAbility(bonus, abilityState.item.rawScore))
 			is Completed -> Completed(DndAbility(bonus, abilityState.item.rawScore))
+		}
+	}
+
+	override fun writeToParcel(dest: Parcel?, flags: Int) {
+		com.tendebit.dungeonmaster.charactercreation3.characterclass.logger.writeDebug("Parcelizing $this")
+		dest?.let {
+			ItemStateUtils.writeItemStateToParcel(state, it)
+		}
+	}
+
+	override fun describeContents(): Int = 0
+
+	companion object CREATOR : Parcelable.Creator<DndAbilities> {
+
+		override fun createFromParcel(source: Parcel): DndAbilities {
+			return DndAbilities(source)
+		}
+
+		override fun newArray(size: Int): Array<DndAbilities?> {
+			return arrayOfNulls(size)
 		}
 	}
 

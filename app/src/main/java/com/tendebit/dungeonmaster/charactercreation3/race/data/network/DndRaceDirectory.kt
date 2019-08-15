@@ -16,8 +16,7 @@ internal class DndRaceDirectory {
         return "Entry for race $name can be found at $url"
     }
 
-    fun toDndCharacterClass(): DndRace {
+    fun toDndCharacterRace(): DndRace {
         return DndRace(name, url)
     }
-
 }

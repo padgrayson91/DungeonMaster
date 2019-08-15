@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.feature
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.tendebit.dungeonmaster.charactercreation3.ability.DndAbilities
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndClasses
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencies
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRaces
@@ -12,12 +13,14 @@ class CharacterCreation : Parcelable {
 	val races: DndRaces
 	val classes: DndClasses
 	val proficiencies: DndProficiencies
+	val abilities: DndAbilities
 
 	constructor() {
 		character = DndCharacter()
 		races = DndRaces()
 		classes = DndClasses()
 		proficiencies = DndProficiencies()
+		abilities = DndAbilities()
 	}
 
 	constructor(parcel: Parcel) {
@@ -25,6 +28,7 @@ class CharacterCreation : Parcelable {
 		races = parcel.readParcelable(DndRaces::class.java.classLoader)!!
 		classes = parcel.readParcelable(DndClasses::class.java.classLoader)!!
 		proficiencies = parcel.readParcelable(DndProficiencies::class.java.classLoader)!!
+		abilities = parcel.readParcelable(DndAbilities::class.java.classLoader)!!
 	}
 
 	override fun writeToParcel(dest: Parcel?, flags: Int) {
@@ -33,6 +37,7 @@ class CharacterCreation : Parcelable {
 			it.writeParcelable(races, 0)
 			it.writeParcelable(classes, 0)
 			it.writeParcelable(proficiencies, 0)
+			it.writeParcelable(abilities, 0)
 		}
 	}
 

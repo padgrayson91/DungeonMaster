@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.race.data
 
+import com.tendebit.dungeonmaster.charactercreation3.race.DndDetailedRace
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceSelection
 import com.tendebit.dungeonmaster.charactercreation3.race.data.network.DndRaceApiConnection
@@ -12,10 +13,12 @@ import kotlinx.coroutines.sync.withLock
 class DndRaceDataStoreImpl(private val apiConnection: DndRaceApiConnection, private val storage: DndRaceStorage? = null) : DndRaceDataStore {
 
 	private val cachedList = ArrayList<DndRace>()
-	private val networkMutex = Mutex()
+	private val cachedDetails = HashMap<String, DndDetailedRace?>()
+	private val raceListMutex = Mutex()
+	private val raceDetailsMutex = Mutex()
 
 	override suspend fun getRaceList(forceNetwork: Boolean): List<DndRace> {
-		networkMutex.withLock  {
+		raceListMutex.withLock  {
 			if (cachedList.isNotEmpty() && !forceNetwork) {
 				return cachedList
 			}
@@ -36,6 +39,23 @@ class DndRaceDataStoreImpl(private val apiConnection: DndRaceApiConnection, priv
 
 		}
 		return cachedList
+	}
+
+	override suspend fun getRaceDetails(race: DndRace, forceNetwork: Boolean): DndDetailedRace? {
+		raceDetailsMutex.withLock  {
+			if (cachedDetails.containsKey(race.detailsUrl) && !forceNetwork) {
+				return cachedDetails[race.detailsUrl]
+			}
+
+			// TODO: DB storage for race details
+
+			cachedDetails.remove(race.detailsUrl)
+			cachedDetails[race.detailsUrl] = apiConnection.getRaceDetails(race)
+
+			// TODO: write result to db
+
+		}
+		return cachedDetails[race.detailsUrl]
 	}
 
 	override fun restoreRaceList(classList: List<DndRace>) {

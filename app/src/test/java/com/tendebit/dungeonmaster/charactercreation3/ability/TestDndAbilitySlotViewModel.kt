@@ -7,6 +7,7 @@ import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySlot
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityType
 import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.Locked
+import com.tendebit.dungeonmastercore.model.state.Normal
 import com.tendebit.dungeonmastercore.model.state.Removed
 import io.reactivex.observers.TestObserver
 import org.junit.Test
@@ -38,6 +39,23 @@ class TestDndAbilitySlotViewModel {
 		toTest.onClick()
 		toTest.onClick()
 		assert(testObserver.valueCount() == 2)
+	}
+
+	@Test
+	fun testIndicatorShownWhenRollIsProvided() {
+		val testBonus = DndAbilityBonus(DndAbilityType.DEX, 2)
+		val testAbility = DndAbility(testBonus, 14)
+		val testAbilitySlot = DndAbilitySlot(Locked(testAbility), testBonus)
+		val toTest = DndAbilitySlotViewModel(Completed(testAbilitySlot))
+		assert(toTest.showIndicator)
+	}
+
+	@Test
+	fun testIndicatorHiddenWhenRollIsNotProvided() {
+		val testBonus = DndAbilityBonus(DndAbilityType.DEX, 2)
+		val testAbilitySlot = DndAbilitySlot(Removed, testBonus)
+		val toTest = DndAbilitySlotViewModel(Normal(testAbilitySlot))
+		assert(!toTest.showIndicator)
 	}
 
 }

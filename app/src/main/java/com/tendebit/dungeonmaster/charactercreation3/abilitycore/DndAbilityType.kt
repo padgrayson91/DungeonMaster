@@ -10,6 +10,10 @@ enum class DndAbilityType(@StringRes val nameResId: Int) {
 	CON(R.string.ability_con),
 	INT(R.string.ability_int),
 	WIS(R.string.ability_wis),
-	CHA(R.string.ability_cha)
+	CHA(R.string.ability_cha);
+
+	companion object {
+		val sortedValues = arrayOf(STR, DEX, CON, INT, WIS, CHA)
+	}
 
 }

@@ -5,6 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation3.abilitycore.logger
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.ItemState
 import com.tendebit.dungeonmastercore.model.state.Loading
+import com.tendebit.dungeonmastercore.model.state.Removed
 import com.tendebit.dungeonmastercore.model.state.Selection
 import com.tendebit.dungeonmastercore.model.state.SelectionProvider
 import com.tendebit.dungeonmastercore.viewmodel3.SingleSelectViewModel
@@ -68,6 +69,9 @@ class DndAbilityDiceRollSelectionViewModel(private val provider: SelectionProvid
 			val child = childItem.value
 			childClickDisposable.add(child.selection.subscribe {
 				logger.writeDebug("Got selection change for ${child.state.item} to $it")
+				if (child.state is Removed) {
+					return@subscribe
+				}
 				if (it) state.item?.select(childItem.index)
 				else state.item?.deselect(childItem.index)
 			})

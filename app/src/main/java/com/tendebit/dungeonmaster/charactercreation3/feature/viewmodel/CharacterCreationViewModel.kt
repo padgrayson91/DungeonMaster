@@ -1,6 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel
 
 import com.tendebit.dungeonmaster.App
+import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilitySelectionViewModel
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityPrerequisites
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndCharacterClassDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.DndClassPrerequisites
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.network.DndCharacterClassApiConnection
@@ -34,7 +36,8 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 	val sectionsViewModel = CharacterCreationSectionsViewModel(
 			listOf(DndRaceSelectionViewModel(state.races),
 					DndCharacterClassSelectionViewModel(state.classes, concurrency),
-					DndProficiencySelectionViewModel(state.proficiencies, concurrency)))
+					DndProficiencySelectionViewModel(state.proficiencies, concurrency),
+					DndAbilitySelectionViewModel(state.abilities, concurrency)))
 
 	override val changes: Observable<out ViewModel>
 		get() = Observable.just(this)
@@ -48,10 +51,12 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 					state.classes.externalStateChanges.mergeWith(state.classes.internalStateChanges),
 					state.races.externalStateChanges.mergeWith(state.races.internalStateChanges),
 					RoomProficiencyStorage(db.proficiencyDao(), concurrency))
+			val abilityPrerequisites = DndAbilityPrerequisites.Impl(concurrency, listOf(state.races.selectedRaceDetails))
 
 			state.races.start(racePrerequisites)
 			state.classes.start(classPrerequisites)
 			state.proficiencies.start(proficiencyPrerequisites)
+			state.abilities.start(abilityPrerequisites)
 		}
 	}
 

@@ -28,5 +28,6 @@
     <string name="ability_int">Intelligence</string>
     <string name="ability_wis">Wisdom</string>
     <string name="ability_cha">Charisma</string>
+    <string name="ability_loading">Loading…</string>
 
 </resources>

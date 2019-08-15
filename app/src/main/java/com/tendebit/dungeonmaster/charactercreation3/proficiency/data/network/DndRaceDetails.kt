@@ -2,7 +2,6 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network
 
 import com.google.gson.annotations.SerializedName
 
-@Suppress("UNUSED")
 class DndRaceDetails {
 
 	lateinit var name: String

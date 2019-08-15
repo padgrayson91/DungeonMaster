@@ -2,6 +2,8 @@ package com.tendebit.dungeonmaster.charactercreation3.feature.view
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.tendebit.dungeonmaster.charactercreation3.ability.view.DndAbilitySelectionFragment
+import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilitySelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.view.DndClassSelectionFragment
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel.CharacterCreationSectionsViewModel
@@ -26,6 +28,7 @@ class CharacterCreationSectionsAdapter(fragment: Fragment, private val viewModel
 			is DndProficiencyGroupViewModel -> DndProficiencyGroupFragment.newInstance(viewModelManager.addViewModel(childViewModel))
 			is DndCharacterClassSelectionViewModel -> DndClassSelectionFragment.newInstance(viewModelManager.addViewModel(childViewModel))
 			is DndRaceSelectionViewModel -> DndRaceSelectionFragment.newInstance(viewModelManager.addViewModel(childViewModel))
+			is DndAbilitySelectionViewModel -> DndAbilitySelectionFragment.newInstance(viewModelManager.addViewModel(childViewModel))
 			else -> throw IllegalStateException("Had unexpected viewmodel $childViewModel")
 		}
 	}

@@ -16,6 +16,7 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
 
 private const val ABILITY_PAGE_COUNT = 1 // Only ever 1 page for ability selection
 
@@ -32,6 +33,8 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 	override val pageCount: Int = ABILITY_PAGE_COUNT
 	override val pageAdditions: Observable<Int> = Observable.empty()
 	override val pageRemovals: Observable<Int> = Observable.empty()
+	private val internalAbilitySlotChanges = PublishSubject.create<Int>()
+	val abilitySlotChanges = internalAbilitySlotChanges as Observable<Int>
 	var rolls: DndAbilityDiceRollSelectionViewModel? = null
 		private set
 
@@ -96,6 +99,7 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 		childUpdateDisposable = CompositeDisposable().apply {
 			children.forEachIndexed { index, child ->
 				add(child.clicks.subscribe { selection.performAssignment(index) })
+				add(child.changes.subscribe { internalAbilitySlotChanges.onNext(index) })
 			}
 		}
 	}
