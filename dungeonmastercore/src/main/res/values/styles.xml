@@ -20,6 +20,12 @@
 		<item name="android:background">@drawable/background_circular_item</item>
 	</style>
 
+	<style name="ActionButton" parent="Widget.AppCompat.Button">
+		<item name="android:background">@drawable/background_oval_button</item>
+		<item name="android:textSize">@dimen/text_size_xlarge</item>
+		<item name="android:textColor">?attr/colorPrimary</item>
+	</style>
+
 	<style name="ImportantText" parent="AppTheme">
 		<item name="android:textColor">@color/colorAccent</item>
 		<item name="android:textSize">@dimen/text_size_xxlarge</item>

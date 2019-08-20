@@ -34,8 +34,8 @@
 
 			<TextView
 				android:id="@+id/raw_value"
-				android:layout_width="wrap_content"
-				android:layout_height="wrap_content"
+				android:layout_width="@dimen/round_item_width"
+				android:layout_height="@dimen/round_item_height"
 				android:padding="@dimen/padding_large"
 				android:gravity="center"
 				android:textSize="@dimen/text_size_xlarge"

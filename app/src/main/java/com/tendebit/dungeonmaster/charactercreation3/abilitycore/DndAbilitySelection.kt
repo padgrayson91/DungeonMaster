@@ -21,9 +21,11 @@ class DndAbilitySelection(private val concurrency: Concurrency, initialState: Ar
 		get() = rolls.options
 
 	fun autoRoll() {
+		logger.writeDebug("Performing roll")
 		concurrency.runCalculation({
 			rolls.autoRollAll()
 			selectionState = calculateRollState(rolls)
+			logger.writeDebug("Roll complete, state is $selectionState")
 			internalStateChanges.onNext(selectionState)
 		})
 	}

@@ -46,10 +46,7 @@ class DndAbilityDiceRollSelectionViewModel(private val provider: SelectionProvid
 	private fun onStateChangedExternally(newState: ItemState<out Selection<Int>>) {
 		logger.writeDebug("Got external state: $newState")
 		concurrency.runCalculation({
-			children.clear()
-			children.addAll(newState.item?.options?.map { DndAbilityDiceRollViewModel(it) } ?: emptyList())
 			subscribeToSelection(newState.item)
-			subscribeToChildren(newState)
 			updateViewModelValues(newState)
 		})
 	}
@@ -85,6 +82,9 @@ class DndAbilityDiceRollSelectionViewModel(private val provider: SelectionProvid
 
 	private fun updateViewModelValues(state: ItemState<out Selection<Int>>) {
 		showLoading = state is Loading
+		children.clear()
+		children.addAll(state.item?.options?.map { DndAbilityDiceRollViewModel(it) } ?: emptyList())
+		subscribeToChildren(state)
 		itemCount = children.size
 		concurrency.runImmediate { changes.onNext(this@DndAbilityDiceRollSelectionViewModel) }
 	}

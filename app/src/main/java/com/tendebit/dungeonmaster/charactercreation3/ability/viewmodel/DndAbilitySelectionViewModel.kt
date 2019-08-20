@@ -52,7 +52,7 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 		childUpdateDisposable?.dispose()
 	}
 
-	fun performAutoRoll() {
+	fun onClickRoll() {
 		provider.state.item?.autoRoll()
 	}
 

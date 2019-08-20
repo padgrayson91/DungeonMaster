@@ -84,7 +84,7 @@ class TestDndAbilitySelectionViewModel {
 		val testObserver = TestObserver<DndAbilitySelectionViewModel>()
 		toTest.changes.subscribe(testObserver)
 		val previousCount = testObserver.valueCount()
-		toTest.performAutoRoll()
+		toTest.onClickRoll()
 		assert(testObserver.valueCount() == previousCount) { "Expected $previousCount updated but had ${testObserver.valueCount()}"}
 	}
 
@@ -93,7 +93,7 @@ class TestDndAbilitySelectionViewModel {
 		val toTest = DndAbilitySelectionViewModel(abilities, concurrency)
 		val testObserver = TestObserver<DndAbilityDiceRollSelectionViewModel>()
 		toTest.rolls?.changes?.subscribe(testObserver)
-		toTest.performAutoRoll()
+		toTest.onClickRoll()
 		assert(testObserver.valueCount() == 1)
 	}
 

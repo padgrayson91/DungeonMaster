@@ -24,7 +24,7 @@ class DndAbilitySlotFragment : Fragment() {
 	override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
 		val root = inflater.inflate(R.layout.small_recycler, container, false)
 		recycler = root.findViewById(R.id.small_recycler)
-		recycler?.layoutManager = LinearLayoutManager(activity, RecyclerView.VERTICAL, false)
+		recycler?.layoutManager = LinearLayoutManager(activity!!, RecyclerView.VERTICAL, false)
 		return root
 	}
 

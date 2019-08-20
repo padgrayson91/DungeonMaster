@@ -45,4 +45,11 @@ class DndAbilityRollSelection(abilityCount: Int, initialState: List<ItemState<ou
 		indirectSelectionChanges.onNext(ListItemState(position, normalState))
 	}
 
+	override fun toString(): String {
+		var output = "Roll selection: "
+		for (option in options) {
+			output += "$option "
+		}
+		return output
+	}
 }

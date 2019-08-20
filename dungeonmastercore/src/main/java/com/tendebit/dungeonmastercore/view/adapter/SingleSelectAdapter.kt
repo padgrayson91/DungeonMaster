@@ -29,6 +29,7 @@ abstract class SingleSelectAdapter<T, V : RecyclerView.ViewHolder>(private val v
 
 	fun resume() {
 		if (viewModel != null) {
+			subscribeToSelection(viewModel)
 			mainDisposable = viewModel.changes.subscribe {
 				subscribeToSelection(it)
 				notifyDataSetChanged()

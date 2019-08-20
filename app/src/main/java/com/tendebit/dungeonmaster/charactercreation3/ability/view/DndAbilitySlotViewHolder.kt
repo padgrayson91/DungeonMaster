@@ -7,8 +7,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilitySlotViewModel
-import io.reactivex.Observable
-import io.reactivex.subjects.PublishSubject
 
 class DndAbilitySlotViewHolder(inflater: LayoutInflater, parent: ViewGroup) : RecyclerView.ViewHolder(inflater.inflate(R.layout.item_ability_slot, parent, false)) {
 
@@ -17,14 +15,9 @@ class DndAbilitySlotViewHolder(inflater: LayoutInflater, parent: ViewGroup) : Re
 	private val indicatorImage = itemView.findViewById<View>(R.id.indicator_icon)
 	private val bonusText = itemView.findViewById<TextView>(R.id.bonus)
 	private val modifierText = itemView.findViewById<TextView>(R.id.modifier)
-	private val internalClicks = PublishSubject.create<Unit>()
-	val clicks = internalClicks as Observable<Unit>
-
-	fun onClick() {
-		internalClicks.onNext(Unit)
-	}
 
 	fun populate(abilitySlotViewModel: DndAbilitySlotViewModel) {
+		itemView.setOnClickListener { abilitySlotViewModel.onClick() }
 		abilityName.text = itemView.resources.getString(abilitySlotViewModel.abilityNameTextRes)
 		rollValueText.text = abilitySlotViewModel.rawScoreText
 		indicatorImage.visibility = if (abilitySlotViewModel.showIndicator) View.VISIBLE else View.GONE

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
@@ -23,6 +24,7 @@ class DndAbilitySelectionFragment : Fragment() {
 
 	private lateinit var loadingDialog: LoadingDialog
 	private lateinit var fragmentContainer: ViewGroup
+	private lateinit var rollButton: Button
 	private var slotsFragment: DndAbilitySlotFragment? = null
 	private var rollsFragment: DndAbilityDiceRollSelectionFragment? = null
 	private var disposable: Disposable? = null
@@ -32,6 +34,7 @@ class DndAbilitySelectionFragment : Fragment() {
 		val root = inflater.inflate(R.layout.fragment_ability_selection, container, false)
 		loadingDialog = root.findViewById(R.id.loading_dialog)
 		fragmentContainer = root.findViewById(R.id.fragment_container)
+		rollButton = root.findViewById(R.id.roll_button)
 		rollsFragment = childFragmentManager.findFragmentByTag(ROLLS_FRAGMENT_TAG) as? DndAbilityDiceRollSelectionFragment
 		if (rollsFragment== null) {
 			val newInstance = DndAbilityDiceRollSelectionFragment.newInstance()
@@ -72,6 +75,8 @@ class DndAbilitySelectionFragment : Fragment() {
 	private fun onAttachViewModel(viewModel: DndAbilitySelectionViewModel?) {
 		disposable?.dispose()
 		slotsFragment?.viewModel = viewModel
+		rollsFragment?.viewModel = viewModel?.rolls
+		rollButton.setOnClickListener { viewModel?.onClickRoll() }
 	}
 
 	private fun onViewModelChanged(viewModel: DndAbilitySelectionViewModel?) {
