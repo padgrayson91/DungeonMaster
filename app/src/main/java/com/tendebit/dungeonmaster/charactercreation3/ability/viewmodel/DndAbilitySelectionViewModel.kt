@@ -27,8 +27,7 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 		private set
 	override var showLoading  = provider.state is Loading || provider.state is Waiting
 		private set
-	val children: List<DndAbilitySlotViewModel>
-		get() = provider.state.item?.options?.map { DndAbilitySlotViewModel(it) } ?: emptyList()
+	var children = provider.state.item?.options?.map { DndAbilitySlotViewModel(it) } ?: emptyList()
 	override val pages: List<Page> = listOf(this)
 	override val pageCount: Int = ABILITY_PAGE_COUNT
 	override val pageAdditions: Observable<Int> = Observable.empty()
@@ -58,6 +57,7 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 
 	private fun onStateChangedExternally(newState: ItemState<out DndAbilitySelection>) {
 		logger.writeDebug("Got external state: $newState")
+		updateChildren(newState.item)
 		subscribeToSelection(newState.item)
 		updateViewModelValues(newState)
 	}
@@ -65,6 +65,23 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 	private fun onStateChangedInternally(newState: ItemState<out DndAbilitySelection>) {
 		logger.writeDebug("Got internal state: $newState")
 		updateViewModelValues(newState)
+	}
+
+	private fun updateChildren(selection: DndAbilitySelection?) {
+		childUpdateDisposable?.dispose()
+		children = selection?.options?.map { DndAbilitySlotViewModel(it) } ?: emptyList()
+		if (selection == null) {
+			return
+		}
+		childUpdateDisposable = CompositeDisposable().apply {
+			children.forEachIndexed { index, child ->
+				add(child.clicks.subscribe {
+					selection.performAssignment(index)
+					child.state = selection.options[index]
+				})
+				add(child.changes.subscribe { concurrency.runImmediate { internalAbilitySlotChanges.onNext(index) }})
+			}
+		}
 	}
 
 	private fun updateViewModelValues(state: ItemState<out DndAbilitySelection>) {
@@ -91,16 +108,6 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 			}
 		} else {
 			rolls = null
-		}
-		childUpdateDisposable?.dispose()
-		if (selection == null) {
-			return
-		}
-		childUpdateDisposable = CompositeDisposable().apply {
-			children.forEachIndexed { index, child ->
-				add(child.clicks.subscribe { selection.performAssignment(index) })
-				add(child.changes.subscribe { internalAbilitySlotChanges.onNext(index) })
-			}
 		}
 	}
 

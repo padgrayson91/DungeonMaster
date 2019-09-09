@@ -55,13 +55,13 @@
 
 		<ImageView
 			android:id="@+id/indicator_icon"
-			android:layout_toEndOf="@+id/bonus"
+			android:layout_toEndOf="@+id/raw_value_frame"
 			android:layout_centerVertical="true"
 			android:contentDescription="@string/indicator_arrow_accessible"
 			android:layout_width="@dimen/list_static_icon_width"
 			android:layout_height="@dimen/list_static_icon_height"
-			android:layout_marginStart="@dimen/padding_medium"
-			android:layout_marginEnd="@dimen/padding_medium"
+			android:layout_marginStart="@dimen/padding_xsmall"
+			android:layout_marginEnd="@dimen/padding_small"
 			android:src="@drawable/ic_baseline_arrow_right_alt_24px"/>
 
 		<TextView

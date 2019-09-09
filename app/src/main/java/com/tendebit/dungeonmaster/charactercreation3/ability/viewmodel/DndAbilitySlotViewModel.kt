@@ -10,6 +10,7 @@ import io.reactivex.subjects.PublishSubject
 class DndAbilitySlotViewModel(initialState: ItemState<out DndAbilitySlot>) : ViewModel {
 
 	var state: ItemState<out DndAbilitySlot> = initialState
+		set(value) { field = value; changes.onNext(this) }
 	override val changes = PublishSubject.create<DndAbilitySlotViewModel>()
 	private val internalClicks = PublishSubject.create<Unit>()
 	val clicks = internalClicks as Observable<Unit>
@@ -33,7 +34,7 @@ class DndAbilitySlotViewModel(initialState: ItemState<out DndAbilitySlot>) : Vie
 		return when {
 			modifier == null -> ""
 			modifier >= 0 -> "+$modifier"
-			else -> "-$modifier"
+			else -> modifier.toString()
 		}
 	}
 

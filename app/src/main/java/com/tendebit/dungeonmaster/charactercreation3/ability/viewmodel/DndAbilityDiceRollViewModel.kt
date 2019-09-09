@@ -28,7 +28,7 @@ class DndAbilityDiceRollViewModel(initialState: ItemState<out Int>) : Selectable
 	override val text: CharSequence?
 		get() = state.item?.toString()
 	override val textType: TextTypes
-		get() = if (showHighlight) TextTypes.SELECTED else TextTypes.NORMAL
+		get() = if (disabled) TextTypes.DISABLED else if (showHighlight) TextTypes.SELECTED else TextTypes.NORMAL
 
 	override fun onClick() {
 		if (disabled) return

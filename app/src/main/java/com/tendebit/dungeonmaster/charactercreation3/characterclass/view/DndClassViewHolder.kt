@@ -24,6 +24,7 @@ class DndClassViewHolder(inflater: LayoutInflater, parent: ViewGroup) : Recycler
 			// FIXME: should use selected/normal view state and styles to set color rather than calling setTextColor directly
 			TextTypes.SELECTED -> ContextCompat.getColor(itemView.context, R.color.colorAccent)
 			TextTypes.NORMAL -> R.attr.itemTextColor
+			TextTypes.DISABLED -> ContextCompat.getColor(itemView.context, R.color.colorDisabled)
 		})
 	}
 

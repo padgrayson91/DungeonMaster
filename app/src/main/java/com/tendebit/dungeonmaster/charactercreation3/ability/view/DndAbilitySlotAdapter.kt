@@ -43,6 +43,7 @@ class DndAbilitySlotAdapter(private val viewModel: DndAbilitySelectionViewModel?
 				subscribeToSelection(it)
 				notifyDataSetChanged()
 			}
+			subscribeToSelection(viewModel)
 		}
 	}
 

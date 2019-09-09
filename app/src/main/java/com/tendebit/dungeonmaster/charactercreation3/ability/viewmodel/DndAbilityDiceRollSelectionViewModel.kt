@@ -55,7 +55,7 @@ class DndAbilityDiceRollSelectionViewModel(private val provider: SelectionProvid
 		childUpdateDisposable?.dispose()
 		childUpdateDisposable = selection?.selectionChanges?.subscribe {
 			children[it.index].state = it.state
-			itemChanges.onNext(it.index)
+			concurrency.runImmediate { itemChanges.onNext(it.index) }
 		}
 	}
 

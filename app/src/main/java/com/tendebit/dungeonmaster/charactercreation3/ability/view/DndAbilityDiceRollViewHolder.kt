@@ -24,6 +24,7 @@ class DndAbilityDiceRollViewHolder(inflater: LayoutInflater, parent: ViewGroup) 
 			// FIXME: should use selected/normal view state and styles to set color rather than calling setTextColor directly
 			TextTypes.SELECTED -> R.attr.itemTextColor
 			TextTypes.NORMAL -> ContextCompat.getColor(itemView.context, R.color.colorAccent)
+			TextTypes.DISABLED -> ContextCompat.getColor(itemView.context, R.color.colorDisabled)
 		})
 
 		// TODO: show highlight

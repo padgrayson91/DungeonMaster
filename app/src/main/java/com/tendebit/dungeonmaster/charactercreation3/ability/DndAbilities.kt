@@ -47,7 +47,7 @@ class DndAbilities : DelayedStart<DndAbilityPrerequisites>, AbilityProvider, Par
 
 	override fun start(prerequisites: DndAbilityPrerequisites) {
 		state = Normal(DndAbilitySelection(prerequisites.concurrency, EMPTY_ABILITY_SLOTS))
-		internalStateChanges.onNext(state)
+		externalStateChanges.onNext(state)
 		prerequisites.concurrency.runCalculation({
 			disposable = Observable.combineLatest(prerequisites.sources) {
 				sourceStates ->
