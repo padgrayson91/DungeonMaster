@@ -5,9 +5,8 @@ import androidx.room.Room
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.tendebit.dungeonmaster.charactercreation3.feature.storage.CharacterCreationDb
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.DndProficiencyStorage
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.RoomProficiencyStorage
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.storage.DndProficiencyStorage
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrencyUi
 import com.tendebit.dungeonmastercore.model.state.Locked

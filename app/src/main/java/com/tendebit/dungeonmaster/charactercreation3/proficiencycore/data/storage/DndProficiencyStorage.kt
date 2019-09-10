@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage
+package com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.storage
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
 import io.reactivex.Maybe

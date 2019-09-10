@@ -1,7 +1,8 @@
-package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage
+package com.tendebit.dungeonmaster.charactercreation3.proficiency.storage
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.storage.DndProficiencyStorage
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.logger
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.Normal

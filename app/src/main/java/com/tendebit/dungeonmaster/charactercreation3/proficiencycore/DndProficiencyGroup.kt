@@ -9,6 +9,7 @@ import com.tendebit.dungeonmastercore.model.state.ListItemState
 import com.tendebit.dungeonmastercore.model.state.Locked
 import com.tendebit.dungeonmastercore.model.state.Normal
 import com.tendebit.dungeonmastercore.model.state.Selected
+import com.tendebit.dungeonmastercore.model.state.UnderlyingItemComparator
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -53,6 +54,14 @@ class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, i
 		if (remainingChoices == 0) {
 			onSelectionComplete()
 		}
+	}
+
+	/**
+	 * Update the options of this group to match the one provided
+	 */
+	fun copy(other: DndProficiencyGroup) {
+		options.clear()
+		options.addAll(other.options)
 	}
 
 	/**
@@ -145,6 +154,22 @@ class DndProficiencyGroup(initialOptions: List<ItemState<out DndProficiency>>, i
 	}
 
 	override fun describeContents(): Int = 0
+
+	fun contentsMatch(other: DndProficiencyGroup): Boolean {
+		if (other.choiceCount != choiceCount) {
+			return false
+		}
+
+		val stateComparator = UnderlyingItemComparator<DndProficiency>()
+
+		options.forEachIndexed { index, item ->
+			if (stateComparator.compare(item, other.options[index]) != 0) {
+				return false
+			}
+		}
+
+		return true
+	}
 
 	companion object CREATOR : Parcelable.Creator<DndProficiencyGroup> {
 

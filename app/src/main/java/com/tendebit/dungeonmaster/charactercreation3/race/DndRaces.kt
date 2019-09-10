@@ -2,7 +2,6 @@ package com.tendebit.dungeonmaster.charactercreation3.race
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySource
 import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRaceDataStore
 import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRacePrerequisites
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
@@ -17,6 +16,7 @@ import com.tendebit.dungeonmastercore.model.state.Selected
 import com.tendebit.dungeonmastercore.model.state.Selection
 import com.tendebit.dungeonmastercore.model.state.SelectionProvider
 import io.reactivex.Observable
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -27,9 +27,8 @@ class DndRaces : SelectionProvider<DndRace>, DelayedStart<DndRacePrerequisites>,
 
 	override val internalStateChanges = PublishSubject.create<ItemState<out Selection<DndRace>>>()
 	override val externalStateChanges = PublishSubject.create<ItemState<out Selection<DndRace>>>()
-	private val internalSelectedRaceDetails = PublishSubject.create<ItemState<out DndDetailedRace>>()
-	@Suppress("UNCHECKED_CAST")
-	val selectedRaceDetails = internalSelectedRaceDetails as Observable<ItemState<out DndAbilitySource>>
+	private val internalSelectedRaceDetails = BehaviorSubject.create<ItemState<out DndDetailedRace>>()
+	val selectedRaceDetails = internalSelectedRaceDetails as Observable<ItemState<out DndDetailedRace>>
 
 	private lateinit var dataStore: DndRaceDataStore
 	private lateinit var concurrency: Concurrency
@@ -61,6 +60,7 @@ class DndRaces : SelectionProvider<DndRace>, DelayedStart<DndRacePrerequisites>,
 	}
 
 	private suspend fun doLoadRaceDetails() {
+		internalSelectedRaceDetails.onNext(Loading)
 		val race = selectionState.item?.selectedItem?.item ?: return
 		val details = dataStore.getRaceDetails(race)
 		if (details == null) {
@@ -68,6 +68,7 @@ class DndRaces : SelectionProvider<DndRace>, DelayedStart<DndRacePrerequisites>,
 			return
 		}
 		if (selectionState.item?.selectedItem?.item == race) {
+			logger.writeDebug("Got details for $race")
 			internalSelectedRaceDetails.onNext(Selected(details))
 		}
 	}

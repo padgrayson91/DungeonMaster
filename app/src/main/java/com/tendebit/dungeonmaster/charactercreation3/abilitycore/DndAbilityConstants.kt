@@ -1,12 +1,13 @@
 package com.tendebit.dungeonmaster.charactercreation3.abilitycore
 
+import com.tendebit.dungeonmaster.BuildConfig
 import com.tendebit.dungeonmastercore.debug.Logger
 import com.tendebit.dungeonmastercore.model.state.ItemState
 import com.tendebit.dungeonmastercore.model.state.Normal
 import com.tendebit.dungeonmastercore.model.state.Removed
 
 const val TAG = "ABL"
-internal val logger = Logger(com.tendebit.dungeonmaster.charactercreation3.TAG, TAG)
+internal val logger = Logger(com.tendebit.dungeonmaster.charactercreation3.TAG, TAG, debug = BuildConfig.DEBUG)
 val EMPTY_BONUS_ARRAY = arrayOf(
 		DndAbilityBonus(DndAbilityType.STR, 0),
 		DndAbilityBonus(DndAbilityType.DEX, 0),

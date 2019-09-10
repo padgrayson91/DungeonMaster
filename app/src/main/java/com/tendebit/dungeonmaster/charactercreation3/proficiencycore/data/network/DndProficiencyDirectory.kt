@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network
+package com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.network
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiency
 

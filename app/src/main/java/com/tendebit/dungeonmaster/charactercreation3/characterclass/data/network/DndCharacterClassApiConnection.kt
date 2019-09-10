@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.characterclass.data.networ
 
 import com.google.gson.Gson
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndDetailedCharacterClass
 import okhttp3.OkHttpClient
 import okhttp3.Request
 
@@ -11,6 +12,8 @@ import okhttp3.Request
 interface DndCharacterClassApiConnection {
 
     suspend fun getCharacterClasses() : List<DndCharacterClass>
+
+    suspend fun getClassDetails(sourceClass: DndCharacterClass): DndDetailedCharacterClass?
 
     class Impl : DndCharacterClassApiConnection {
         private companion object {
@@ -28,6 +31,16 @@ interface DndCharacterClassApiConnection {
 
             val response = client.newCall(request).execute()?.body()?.string() ?: return emptyList()
             return gson.fromJson(response, DndCharacterClassManifest::class.java).toClassList()
+        }
+
+        override suspend fun getClassDetails(sourceClass: DndCharacterClass): DndDetailedCharacterClass? {
+            val request = Request.Builder()
+                    .url(sourceClass.detailsUrl)
+                    .build()
+
+            val response = client.newCall(request).execute()?.body()?.string() ?: return null
+            val classDetail = gson.fromJson(response, DndCharacterClassDetail::class.java)
+            return classDetail.toDetailedCharacterClass()
         }
     }
 

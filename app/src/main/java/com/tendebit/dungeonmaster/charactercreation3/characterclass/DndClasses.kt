@@ -11,8 +11,11 @@ import com.tendebit.dungeonmastercore.model.state.ItemState
 import com.tendebit.dungeonmastercore.model.state.ItemStateUtils
 import com.tendebit.dungeonmastercore.model.state.Loading
 import com.tendebit.dungeonmastercore.model.state.Normal
+import com.tendebit.dungeonmastercore.model.state.Removed
+import com.tendebit.dungeonmastercore.model.state.Selected
 import com.tendebit.dungeonmastercore.model.state.Selection
 import com.tendebit.dungeonmastercore.model.state.SelectionProvider
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -23,6 +26,9 @@ class DndClasses : SelectionProvider<DndCharacterClass>, DelayedStart<DndClassPr
 
 	override val internalStateChanges = PublishSubject.create<ItemState<out Selection<DndCharacterClass>>>()
 	override val externalStateChanges = PublishSubject.create<ItemState<out Selection<DndCharacterClass>>>()
+	private val internalSelectedClassDetails = BehaviorSubject.create<ItemState<out DndDetailedCharacterClass>>()
+
+	val selectedClassDetails = internalSelectedClassDetails
 
 	private lateinit var dataStore: DndCharacterClassDataStore
 	private lateinit var concurrency: Concurrency
@@ -57,6 +63,20 @@ class DndClasses : SelectionProvider<DndCharacterClass>, DelayedStart<DndClassPr
 		externalStateChanges.onNext(selectionState)
 	}
 
+	private suspend fun doLoadClassDetails() {
+		internalSelectedClassDetails.onNext(Loading)
+		val dndClass = selectionState.item?.selectedItem?.item ?: return
+		val details = dataStore.getCharacterClassDetails(dndClass)
+		if (details == null) {
+			logger.writeError("Unable to load details for $dndClass")
+			return
+		}
+		if (selectionState.item?.selectedItem?.item == dndClass) {
+			logger.writeDebug("Class details loaded for $dndClass")
+			internalSelectedClassDetails.onNext(Selected(details))
+		}
+	}
+
 	private suspend fun doUpdateClassState() = withContext(Dispatchers.Default) {
 		val newState = when(val oldState = selectionState) {
 			is Completed -> {
@@ -74,6 +94,11 @@ class DndClasses : SelectionProvider<DndCharacterClass>, DelayedStart<DndClassPr
 				}
 			}
 			else -> oldState
+		}
+
+		when (newState) {
+			is Completed -> concurrency.runDiskOrNetwork(::doLoadClassDetails)
+			else -> internalSelectedClassDetails.onNext(Removed)
 		}
 		selectionState = newState
 	}

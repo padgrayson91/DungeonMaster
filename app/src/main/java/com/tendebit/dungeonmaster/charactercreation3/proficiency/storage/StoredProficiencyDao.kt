@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage
+package com.tendebit.dungeonmaster.charactercreation3.proficiency.storage
 
 import androidx.room.Dao
 import androidx.room.Insert
