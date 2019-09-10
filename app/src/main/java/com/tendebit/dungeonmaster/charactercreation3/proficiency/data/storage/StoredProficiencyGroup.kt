@@ -2,7 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
 
 @Entity(tableName = "proficiency_groups")
 data class StoredProficiencyGroup(@PrimaryKey val id: String,

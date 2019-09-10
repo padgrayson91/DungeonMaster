@@ -1,5 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.ListItemState

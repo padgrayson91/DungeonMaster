@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.chip.ChipGroup
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.logger
 import com.tendebit.dungeonmastercore.platform.ViewModels
 import com.tendebit.dungeonmastercore.viewmodel3.MultiSelectViewModel
 import io.reactivex.disposables.Disposable

@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.ItemState

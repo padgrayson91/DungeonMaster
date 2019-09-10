@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage
 
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
 import io.reactivex.Maybe
 
 interface DndProficiencyStorage {

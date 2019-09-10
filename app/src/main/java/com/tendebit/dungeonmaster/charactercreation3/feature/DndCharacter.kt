@@ -3,7 +3,7 @@ package com.tendebit.dungeonmaster.charactercreation3.feature
 import android.os.Parcel
 import android.os.Parcelable
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceSelection
 
 class DndCharacter() : Parcelable {

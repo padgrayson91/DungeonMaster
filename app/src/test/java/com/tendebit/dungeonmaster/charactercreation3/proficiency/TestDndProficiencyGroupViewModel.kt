@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyGroupViewModel
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencyViewModel
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import com.tendebit.dungeonmastercore.model.state.Normal

@@ -1,6 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network
 
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiency
 
 class DndProficiencyDirectory {
 

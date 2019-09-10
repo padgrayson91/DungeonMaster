@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import android.os.Parcel
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationViewRobots
 import com.tendebit.dungeonmastercore.model.state.Normal
 import com.tendebit.dungeonmastercore.model.state.Selected

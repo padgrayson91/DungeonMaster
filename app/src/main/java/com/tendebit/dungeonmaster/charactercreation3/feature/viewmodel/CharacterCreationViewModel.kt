@@ -10,9 +10,9 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.viewmodel.DndCharacterClassSelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation3.feature.CharacterCreation
 import com.tendebit.dungeonmaster.charactercreation3.feature.storage.CharacterCreationDb
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyPrerequisites
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.RoomProficiencyStorage
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencySelectionViewModel
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.ProficiencyPrerequisites
 import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRaceDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.race.data.DndRacePrerequisites
 import com.tendebit.dungeonmaster.charactercreation3.race.data.network.DndRaceApiConnection

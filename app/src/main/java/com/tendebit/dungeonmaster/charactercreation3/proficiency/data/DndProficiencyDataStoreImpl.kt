@@ -1,11 +1,11 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.data
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.DndProficiencyStorage
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.logger
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock

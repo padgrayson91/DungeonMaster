@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.proficiency
+package com.tendebit.dungeonmaster.charactercreation3.proficiencycore
 
 import android.os.Parcel
 import android.os.Parcelable

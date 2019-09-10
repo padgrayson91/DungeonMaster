@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.proficiency
+package com.tendebit.dungeonmaster.charactercreation3.proficiencycore
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.storage.DndProficiencyStorage

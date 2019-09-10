@@ -2,7 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network
 
 import com.google.gson.Gson
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.logger
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import okhttp3.OkHttpClient
 import okhttp3.Request

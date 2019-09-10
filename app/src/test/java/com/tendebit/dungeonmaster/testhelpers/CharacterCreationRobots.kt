@@ -4,7 +4,7 @@ import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityBonus
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySlot
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityType
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiency
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiency
 import com.tendebit.dungeonmastercore.model.state.ItemState
 import com.tendebit.dungeonmastercore.model.state.Normal
 import com.tendebit.dungeonmastercore.model.state.Removed

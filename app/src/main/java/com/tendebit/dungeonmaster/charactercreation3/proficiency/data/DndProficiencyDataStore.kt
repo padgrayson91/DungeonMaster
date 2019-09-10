@@ -1,7 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.data
 
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 
 interface DndProficiencyDataStore {

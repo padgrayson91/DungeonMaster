@@ -1,6 +1,9 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency
 
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel.DndProficiencySelectionViewModel
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.ProficiencyProvider
 import com.tendebit.dungeonmaster.testhelpers.CharacterCreationRobots
 import com.tendebit.dungeonmaster.testhelpers.TestConcurrency
 import com.tendebit.dungeonmastercore.model.state.Completed

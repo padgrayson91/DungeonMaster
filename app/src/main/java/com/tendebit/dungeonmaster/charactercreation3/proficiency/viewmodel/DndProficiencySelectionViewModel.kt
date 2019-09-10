@@ -1,8 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation3.proficiency.viewmodel
 
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.DndProficiencySelection
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.ProficiencyProvider
-import com.tendebit.dungeonmaster.charactercreation3.proficiency.logger
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.ProficiencyProvider
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.logger
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.Completed
 import com.tendebit.dungeonmastercore.model.state.ItemState

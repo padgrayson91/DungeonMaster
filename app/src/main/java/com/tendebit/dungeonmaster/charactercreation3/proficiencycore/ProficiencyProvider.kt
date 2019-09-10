@@ -1,4 +1,4 @@
-package com.tendebit.dungeonmaster.charactercreation3.proficiency
+package com.tendebit.dungeonmaster.charactercreation3.proficiencycore
 
 import com.tendebit.dungeonmastercore.model.state.ItemState
 import io.reactivex.Observable

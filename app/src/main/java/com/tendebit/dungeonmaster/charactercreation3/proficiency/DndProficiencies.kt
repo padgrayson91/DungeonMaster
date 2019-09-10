@@ -6,6 +6,11 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacter
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProficiencyDataStore
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.DndProficiencyDataStoreImpl
 import com.tendebit.dungeonmaster.charactercreation3.proficiency.data.network.DndProficiencyApiConnection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.ProficiencyPrerequisites
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.ProficiencyProvider
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.logger
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmastercore.model.DelayedStart
 import com.tendebit.dungeonmastercore.model.state.Completed
