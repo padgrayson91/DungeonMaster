@@ -38,6 +38,7 @@ class TestDndClassSelectionFragment {
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.itemCount).thenReturn(0)
+		whenever(viewModel.itemChanges).thenReturn(Observable.empty())
 		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
 		whenever(viewModelManager.findViewModel<SingleSelectViewModel<DndCharacterClass>>(0)).thenReturn(viewModel)
 		ViewModels.viewModelAccess = { viewModelManager }
@@ -54,6 +55,7 @@ class TestDndClassSelectionFragment {
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.itemCount).thenReturn(2)
+		whenever(viewModel.itemChanges).thenReturn(Observable.empty())
 		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
 		whenever(viewModelManager.findViewModel<SingleSelectViewModel<DndCharacterClass>>(0)).thenReturn(viewModel)
 		ViewModels.viewModelAccess = { viewModelManager }
@@ -70,6 +72,7 @@ class TestDndClassSelectionFragment {
 		whenever(viewModel.changes).thenReturn(Observable.empty())
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.itemCount).thenReturn(2)
+		whenever(viewModel.itemChanges).thenReturn(Observable.empty())
 		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
 		whenever(viewModelManager.findViewModel<SingleSelectViewModel<DndCharacterClass>>(0)).thenReturn(viewModel)
 		ViewModels.viewModelAccess = { viewModelManager }
@@ -93,6 +96,7 @@ class TestDndClassSelectionFragment {
 		whenever(viewModel.children).thenReturn(children)
 		whenever(viewModel.itemCount).thenReturn(2)
 		whenever(viewModel.showLoading).thenReturn(true)
+		whenever(viewModel.itemChanges).thenReturn(Observable.empty())
 		val viewModelManager = Mockito.mock(ViewModelManager::class.java)
 		whenever(viewModelManager.findViewModel<SingleSelectViewModel<DndCharacterClass>>(0)).thenReturn(viewModel)
 		ViewModels.viewModelAccess = { viewModelManager }
