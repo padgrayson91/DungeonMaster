@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
@@ -24,7 +24,7 @@ class DndAbilitySelectionFragment : Fragment() {
 
 	private lateinit var loadingDialog: LoadingDialog
 	private lateinit var fragmentContainer: ViewGroup
-	private lateinit var rollButton: Button
+	private lateinit var rollButton: TextView
 	private var slotsFragment: DndAbilitySlotFragment? = null
 	private var rollsFragment: DndAbilityDiceRollSelectionFragment? = null
 	private var disposable: Disposable? = null
