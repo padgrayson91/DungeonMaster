@@ -107,7 +107,7 @@ class TestDndAbilities {
 		prereq.emitCompleted(0, bonusList1)
 		prereq.emitCompleted(1, bonusList2)
 
-		assert(testObserver.valueCount() == 1)
+		assert(testObserver.valueCount() > 1)
 	}
 
 	@Test
@@ -124,7 +124,7 @@ class TestDndAbilities {
 		prereq.emitCompleted(0, bonusList1)
 		prereq.emitNormal(1)
 
-		assert(testObserver.valueCount() == 3)
+		assert(testObserver.valueCount() == 4)
 	}
 
 	class TestAbilityPrerequisites : DndAbilityPrerequisites {
