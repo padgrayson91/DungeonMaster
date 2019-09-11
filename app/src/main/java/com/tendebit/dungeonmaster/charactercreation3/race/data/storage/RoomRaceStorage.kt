@@ -2,6 +2,8 @@ package com.tendebit.dungeonmaster.charactercreation3.race.data.storage
 
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.storage.DndAbilityStorage
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.storage.DndProficiencyStorage
 import com.tendebit.dungeonmaster.charactercreation3.race.DndDetailedRace
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceSelection
@@ -12,7 +14,7 @@ import io.reactivex.Maybe
 import io.reactivex.subjects.MaybeSubject
 import java.util.UUID
 
-class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: Concurrency, private val abilityStorage: DndAbilityStorage) : DndRaceStorage {
+class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: Concurrency, private val abilityStorage: DndAbilityStorage, private val proficiencyStorage: DndProficiencyStorage) : DndRaceStorage {
 
 	override fun storeSelection(selection: DndRaceSelection, id: CharSequence?): CharSequence {
 		val createdOrExistingId = id ?: UUID.randomUUID().toString()
@@ -36,7 +38,9 @@ class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: C
 		logger.writeDebug("Storing details for ${detailedRace.origin}")
 		concurrency.runDiskOrNetwork({
 			abilityStorage.storeAbilityBonuses(detailedRace.dndAbilityBonuses, detailedRace.origin.detailsUrl)
-			// TODO: store proficiencies
+			val raceProficiencySelection = DndProficiencySelection(detailedRace.dndProficiencyOptions)
+			proficiencyStorage.storeSelection(raceProficiencySelection, detailedRace.origin.detailsUrl)
+			// TODO: store native proficiencies
 			dao.storeRaceInfo(StoredRace.fromDetailedRace(detailedRace))
 		})
 	}
@@ -45,8 +49,9 @@ class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: C
 		val subject = MaybeSubject.create<DndDetailedRace>()
 		concurrency.runDiskOrNetwork({
 			val abilities = abilityStorage.findAbilityBonuses(origin.detailsUrl).blockingGet() ?: subject.onComplete()
-			// TODO: load proficiencies
-			subject.onSuccess(DndDetailedRace(origin, abilities, emptyList(), emptyList()))
+			val proficiencyOptions = proficiencyStorage.findSelectionById(origin.detailsUrl).blockingGet()?.groupStates?.mapNotNull { it.item } ?: emptyList()
+			// TODO: read native proficiencies from storage
+			subject.onSuccess(DndDetailedRace(origin, abilities, proficiencyOptions, emptyList()))
 		})
 
 		return subject

@@ -44,6 +44,7 @@ class DndRaceDataStoreImpl(private val apiConnection: DndRaceApiConnection, priv
 	override suspend fun getRaceDetails(race: DndRace, forceNetwork: Boolean): DndDetailedRace? {
 		raceDetailsMutex.withLock  {
 			if (cachedDetails.containsKey(race.detailsUrl) && !forceNetwork) {
+				logger.writeDebug("Had cache entry for $race details")
 				return cachedDetails[race.detailsUrl]
 			}
 
@@ -57,6 +58,7 @@ class DndRaceDataStoreImpl(private val apiConnection: DndRaceApiConnection, priv
 			}
 
 			cachedDetails.remove(race.detailsUrl)
+			logger.writeDebug("Loading $race details from network")
 			val detailsFromNetwork = apiConnection.getRaceDetails(race)
 			cachedDetails[race.detailsUrl] = detailsFromNetwork
 			detailsFromNetwork?.let { storage?.storeDetails(it) }
