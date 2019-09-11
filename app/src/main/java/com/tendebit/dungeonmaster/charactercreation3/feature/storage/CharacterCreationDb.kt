@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.tendebit.dungeonmaster.charactercreation3.ability.storage.StoredAbilityDao
+import com.tendebit.dungeonmaster.charactercreation3.ability.storage.StoredDndAbilityBonus
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.StoredCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.StoredCharacterClassSelection
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage.StoredClassDao
@@ -32,13 +34,15 @@ import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.StoredRac
 	StoredProficiencyGroupJoin::class,
 	StoredProficiencySelection::class,
 	StoredProficiencySelectionJoin::class,
-	StoredProficiencySelectionToProficiencyJoin::class
+	StoredProficiencySelectionToProficiencyJoin::class,
+	StoredDndAbilityBonus::class
 ], version = 2, exportSchema = false)
 abstract class CharacterCreationDb : RoomDatabase() {
 
 	abstract fun classDao(): StoredClassDao
 	abstract fun raceDao(): StoredRaceDao
 	abstract fun proficiencyDao(): StoredProficiencyDao
+	abstract fun abilityDao(): StoredAbilityDao
 
 	companion object {
 		private var INSTANCE: CharacterCreationDb? = null

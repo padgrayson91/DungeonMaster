@@ -47,13 +47,19 @@ class DndRaceDataStoreImpl(private val apiConnection: DndRaceApiConnection, priv
 				return cachedDetails[race.detailsUrl]
 			}
 
-			// TODO: DB storage for race details
+			if (!forceNetwork) {
+				val storedDetails = storage?.findDetails(race)?.blockingGet()
+				if (storedDetails != null) {
+					cachedDetails[race.detailsUrl] = storedDetails
+					logger.writeDebug("Missed cache, but had a db entry for $race")
+					return storedDetails
+				}
+			}
 
 			cachedDetails.remove(race.detailsUrl)
-			cachedDetails[race.detailsUrl] = apiConnection.getRaceDetails(race)
-
-			// TODO: write result to db
-
+			val detailsFromNetwork = apiConnection.getRaceDetails(race)
+			cachedDetails[race.detailsUrl] = detailsFromNetwork
+			detailsFromNetwork?.let { storage?.storeDetails(it) }
 		}
 		return cachedDetails[race.detailsUrl]
 	}

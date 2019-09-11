@@ -1,6 +1,7 @@
 package com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel
 
 import com.tendebit.dungeonmaster.App
+import com.tendebit.dungeonmaster.charactercreation3.ability.storage.RoomAbilityStorage
 import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilitySelectionViewModel
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityPrerequisites
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilitySource
@@ -49,7 +50,10 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 	init {
 		viewModelScope.launch(context = Dispatchers.IO) {
 			val db = CharacterCreationDb.getInstance(App.instance.applicationContext)
-			val racePrerequisites = DndRacePrerequisites.Impl(concurrency, DndRaceDataStoreImpl(DndRaceApiConnection.Impl(), RoomRaceStorage(db.raceDao(), concurrency)))
+			val abilityStorage = RoomAbilityStorage(db.abilityDao(), concurrency)
+			val raceStorage = RoomRaceStorage(db.raceDao(), concurrency, abilityStorage)
+
+			val racePrerequisites = DndRacePrerequisites.Impl(concurrency, DndRaceDataStoreImpl(DndRaceApiConnection.Impl(), raceStorage))
 			val classPrerequisites = DndClassPrerequisites.Impl(concurrency, DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(db.classDao(), concurrency)))
 			val proficiencyPrerequisites = ProficiencyPrerequisites.Impl(concurrency,
 					listOf(
@@ -68,6 +72,7 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 	override fun clear() {
 		job.cancel()
 		state.proficiencies.stop()
+		state.abilities.stop()
 	}
 
 }

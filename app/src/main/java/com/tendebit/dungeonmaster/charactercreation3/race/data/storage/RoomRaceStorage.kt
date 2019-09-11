@@ -1,6 +1,9 @@
 package com.tendebit.dungeonmaster.charactercreation3.race.data.storage
 
+import com.tendebit.dungeonmaster.charactercreation3.abilitycore.storage.DndAbilityStorage
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
+import com.tendebit.dungeonmaster.charactercreation3.race.DndDetailedRace
+import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRaceSelection
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.Normal
@@ -9,7 +12,7 @@ import io.reactivex.Maybe
 import io.reactivex.subjects.MaybeSubject
 import java.util.UUID
 
-class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: Concurrency) : DndRaceStorage {
+class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: Concurrency, private val abilityStorage: DndAbilityStorage) : DndRaceStorage {
 
 	override fun storeSelection(selection: DndRaceSelection, id: CharSequence?): CharSequence {
 		val createdOrExistingId = id ?: UUID.randomUUID().toString()
@@ -27,6 +30,26 @@ class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: C
 			}
 		})
 		return createdOrExistingId
+	}
+
+	override fun storeDetails(detailedRace: DndDetailedRace) {
+		logger.writeDebug("Storing details for ${detailedRace.origin}")
+		concurrency.runDiskOrNetwork({
+			abilityStorage.storeAbilityBonuses(detailedRace.dndAbilityBonuses, detailedRace.origin.detailsUrl)
+			// TODO: store proficiencies
+			dao.storeRaceInfo(StoredRace.fromDetailedRace(detailedRace))
+		})
+	}
+
+	override fun findDetails(origin: DndRace): Maybe<DndDetailedRace> {
+		val subject = MaybeSubject.create<DndDetailedRace>()
+		concurrency.runDiskOrNetwork({
+			val abilities = abilityStorage.findAbilityBonuses(origin.detailsUrl).blockingGet() ?: subject.onComplete()
+			// TODO: load proficiencies
+			subject.onSuccess(DndDetailedRace(origin, abilities, emptyList(), emptyList()))
+		})
+
+		return subject
 	}
 
 	override fun findSelectionById(id: CharSequence): Maybe<DndRaceSelection> {
