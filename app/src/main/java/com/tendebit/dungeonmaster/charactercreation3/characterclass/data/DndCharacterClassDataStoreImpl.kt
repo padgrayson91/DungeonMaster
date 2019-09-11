@@ -51,10 +51,17 @@ class DndCharacterClassDataStoreImpl(private val apiConnection: DndCharacterClas
 				return detailsFromCache
 			}
 
-			// TODO: disk storage
+			val detailsFromStorage = storage?.findDetails(dndClass)?.blockingGet()
+			if (detailsFromStorage != null) {
+				logger.writeDebug("Missed cache, but had db entry for details for $dndClass")
+				cachedDetails[dndClass.detailsUrl] = detailsFromStorage
+				return detailsFromStorage
+			}
 
+			logger.writeDebug("Fetching details for $dndClass from network")
 			val detailsFromNetwork = apiConnection.getClassDetails(dndClass)
 			if (detailsFromNetwork != null) {
+				storage?.storeDetails(detailsFromNetwork)
 				cachedDetails[dndClass.detailsUrl] = detailsFromNetwork
 			}
 

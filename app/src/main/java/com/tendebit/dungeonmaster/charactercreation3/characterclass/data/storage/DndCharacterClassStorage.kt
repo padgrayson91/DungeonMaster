@@ -1,6 +1,8 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage
 
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndDetailedCharacterClass
 import io.reactivex.Maybe
 
 /**
@@ -13,6 +15,10 @@ interface DndCharacterClassStorage {
 	}
 
 	fun storeSelection(selection: DndCharacterClassSelection, id: CharSequence? = null): CharSequence
+
+	fun storeDetails(details: DndDetailedCharacterClass)
+
+	fun findDetails(origin: DndCharacterClass): Maybe<DndDetailedCharacterClass>
 
 	fun findSelectionById(id: CharSequence): Maybe<DndCharacterClassSelection>
 

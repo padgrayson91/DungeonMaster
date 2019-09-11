@@ -1,7 +1,10 @@
 package com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storage
 
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
+import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndDetailedCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.storage.DndProficiencyStorage
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.Normal
 import com.tendebit.dungeonmastercore.model.state.Selected
@@ -13,8 +16,9 @@ import java.util.UUID
  * Implementation of [DndCharacterClassStorage] which stores information in a Room database
  * @param dao the DAO used to store and retrieve data
  * @param concurrency the [Concurrency] implementation used to run DB operations off the main thread
+ * @param proficiencyStorage the [DndProficiencyStorage] implementation used to store proficiency information for classes
  */
-class RoomCharacterClassStorage(private val dao: StoredClassDao, private val concurrency: Concurrency) : DndCharacterClassStorage {
+class RoomCharacterClassStorage(private val dao: StoredClassDao, private val concurrency: Concurrency, private val proficiencyStorage: DndProficiencyStorage) : DndCharacterClassStorage {
 
 	override fun storeSelection(selection: DndCharacterClassSelection, id: CharSequence?): CharSequence {
 		val createdOrExistingId = id ?: UUID.randomUUID().toString()
@@ -32,6 +36,14 @@ class RoomCharacterClassStorage(private val dao: StoredClassDao, private val con
 			}
 		})
 		return createdOrExistingId
+	}
+
+	override fun storeDetails(details: DndDetailedCharacterClass) {
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+	}
+
+	override fun findDetails(origin: DndCharacterClass): Maybe<DndDetailedCharacterClass> {
+		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 	}
 
 	override fun findSelectionById(id: CharSequence): Maybe<DndCharacterClassSelection> {

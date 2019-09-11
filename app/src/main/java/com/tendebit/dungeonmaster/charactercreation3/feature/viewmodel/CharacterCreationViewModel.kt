@@ -51,16 +51,22 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 		viewModelScope.launch(context = Dispatchers.IO) {
 			val db = CharacterCreationDb.getInstance(App.instance.applicationContext)
 			val abilityStorage = RoomAbilityStorage(db.abilityDao(), concurrency)
-			val raceStorage = RoomRaceStorage(db.raceDao(), concurrency, abilityStorage)
+			val proficiencyStorage = RoomProficiencyStorage(db.proficiencyDao(), concurrency)
+			val raceStorage = RoomRaceStorage(db.raceDao(), concurrency, abilityStorage, proficiencyStorage)
+			val classStorge = RoomCharacterClassStorage(db.classDao(), concurrency, proficiencyStorage)
 
 			val racePrerequisites = DndRacePrerequisites.Impl(concurrency, DndRaceDataStoreImpl(DndRaceApiConnection.Impl(), raceStorage))
-			val classPrerequisites = DndClassPrerequisites.Impl(concurrency, DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), RoomCharacterClassStorage(db.classDao(), concurrency)))
+			val classPrerequisites = DndClassPrerequisites.Impl(concurrency, DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), classStorge))
 			val proficiencyPrerequisites = ProficiencyPrerequisites.Impl(concurrency,
 					listOf(
 							state.classes.selectedClassDetails as Observable<ItemState<out DndProficiencySource>>,
-							state.races.selectedRaceDetails as Observable<ItemState<out DndProficiencySource>>),
-					RoomProficiencyStorage(db.proficiencyDao(), concurrency))
-			val abilityPrerequisites = DndAbilityPrerequisites.Impl(concurrency, listOf(state.races.selectedRaceDetails as Observable<ItemState<out DndAbilitySource>>))
+							state.races.selectedRaceDetails as Observable<ItemState<out DndProficiencySource>>
+						  ),
+					proficiencyStorage)
+			val abilityPrerequisites = DndAbilityPrerequisites.Impl(concurrency,
+					listOf(
+							state.races.selectedRaceDetails as Observable<ItemState<out DndAbilitySource>>
+						  ))
 
 			state.races.start(racePrerequisites)
 			state.classes.start(classPrerequisites)
