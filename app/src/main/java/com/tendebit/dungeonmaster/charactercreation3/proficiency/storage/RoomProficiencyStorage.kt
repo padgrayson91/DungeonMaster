@@ -13,7 +13,10 @@ import java.util.UUID
 
 class RoomProficiencyStorage(private val dao: StoredProficiencyDao, private val concurrency: Concurrency): DndProficiencyStorage {
 
-	override fun storeSelection(selection: DndProficiencySelection, id: CharSequence?): CharSequence {
+	override fun storeSelection(selection: DndProficiencySelection, id: CharSequence?): CharSequence? {
+		if (selection.isEmpty) {
+			return null
+		}
 		val createdOrExistingId = id ?: UUID.randomUUID().toString()
 		logger.writeDebug("Got request to store proficiency selection with $createdOrExistingId")
 

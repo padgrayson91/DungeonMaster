@@ -12,7 +12,7 @@ interface DndProficiencyStorage {
 
 	}
 
-	fun storeSelection(selection: DndProficiencySelection, id: CharSequence? = null): CharSequence
+	fun storeSelection(selection: DndProficiencySelection, id: CharSequence? = null): CharSequence?
 
 	fun findSelectionById(id: CharSequence): Maybe<DndProficiencySelection>
 

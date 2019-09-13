@@ -12,6 +12,6 @@ interface StoredAbilityDao {
 	fun storeAbilityBonuses(bonuses: StoredDndAbilityBonus)
 
 	@Query("""SELECT * FROM ability_bonuses WHERE id=:sourceId""")
-	fun getAbilityBonuses(sourceId: CharSequence): StoredDndAbilityBonus?
+	fun getAbilityBonuses(sourceId: String): StoredDndAbilityBonus?
 
 }

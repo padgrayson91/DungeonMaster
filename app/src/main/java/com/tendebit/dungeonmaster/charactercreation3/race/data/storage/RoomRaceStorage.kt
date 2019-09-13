@@ -2,6 +2,7 @@ package com.tendebit.dungeonmaster.charactercreation3.race.data.storage
 
 import com.tendebit.dungeonmaster.charactercreation3.abilitycore.storage.DndAbilityStorage
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.storage.DndProficiencyStorage
 import com.tendebit.dungeonmaster.charactercreation3.race.DndDetailedRace
@@ -38,9 +39,11 @@ class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: C
 		logger.writeDebug("Storing details for ${detailedRace.origin}")
 		concurrency.runDiskOrNetwork({
 			abilityStorage.storeAbilityBonuses(detailedRace.dndAbilityBonuses, detailedRace.origin.detailsUrl)
+			val optionsId = getStartingOptionsDbId(detailedRace.origin.detailsUrl)
 			val raceProficiencySelection = DndProficiencySelection(detailedRace.dndProficiencyOptions)
-			proficiencyStorage.storeSelection(raceProficiencySelection, detailedRace.origin.detailsUrl)
-			// TODO: store native proficiencies
+			proficiencyStorage.storeSelection(raceProficiencySelection, optionsId)
+			val nativeId = getNativeProficienciesDbId(detailedRace.origin.detailsUrl)
+			proficiencyStorage.storeSelection(DndProficiencySelection(listOf(DndProficiencyGroup(detailedRace.nativeProficiencies.map { Normal(it) }, detailedRace.nativeProficiencies.size))), nativeId)
 			dao.storeRaceInfo(StoredRace.fromDetailedRace(detailedRace))
 		})
 	}
@@ -48,10 +51,16 @@ class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: C
 	override fun findDetails(origin: DndRace): Maybe<DndDetailedRace> {
 		val subject = MaybeSubject.create<DndDetailedRace>()
 		concurrency.runDiskOrNetwork({
-			val abilities = abilityStorage.findAbilityBonuses(origin.detailsUrl).blockingGet() ?: subject.onComplete()
-			val proficiencyOptions = proficiencyStorage.findSelectionById(origin.detailsUrl).blockingGet()?.groupStates?.mapNotNull { it.item } ?: emptyList()
-			// TODO: read native proficiencies from storage
-			subject.onSuccess(DndDetailedRace(origin, abilities, proficiencyOptions, emptyList()))
+			val abilities = abilityStorage.findAbilityBonuses(origin.detailsUrl).blockingGet()
+			if (abilities == null) {
+				subject.onComplete()
+				return@runDiskOrNetwork
+			}
+			val optionsId = getStartingOptionsDbId(origin.detailsUrl)
+			val proficiencyOptions = proficiencyStorage.findSelectionById(optionsId).blockingGet()?.groupStates?.mapNotNull { it.item } ?: emptyList()
+			val nativeId = getNativeProficienciesDbId(origin.detailsUrl)
+			val nativeProficiencies = proficiencyStorage.findSelectionById(nativeId).blockingGet()?.groupStates?.mapNotNull { it.item }?.firstOrNull()?.options?.mapNotNull { it.item } ?: emptyList()
+			subject.onSuccess(DndDetailedRace(origin, abilities, proficiencyOptions, nativeProficiencies))
 		})
 
 		return subject
@@ -75,6 +84,15 @@ class RoomRaceStorage(private val dao: StoredRaceDao, private val concurrency: C
 			subject.onSuccess(DndRaceSelection(states))
 		})
 		return subject
+	}
+
+	// FIXME: Should have a better way of constructing IDs
+	private fun getStartingOptionsDbId(raceId: CharSequence): String {
+		return "$raceId--starting_proficiencies"
+	}
+
+	private fun getNativeProficienciesDbId(raceId: CharSequence): String {
+		return "$raceId--native_proficiencies"
 	}
 
 }

@@ -4,6 +4,8 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacter
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndCharacterClassSelection
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndDetailedCharacterClass
 import com.tendebit.dungeonmaster.charactercreation3.characterclass.logger
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencyGroup
+import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySelection
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.storage.DndProficiencyStorage
 import com.tendebit.dungeonmastercore.concurrency.Concurrency
 import com.tendebit.dungeonmastercore.model.state.Normal
@@ -39,11 +41,34 @@ class RoomCharacterClassStorage(private val dao: StoredClassDao, private val con
 	}
 
 	override fun storeDetails(details: DndDetailedCharacterClass) {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		concurrency.runDiskOrNetwork({
+			val optionsId = getStartingOptionsDbId(details.id)
+			val nativeId = getNativeProficienciesDbId(details.id)
+			proficiencyStorage.storeSelection(DndProficiencySelection(details.dndProficiencyOptions), optionsId)
+			proficiencyStorage.storeSelection(DndProficiencySelection(listOf(DndProficiencyGroup(details.nativeProficiencies.map { Normal(it) }, details.nativeProficiencies.size))), nativeId)
+			dao.storeClassInfo(StoredCharacterClass.fromDetailedCharacterClass(details))
+		})
 	}
 
 	override fun findDetails(origin: DndCharacterClass): Maybe<DndDetailedCharacterClass> {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		val subject = MaybeSubject.create<DndDetailedCharacterClass>()
+		logger.writeDebug("Got request to find details for $origin in DB")
+
+		concurrency.runDiskOrNetwork({
+			val storedInfo = dao.getClassInfo(origin.detailsUrl)
+			if (storedInfo?.hitDie == null) {
+				subject.onComplete()
+				return@runDiskOrNetwork
+			}
+			val optionsId = getStartingOptionsDbId(origin.detailsUrl)
+			val proficiencyOptions = proficiencyStorage.findSelectionById(optionsId).blockingGet()?.groupStates?.mapNotNull { it.item } ?: emptyList()
+			val nativeId = getNativeProficienciesDbId(origin.detailsUrl)
+			val nativeProficiencies = proficiencyStorage.findSelectionById(nativeId).blockingGet()?.groupStates?.mapNotNull { it.item }?.firstOrNull()?.options?.mapNotNull { it.item } ?: emptyList()
+			logger.writeDebug("Found details in the DB for $origin")
+			subject.onSuccess(DndDetailedCharacterClass(storedInfo.name, storedInfo.id, proficiencyOptions, storedInfo.hitDie!!, nativeProficiencies))
+		})
+
+		return subject
 	}
 
 	override fun findSelectionById(id: CharSequence): Maybe<DndCharacterClassSelection> {
@@ -64,6 +89,15 @@ class RoomCharacterClassStorage(private val dao: StoredClassDao, private val con
 			subject.onSuccess(DndCharacterClassSelection(states))
 		})
 		return subject
+	}
+
+	// FIXME: Should have a better way of constructing IDs
+	private fun getStartingOptionsDbId(classId: CharSequence): String {
+		return "$classId--starting_proficiencies"
+	}
+
+	private fun getNativeProficienciesDbId(classId: CharSequence): String {
+		return "$classId--native_proficiencies"
 	}
 
 }

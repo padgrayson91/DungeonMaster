@@ -39,7 +39,7 @@ interface DndCharacterClassApiConnection {
                     .build()
 
             val response = client.newCall(request).execute()?.body()?.string() ?: return null
-            val classDetail = gson.fromJson(response, DndCharacterClassDetail::class.java)
+            val classDetail = gson.fromJson(response, DndCharacterClassInfo::class.java)
             return classDetail.toDetailedCharacterClass()
         }
     }

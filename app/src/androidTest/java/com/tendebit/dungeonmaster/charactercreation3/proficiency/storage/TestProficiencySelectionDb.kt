@@ -41,7 +41,7 @@ class TestProficiencySelectionDb {
 	@Test
 	fun testSaveSelection() {
 		val selection = DndProficiencySelection(CharacterCreationViewRobots.blankProficiencyGroups)
-		val id = storage.storeSelection(selection)
+		val id = storage.storeSelection(selection)!!
 		assert(id.isNotEmpty())
 		val testObserver = TestObserver<DndProficiencySelection>()
 		val maybe = storage.findSelectionById(id)
@@ -69,7 +69,7 @@ class TestProficiencySelectionDb {
 	fun testSaveSelectionWithSelectedItem() {
 		val selection = DndProficiencySelection(CharacterCreationViewRobots.blankProficiencyGroups)
 		selection.groupStates[0].item?.select(2)
-		val id = storage.storeSelection(selection)
+		val id = storage.storeSelection(selection)!!
 		assert(id.isNotEmpty())
 		val testObserver = TestObserver<DndProficiencySelection>()
 		val maybe = storage.findSelectionById(id)

@@ -8,16 +8,16 @@ import com.tendebit.dungeonmaster.charactercreation3.abilitycore.DndAbilityType
 
 @Entity(tableName = "ability_bonuses")
 data class StoredDndAbilityBonus(
-		@PrimaryKey val id: CharSequence,
+		@PrimaryKey val id: String,
 		@ColumnInfo(name = "str") val str: Int,
 		@ColumnInfo(name = "dex") val dex: Int,
-		@ColumnInfo(name = "str") val con: Int,
-		@ColumnInfo(name = "dex") val intel: Int,
-		@ColumnInfo(name = "str") val wis: Int,
-		@ColumnInfo(name = "dex") val cha: Int) {
+		@ColumnInfo(name = "con") val con: Int,
+		@ColumnInfo(name = "intel") val intel: Int,
+		@ColumnInfo(name = "wis") val wis: Int,
+		@ColumnInfo(name = "cha") val cha: Int) {
 
 	companion object {
-		fun fromAbilityBonuses(bonuses: Array<DndAbilityBonus>, sourceId: CharSequence): StoredDndAbilityBonus {
+		fun fromAbilityBonuses(bonuses: Array<DndAbilityBonus>, sourceId: String): StoredDndAbilityBonus {
 			return StoredDndAbilityBonus(
 					sourceId,
 					bonuses.find { it.type == DndAbilityType.STR }?.value ?: 0,

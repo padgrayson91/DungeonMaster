@@ -12,7 +12,7 @@ class RoomAbilityStorage(private val dao: StoredAbilityDao, private val concurre
 	override fun storeAbilityBonuses(bonuses: Array<DndAbilityBonus>, sourceId: CharSequence) {
 		logger.writeDebug("Got request to store bonuses for $sourceId")
 		concurrency.runDiskOrNetwork({
-			dao.storeAbilityBonuses(StoredDndAbilityBonus.fromAbilityBonuses(bonuses, sourceId))
+			dao.storeAbilityBonuses(StoredDndAbilityBonus.fromAbilityBonuses(bonuses, sourceId.toString()))
 		})
 	}
 
@@ -20,7 +20,11 @@ class RoomAbilityStorage(private val dao: StoredAbilityDao, private val concurre
 		val subject = MaybeSubject.create<Array<DndAbilityBonus>>()
 		logger.writeDebug("Got request to find abilities for $sourceId in storage")
 		concurrency.runDiskOrNetwork({
-			val storedArray = dao.getAbilityBonuses(sourceId) ?: subject.onComplete()
+			val storedArray = dao.getAbilityBonuses(sourceId.toString())
+			if (storedArray == null) {
+				subject.onComplete()
+				return@runDiskOrNetwork
+			}
 			subject.onSuccess(storedArray.toAbilityBonusArray())
 		})
 

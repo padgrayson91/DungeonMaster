@@ -5,7 +5,7 @@ import com.tendebit.dungeonmaster.charactercreation3.characterclass.DndDetailedC
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.network.DndProficiencyDirectory
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.data.network.DndProficiencyGroupDirectory
 
-class DndCharacterClassDetail {
+class DndCharacterClassInfo {
 
 	lateinit var name: String
 	lateinit var url: String

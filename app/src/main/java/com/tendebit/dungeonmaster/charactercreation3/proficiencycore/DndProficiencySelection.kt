@@ -40,6 +40,8 @@ class DndProficiencySelection : Parcelable {
 	private val internalStateChanges = PublishSubject.create<ListItemState<DndProficiencyGroup>>()
 	val stateChanges = internalStateChanges as Observable<ListItemState<DndProficiencyGroup>>
 	private val disposable = CompositeDisposable()
+	val isEmpty: Boolean
+		get() = groupStates.isEmpty()
 
 	private fun updateGroupsToMatchExternal(forGroups: List<DndProficiencyGroup>) {
 		for (group in forGroups) {

@@ -5,4 +5,4 @@ import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficie
 import com.tendebit.dungeonmaster.charactercreation3.proficiencycore.DndProficiencySource
 
 class DndDetailedCharacterClass(val name: String, val id: String, override val dndProficiencyOptions: List<DndProficiencyGroup>,
-								val hitDie: Int, val nativeProviciencies: List<DndProficiency>) : DndProficiencySource
+								val hitDie: Int, val nativeProficiencies: List<DndProficiency>) : DndProficiencySource
