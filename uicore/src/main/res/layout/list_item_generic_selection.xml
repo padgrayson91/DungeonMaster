@@ -39,9 +39,7 @@
             android:paddingEnd="-8dp"
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_large"
-            android:visibility="gone"
-            android:contentDescription="@string/delete_character_button_accessible"
-            tools:src="@drawable/ic_material_clear_button"/>
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
