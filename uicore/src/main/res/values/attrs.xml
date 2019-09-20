@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<attr name="selectedTextColor" format="color"/>
+	<attr name="normalTextColor" format="color"/>
+	<attr name="pressedTextColor" format="color"/>
+	<attr name="highlightedTextColor" format="color"/>
+	<attr name="highlightedBackgroundColor" format="color"/>
+	<attr name="colorPrimaryDarkTransparent" format="color"/>
+</resources>

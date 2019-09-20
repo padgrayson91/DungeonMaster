@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:foreground="?android:attr/selectableItemBackground"
     android:layout_marginTop="@dimen/padding_xsmall"
     android:layout_marginLeft="@dimen/padding_xsmall"
     android:layout_marginRight="@dimen/padding_xsmall"
-    android:foreground="?android:attr/selectableItemBackground"
-    android:clickable="true"
-    android:focusable="true"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:background="@android:color/darker_gray">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -17,13 +15,12 @@
 
         <TextView
             android:id="@+id/primary_item_text"
+            style="@style/ActionText"
             android:layout_margin="@dimen/padding_large"
             android:gravity="center"
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size_xlarge"
-            android:textStyle="bold"
             tools:text="Selectable Item With text that is very long"/>
 
         <ImageButton
@@ -39,8 +36,9 @@
             android:paddingEnd="-8dp"
             android:paddingTop="@dimen/padding_small"
             android:paddingBottom="@dimen/padding_large"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            tools:ignore="ContentDescription" />
 
     </RelativeLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>

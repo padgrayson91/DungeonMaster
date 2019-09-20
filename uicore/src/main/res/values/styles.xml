@@ -6,14 +6,19 @@
 		<!-- Customize your theme here. -->
 		<item name="colorPrimary">@color/colorPrimary</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+		<item name="colorPrimaryDarkTransparent">@color/colorPrimaryDarkTransparent</item>
 		<item name="colorAccent">@color/colorAccent</item>
+		<item name="selectedTextColor">@color/colorAccent</item>
+		<item name="pressedTextColor">@color/colorPrimary</item>
+		<item name="normalTextColor">@color/colorNormalText</item>
+		<item name="android:windowBackground">@color/colorBackground</item>
+		<item name="android:textColor">@color/colorNormalText</item>
+		<item name="highlightedTextColor">@color/colorNormalText</item>
+		<item name="highlightedBackgroundColor">@color/colorPrimaryDark</item>
 	</style>
 
-	<style name="ProgressTheme" parent="Theme.MaterialComponents">
+	<style name="ProgressTheme" parent="AppTheme">
 		<item name="android:background">@color/colorPrimaryDarkTransparent</item>
-		<item name="colorPrimary">@color/colorPrimary</item>
-		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-		<item name="colorAccent">@color/colorAccent</item>
 	</style>
 
 	<style name="Round" parent="Widget.MaterialComponents.CardView">
@@ -23,7 +28,13 @@
 	<style name="ActionButton" parent="Widget.AppCompat.Button">
 		<item name="android:background">@drawable/background_oval_button</item>
 		<item name="android:textSize">@dimen/text_size_xlarge</item>
-		<item name="android:textColor">?attr/colorPrimary</item>
+		<item name="android:textColor">@drawable/selectable_text</item>
+	</style>
+
+	<style name="ActionText" parent="AppTheme">
+		<item name="android:textStyle">bold</item>
+		<item name="android:textSize">@dimen/text_size_xlarge</item>
+		<item name="android:textColor">@drawable/selectable_text</item>
 	</style>
 
 	<style name="ImportantText" parent="AppTheme">

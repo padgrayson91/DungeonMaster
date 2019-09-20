@@ -28,11 +28,26 @@
 				</shape>
 			</item>
 
+			<item
+				android:state_focused="true"
+				android:state_pressed="false">
+				<shape
+					android:shape="rectangle">
+					<solid
+						android:color="?attr/colorPrimaryDark"/>
+					<stroke
+						android:color="?attr/colorPrimary"
+						android:width="@dimen/outline_width"/>
+					<corners
+						android:radius="@dimen/round_button_corner_radius"/>
+				</shape>
+			</item>
+
 			<item>
 				<shape
 					android:shape="rectangle">
 					<stroke
-						android:color="@color/colorPrimary"
+						android:color="?attr/colorPrimary"
 						android:width="@dimen/outline_width"/>
 					<corners
 						android:radius="@dimen/round_button_corner_radius"/>
