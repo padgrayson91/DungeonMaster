@@ -37,7 +37,7 @@ class DndAbilitySlotAdapter(private val viewModel: DndAbilitySelectionViewModel?
 		childDisposable?.dispose()
 	}
 
-	private fun resume() {
+	fun resume() {
 		if (viewModel != null) {
 			mainDisposable = viewModel.changes.subscribe {
 				subscribeToSelection(it)

@@ -75,7 +75,7 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 		}
 		childUpdateDisposable = CompositeDisposable().apply {
 			children.forEachIndexed { index, child ->
-				add(child.clicks.subscribe {
+				this.add(child.clicks.subscribe {
 					selection.performAssignment(index)
 					child.state = selection.options[index]
 				})

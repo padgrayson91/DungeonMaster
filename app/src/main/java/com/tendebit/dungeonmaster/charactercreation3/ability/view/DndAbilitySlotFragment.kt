@@ -28,6 +28,11 @@ class DndAbilitySlotFragment : Fragment() {
 		return root
 	}
 
+	override fun onResume() {
+		super.onResume()
+		adapter?.resume()
+	}
+
 	override fun onPause() {
 		super.onPause()
 		adapter?.clear()
