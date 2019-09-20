@@ -17,7 +17,7 @@ data class StoredRace(
 		}
 
 		fun fromDetailedRace(dndDetailedRace: DndDetailedRace): StoredRace {
-			return fromDndRace(dndDetailedRace.origin) // TODO: need to store additional details
+			return fromDndRace(dndDetailedRace.origin)
 		}
 	}
 
