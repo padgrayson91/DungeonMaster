@@ -29,10 +29,16 @@ android {
 dependencies {
 	implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+	// OkHttp
+	api 'com.squareup.okhttp3:okhttp:3.11.0'
+
 	// AndroidX
 	implementation 'androidx.appcompat:appcompat:1.1.0'
 	implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 	implementation 'androidx.recyclerview:recyclerview:1.0.0'
+
+	//GSON
+	api 'com.google.code.gson:gson:2.8.5'
 
 	// Material design
 	implementation 'com.google.android.material:material:1.0.0'

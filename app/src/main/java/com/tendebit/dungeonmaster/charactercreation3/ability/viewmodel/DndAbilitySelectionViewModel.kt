@@ -103,7 +103,7 @@ class DndAbilitySelectionViewModel(private val provider: AbilityProvider, privat
 			rolls = DndAbilityDiceRollSelectionViewModel(selection, concurrency)
 			rollClickDisposable = CompositeDisposable().apply {
 				rolls?.children?.forEachIndexed { index, roll ->
-					add(roll.selection.subscribe { selection.performScoreSelection(index) })
+					this.add(roll.selection.subscribe { selection.performScoreSelection(index) })
 				}
 			}
 		} else {

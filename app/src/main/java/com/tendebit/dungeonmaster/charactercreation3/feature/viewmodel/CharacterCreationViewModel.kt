@@ -1,5 +1,6 @@
 package com.tendebit.dungeonmaster.charactercreation3.feature.viewmodel
 
+import com.google.gson.Gson
 import com.tendebit.dungeonmaster.App
 import com.tendebit.dungeonmaster.charactercreation3.ability.storage.RoomAbilityStorage
 import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilitySelectionViewModel
@@ -23,6 +24,7 @@ import com.tendebit.dungeonmaster.charactercreation3.race.data.storage.RoomRaceS
 import com.tendebit.dungeonmaster.charactercreation3.race.viewmodel.DndRaceSelectionViewModel
 import com.tendebit.dungeonmastercore.concurrency.CoroutineConcurrency
 import com.tendebit.dungeonmastercore.model.state.ItemState
+import com.tendebit.dungeonmastercore.network.NetworkEnvironment
 import com.tendebit.dungeonmastercore.viewmodel3.Clearable
 import com.tendebit.dungeonmastercore.viewmodel3.ViewModel
 import io.reactivex.Observable
@@ -30,6 +32,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
 
 @Suppress("UNCHECKED_CAST")
 class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clearable {
@@ -50,13 +53,14 @@ class CharacterCreationViewModel(val state: CharacterCreation) : ViewModel, Clea
 	init {
 		viewModelScope.launch(context = Dispatchers.IO) {
 			val db = CharacterCreationDb.getInstance(App.instance.applicationContext)
+			val networkEnv = NetworkEnvironment.Impl(Gson(), OkHttpClient())
 			val abilityStorage = RoomAbilityStorage(db.abilityDao(), concurrency)
 			val proficiencyStorage = RoomProficiencyStorage(db.proficiencyDao(), concurrency)
 			val raceStorage = RoomRaceStorage(db.raceDao(), concurrency, abilityStorage, proficiencyStorage)
 			val classStorge = RoomCharacterClassStorage(db.classDao(), concurrency, proficiencyStorage)
 
 			val racePrerequisites = DndRacePrerequisites.Impl(concurrency, DndRaceDataStoreImpl(DndRaceApiConnection.Impl(), raceStorage))
-			val classPrerequisites = DndClassPrerequisites.Impl(concurrency, DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(), classStorge))
+			val classPrerequisites = DndClassPrerequisites.Impl(concurrency, DndCharacterClassDataStoreImpl(DndCharacterClassApiConnection.Impl(networkEnv), classStorge))
 			val proficiencyPrerequisites = ProficiencyPrerequisites.Impl(concurrency,
 					listOf(
 							state.classes.selectedClassDetails as Observable<ItemState<out DndProficiencySource>>,

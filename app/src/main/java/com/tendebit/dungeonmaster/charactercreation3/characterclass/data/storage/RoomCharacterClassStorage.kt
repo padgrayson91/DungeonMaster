@@ -41,6 +41,7 @@ class RoomCharacterClassStorage(private val dao: StoredClassDao, private val con
 	}
 
 	override fun storeDetails(details: DndDetailedCharacterClass) {
+		logger.writeDebug("Storing class details for ${details.name} ${details.id} (hit die ${details.hitDie})")
 		concurrency.runDiskOrNetwork({
 			val optionsId = getStartingOptionsDbId(details.id)
 			val nativeId = getNativeProficienciesDbId(details.id)

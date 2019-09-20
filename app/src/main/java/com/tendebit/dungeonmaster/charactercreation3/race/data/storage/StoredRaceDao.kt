@@ -8,7 +8,7 @@ import androidx.room.Query
 @Dao
 interface StoredRaceDao {
 
-	@Insert(onConflict = OnConflictStrategy.IGNORE)
+	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	fun storeRaceInfo(info: StoredRace)
 
 	@Insert(onConflict = OnConflictStrategy.REPLACE)

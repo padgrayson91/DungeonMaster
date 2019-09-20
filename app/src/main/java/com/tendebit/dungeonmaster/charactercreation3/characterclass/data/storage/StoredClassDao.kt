@@ -2,14 +2,13 @@ package com.tendebit.dungeonmaster.charactercreation3.characterclass.data.storag
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 
 @Dao
 interface StoredClassDao {
 
-	@Insert(onConflict = IGNORE)
+	@Insert(onConflict = REPLACE)
 	fun storeClassInfo(info: StoredCharacterClass)
 
 	@Query("""SELECT * FROM classes WHERE id=:id""")
