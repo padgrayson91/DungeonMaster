@@ -30,7 +30,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "android.arch.persistence.room:rxjava2:1.1.1"
-    implementation "androidx.room:room-runtime:2.2.0-alpha01"
+    implementation "androidx.room:room-runtime:2.2.0-rc01"
     implementation 'org.koin:koin-android:1.0.1'
 
     // ViewPager2
@@ -39,7 +39,7 @@ dependencies {
     // Core library
     api project(":dungeonmastercore")
 
-    kapt "androidx.room:room-compiler:2.2.0-alpha01"
+    kapt "androidx.room:room-compiler:2.2.0-rc01"
 
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-core:2.27.0'
