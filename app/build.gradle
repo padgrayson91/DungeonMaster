@@ -36,8 +36,9 @@ dependencies {
     // ViewPager2
     implementation "androidx.viewpager2:viewpager2:1.0.0-beta04"
 
-    // Core library
+    // Core libraries
     api project(":dungeonmastercore")
+    implementation project(":uicore")
 
     kapt "androidx.room:room-compiler:2.2.0-rc01"
 

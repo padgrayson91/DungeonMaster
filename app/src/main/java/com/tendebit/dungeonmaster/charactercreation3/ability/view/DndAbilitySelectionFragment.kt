@@ -10,7 +10,7 @@ import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
 import com.tendebit.dungeonmaster.charactercreation3.ability.viewmodel.DndAbilitySelectionViewModel
 import com.tendebit.dungeonmastercore.platform.ViewModels
-import com.tendebit.dungeonmastercore.view.LoadingDialog
+import com.tendebit.uicore.view.LoadingDialog
 import io.reactivex.disposables.Disposable
 
 private const val ROLLS_FRAGMENT_TAG = "fragment_rolls"

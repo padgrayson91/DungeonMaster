@@ -1,1 +1,1 @@
-include ':app', ':dungeonmastercore'
+include ':app', ':dungeonmastercore', ':uicore'

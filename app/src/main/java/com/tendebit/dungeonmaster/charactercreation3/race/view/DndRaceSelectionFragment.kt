@@ -11,8 +11,8 @@ import com.tendebit.dungeonmaster.R
 import com.tendebit.dungeonmaster.charactercreation3.ID_KEY
 import com.tendebit.dungeonmaster.charactercreation3.race.DndRace
 import com.tendebit.dungeonmastercore.platform.ViewModels
-import com.tendebit.dungeonmastercore.view.LoadingDialog
 import com.tendebit.dungeonmastercore.viewmodel3.SingleSelectViewModel
+import com.tendebit.uicore.view.LoadingDialog
 import io.reactivex.disposables.Disposable
 
 class DndRaceSelectionFragment : Fragment() {

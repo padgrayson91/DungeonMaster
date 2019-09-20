@@ -20,7 +20,7 @@
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_material_add_button"/>
 
-    <com.tendebit.dungeonmastercore.view.LoadingDialog
+    <com.tendebit.uicore.view.LoadingDialog
         android:id="@+id/loading_dialog"
         android:visibility="gone"
         android:layout_width="match_parent"
